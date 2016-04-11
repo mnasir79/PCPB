@@ -1,0 +1,10 @@
+{
+  "appName": {
+    "message": "inin-analytics-hub",
+    "description": "The name of the application"
+  },
+  "appDescription": {
+    "message": "Pushes analytics from PureCloud or CIC to PowerBI and similar cloud-based services",
+    "description": "The description of the application"
+  }
+}
