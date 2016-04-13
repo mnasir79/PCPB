@@ -9,9 +9,11 @@
     <!-- build:css styles/main.css -->
     <link href="styles/main.css" rel="stylesheet">
     <!-- endbuild -->
+    <link rel="stylesheet" href="styles/bootstrap/dist/css/bootstrap.css">
   </head>
-  <body>
+  <body ng-app>
     <h1>ECC POWER! ;-)</h1>
+    <p>This is an angular {{'test' + '!'}}</p>
     <p>Popup</p>
     <!-- build:js scripts/popup-vendor.js -->
     <!-- bower:js -->
@@ -21,5 +23,7 @@
     <!-- build:js scripts/popup.js -->
     <script src="scripts/popup.js"></script>
     <!-- endbuild -->
+    <script src="lib/angular/angular.min.js"></script>
+    <script src="lib/jquery/dist/jquery.min.js"></script>
   </body>
 </html>
