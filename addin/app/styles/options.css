@@ -10,7 +10,7 @@ body {
 
 .options-panel-box{    
     position: relative;
-    margin: auto;  
+    margin: 10px auto auto auto;  
     height: 300px; 
 }
 
@@ -20,7 +20,8 @@ body {
     left: 0px;
     bottom: 0px;
     width: 100px;
-    padding: 10px;    
+    padding: 10px;   
+    border-right: 1px dotted #dddddd; 
  }
  
 .options-panel-right { 
