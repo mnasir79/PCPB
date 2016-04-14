@@ -7,11 +7,123 @@
     <!-- endbuild -->
     <!-- build:css styles/main.css -->
     <link href="styles/main.css" rel="stylesheet">
+    <link href="styles/options.css" rel="stylesheet">        
+    <link rel="stylesheet" href="styles/bootstrap/dist/css/bootstrap.css">
+    <script src="lib/jquery/dist/jquery.min.js"></script>    
+    <script src="styles/bootstrap/dist/js/bootstrap.js"></script>
+    
     <!-- endbuild -->
   </head>
   <body>
-    <h1>ECC POWER! ;-)</h1>
-    <p>Options</p>
+          
+    <div class="container">
+        <div id="content">
+            <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
+                <li class="active"><a href="#powerbi" data-toggle="tab">Power BI</a></li>
+                <li><a href="#purecloud" data-toggle="tab">PureCloud</a></li>
+                <li><a href="#cic" data-toggle="tab">CIC</a></li>
+                <li><a href="#general" data-toggle="tab">General</a></li>                
+            </ul>
+            <div id="my-tab-content" class="tab-content">
+                               
+                <!-- <Power BI tab> -->                
+                <div class="tab-pane active" id="powerbi">
+                    <div class="options-panel-box">
+                        <div class="options-panel-left">
+                            <img src="images\logo-powerbi.png">
+                        </div>
+                        <div class="options-panel-right">                    
+                            <div class="form-group">
+                                <label for="x">Param 1:</label>
+                                <input type="text" class="form-control" id="x">
+                            </div>                            
+                        </div>
+                    </div>
+                </div>
+                <!-- </Power BI tab> -->
+                
+                <!-- <Pure Cloud tab> -->
+                <div class="tab-pane" id="purecloud">
+                    <div class="options-panel-box">
+                        <div class="options-panel-left">
+                            <img src="images\logo-purecloud.png">
+                        </div>
+                        <div class="options-panel-right">                    
+                            <div class="form-group">
+                                <label for="x">Param 2:</label>
+                                <input type="text" class="form-control" id="x">
+                            </div>                            
+                            <div class="form-group">
+                                <label for="x">Param 3:</label>
+                                <input type="text" class="form-control" id="x">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- </Pure Cloud tab> -->
+                
+                <!-- <CIC tab> -->
+                <div class="tab-pane" id="cic">
+                    <div class="options-panel-box">
+                        <div class="options-panel-left">
+                            <img src="images\logo-cic.png">
+                        </div>
+                        <div class="options-panel-right">                    
+                            <div class="form-group">
+                                <label for="x">Param 4:</label>
+                                <input type="text" class="form-control" id="x">
+                            </div>                            
+                            <div class="form-group">
+                                <label for="x">Param 5:</label>
+                                <input type="text" class="form-control" id="x">
+                            </div>
+                            <div class="form-group">
+                                <label for="x">Param 6:</label>
+                                <input type="text" class="form-control" id="x">
+                            </div>
+                            <div class="form-group">
+                                <label for="x">Param 7:</label>
+                                <input type="text" class="form-control" id="x">
+                            </div>
+                            <div class="form-group">
+                                <label for="x">Param 8:</label>
+                                <input type="text" class="form-control" id="x">
+                            </div>                                                        
+                        </div>
+                    </div>
+                </div>
+                <!-- </CIC tab> -->
+                
+                <!-- <General tab> -->
+                <div class="tab-pane" id="general">                
+                    <div class="options-panel-box">
+                        <div class="options-panel-left">
+                            <img src="images\logo-general.png">
+                        </div>
+                        <div class="options-panel-right">                    
+                            <div class="form-group">
+                                <label for="x">Checkbox:</label>
+                                <input type="checkbox" class="form-control" id="x">
+                            </div>
+                            <div class="form-group">
+                                <label for="pwd">Password field:</label>
+                                <input type="password" class="form-control" id="pwd">
+                            </div>
+                        </div>
+                    </div>                
+                </div>    
+                <!-- </General tab> -->                                                
+            </div>
+        </div>
+    </div> <!-- container -->    
+    
+    
+<script type="text/javascript">
+    $(document).ready(function () {        
+        $('#tabs').tab();        
+    });    
+</script>      
+    
     <!-- build:js scripts/options-vendor.js -->
     <!-- bower:js -->
     <!-- endbower -->
@@ -19,6 +131,8 @@
 
     <!-- build:js scripts/options.js -->
     <script src="scripts/options.js"></script>
+    
     <!-- endbuild -->
   </body>
+    
 </html>

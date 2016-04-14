@@ -1,0 +1,35 @@
+html {
+    width: 800px;
+    height: 400px;
+}
+
+body {
+    width: 800px;
+    height: 400px;
+}
+
+.options-panel-box{    
+    position: relative;
+    margin: 10px auto auto auto;  
+    height: 300px; 
+}
+
+.options-panel-left {  
+    position: absolute;        
+    top: 0px;
+    left: 0px;
+    bottom: 0px;
+    width: 100px;
+    padding: 10px;   
+    border-right: 1px dotted #dddddd; 
+ }
+ 
+.options-panel-right { 
+    position: absolute;        
+    top: 0px;
+    left: 100px;
+    bottom: 0px;
+    right: 0px;
+    padding: 10px;    
+    overflow-y: scroll;
+ }

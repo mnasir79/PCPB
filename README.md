@@ -1,5 +1,5 @@
 * Install [node.js](https://nodejs.org/en/) stable version
-* Run `npm install -g yo gulp bower`
+* Run `npm install -g gulp bower`
 * Clone this repository
 * `cd addin`
 * Run `npm install`
