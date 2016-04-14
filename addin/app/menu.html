@@ -12,26 +12,26 @@
     <!-- endbuild -->
     <link rel="stylesheet" href="styles/bootstrap/dist/css/bootstrap.css">
   </head>
-  <body ng-app>
+  <body ng-app="app" ng-controller="menuCtrl">
     <ul class="nav nav-pills btn-xs">
         <li role="presentation">
-            <a href="https://bitbucket.org/eccemea/analytics-hub/wiki/Home" id="link_started" class="menuItem">Get started</a>
+            <a href="https://bitbucket.org/eccemea/analytics-hub/wiki/Home" id="link_started" class="menuItem"  ng-click="openUrl($event)">Get started</a>
         </li>
     </ul>
     <hr class="menuDevider"/>
     <div class="btn-group-vertical" role="group" aria-label="...">
-        <button type="button" class="btn btn-default menuItem btn-xs" id="connectButton_PC">
+        <button type="button" class="btn btn-default menuItem btn-xs" id="connectButton_PC" ng-click="toggleConnectionIndicator($event)">
             <span class="label label-danger" id="connectionIndicator_PC">IN</span>
             PoureCloud
         </button>
-        <button type="button" class="btn btn-default menuItem btn-xs" id="connectButton_CIC">
+        <button type="button" class="btn btn-default menuItem btn-xs" id="connectButton_CIC" ng-click="toggleConnectionIndicator($event)">
             <span class="label label-danger" id="connectionIndicator_CIC">IN</span>
             CIC            
         </button>
     </div>    
     <hr class="menuDevider"/>
     <div class="btn-group-vertical" role="group" aria-label="...">
-        <button type="button" class="btn btn-default menuItem btn-xs" id="connectButton_PowerBI">
+        <button type="button" class="btn btn-default menuItem btn-xs" id="connectButton_PowerBI" ng-click="toggleConnectionIndicator($event)">
             <span class="label label-danger" id="connectionIndicator_PowerBI">OUT</span>
             PowerBI            
         </button>
@@ -39,7 +39,7 @@
     <hr class="menuDevider"/>
     <ul class="nav nav-pills btn-xs">
         <li role="presentation">
-            <a href="https://bitbucket.org/eccemea/analytics-hub/issues" id="link_issues" class="menuItem">Report an issue</a>
+            <a href="https://bitbucket.org/eccemea/analytics-hub/issues" id="link_issues" class="menuItem" ng-click="openUrl($event)">Report an issue</a>
         </li>
     </ul>    
     <!-- build:js scripts/popup-vendor.js -->
@@ -50,7 +50,10 @@
     <!-- build:js scripts/popup.js -->
     <script src="scripts/menu.js"></script>
     <!-- endbuild -->
-    <script src="lib/angular/angular.min.js"></script>
-    <script src="lib/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="lib/angular/angular.min.js"></script>
+    <script type="text/javascript" src="lib/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="scripts/app.js"></script>
+    <script type="text/javascript" src="scripts/controllers/menuCtrl.js"></script>
+    <script type="text/javascript" src="scripts/providers/loggerProvider.js"></script>
   </body>
 </html>
