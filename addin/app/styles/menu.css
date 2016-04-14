@@ -1,0 +1,16 @@
+body {
+  background-color:white;
+  padding: 0px 0px 0px 2px !important;
+}
+
+.menuItem {
+  width: 120px !important;
+  vertical-align: middle !important;
+  text-align: left !important;
+  padding-top: 2px !important;  
+  padding-bottom: 2px !important;
+}
+
+.menuDevider { 
+    margin: 3px 0px 3px 0px; 
+}

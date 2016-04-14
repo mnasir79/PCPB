@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <!-- build:css styles/popup-vendor.css -->
+    <!-- bower:css -->
+    <!-- endbower -->
+    <!-- endbuild -->
+    <!-- build:css styles/main.css -->
+    <link href="styles/main.css" rel="stylesheet">
+    <link href="styles/menu.css" rel="stylesheet">
+    <!-- endbuild -->
+    <link rel="stylesheet" href="styles/bootstrap/dist/css/bootstrap.css">
+  </head>
+  <body ng-app>
+    <ul class="nav nav-pills btn-xs">
+        <li role="presentation">
+            <a href="https://bitbucket.org/eccemea/analytics-hub/wiki/Home" id="link_started" class="menuItem">Get started</a>
+        </li>
+    </ul>
+    <hr class="menuDevider"/>
+    <div class="btn-group-vertical" role="group" aria-label="...">
+        <button type="button" class="btn btn-default menuItem btn-xs" id="connectButton_PC">
+            <span class="label label-danger" id="connectionIndicator_PC">IN</span>
+            PoureCloud
+        </button>
+        <button type="button" class="btn btn-default menuItem btn-xs" id="connectButton_CIC">
+            <span class="label label-danger" id="connectionIndicator_CIC">IN</span>
+            CIC            
+        </button>
+    </div>    
+    <hr class="menuDevider"/>
+    <div class="btn-group-vertical" role="group" aria-label="...">
+        <button type="button" class="btn btn-default menuItem btn-xs" id="connectButton_PowerBI">
+            <span class="label label-danger" id="connectionIndicator_PowerBI">OUT</span>
+            PowerBI            
+        </button>
+    </div>
+    <hr class="menuDevider"/>
+    <ul class="nav nav-pills btn-xs">
+        <li role="presentation">
+            <a href="https://bitbucket.org/eccemea/analytics-hub/issues" id="link_issues" class="menuItem">Report an issue</a>
+        </li>
+    </ul>    
+    <!-- build:js scripts/popup-vendor.js -->
+    <!-- bower:js -->
+    <!-- endbower -->
+    <!-- endbuild -->
+
+    <!-- build:js scripts/popup.js -->
+    <script src="scripts/menu.js"></script>
+    <!-- endbuild -->
+    <script src="lib/angular/angular.min.js"></script>
+    <script src="lib/jquery/dist/jquery.min.js"></script>
+  </body>
+</html>
