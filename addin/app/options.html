@@ -9,12 +9,10 @@
     <link href="styles/main.css" rel="stylesheet">
     <link href="styles/options.css" rel="stylesheet">        
     <link rel="stylesheet" href="styles/bootstrap/dist/css/bootstrap.css">
-    <script src="lib/jquery/dist/jquery.min.js"></script>    
-    <script src="styles/bootstrap/dist/js/bootstrap.js"></script>
-    
+          
     <!-- endbuild -->
   </head>
-  <body>
+  <body  ng-app="app" ng-controller="optionsCtrl">
           
     <div class="container">
         <div id="content">
@@ -51,19 +49,19 @@
                         <div class="options-panel-right">                    
                             <div class="input-group">
                                 <div class="input-group-addon">Auth URL</div>
-                                <input type="text" class="form-control" id="authId">
+                                <input type="text" class="form-control" id="pcAuthUrl" value="{{kupa}}">
                             </div>                            
                             <div class="input-group">
                                 <div class="input-group-addon">Access Token URL</div>                                
-                                <input type="text" class="form-control" id="x">
+                                <input type="text" class="form-control" id="pcAccessTokenUrl" value="{{kupa}}">
                             </div>
                             <div class="input-group">                                
                                 <div class="input-group-addon">Client ID</div>
-                                <input type="text" class="form-control" id="x">
+                                <input type="text" class="form-control" id="pcClientId">
                             </div>
                             <div class="input-group">                                
                                 <div class="input-group-addon">Client Secret</div>
-                                <input type="text" class="form-control" id="x">
+                                <input type="text" class="form-control" id="pcClientSecret">
                             </div>                                                  
                         </div>
                     </div>
@@ -127,9 +125,7 @@
     
     
 <script type="text/javascript">
-    $(document).ready(function () {        
-        $('#tabs').tab();        
-    });    
+  
 </script>      
     
     <!-- build:js scripts/options-vendor.js -->
@@ -141,6 +137,13 @@
     <script src="scripts/options.js"></script>
     
     <!-- endbuild -->
+    
+    <script type="text/javascript" src="lib/angular/angular.min.js"></script>
+    <script type="text/javascript" src="lib/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="styles/bootstrap/dist/js/bootstrap.js"></script>
+    <script type="text/javascript" src="scripts/app.js"></script>
+    <script type="text/javascript" src="scripts/controllers/optionsCtrl.js"></script>
+    <script type="text/javascript" src="scripts/providers/loggerProvider.js"></script>
   </body>
     
 </html>
