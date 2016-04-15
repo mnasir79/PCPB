@@ -11,15 +11,12 @@
 angular.module('app', [])
   .controller('optionsCtrl', function($rootScope, $scope, $log) {
     
-    $scope.testLog = function(message) {
-      console.log('message from testLog');
-      try {
-        $log.isEnabled;
-      } catch (error) {
-        console.log(error);
-      }
-      $log.debug(message);
-    }
+    
+    
+    $scope.pcAuthUrl = "http://cupa";
+    $scope.pcAccessTokenUrl = "fttp://access.kuuppaa";
+    $scope.pcClientId = "Cliento";
+    $scope.pcClientSecret = "secreto";
     
     $scope.kupa = 'yo man';
   });

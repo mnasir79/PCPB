@@ -49,19 +49,19 @@
                         <div class="options-panel-right">                    
                             <div class="input-group">
                                 <div class="input-group-addon">Auth URL</div>
-                                <input type="text" class="form-control" id="pcAuthUrl" value="{{kupa}}">
+                                <input type="text" class="form-control" id="pcAuthUrl" ng-model="pcAuthUrl" ng-bind="pcAuthUrl">
                             </div>                            
                             <div class="input-group">
                                 <div class="input-group-addon">Access Token URL</div>                                
-                                <input type="text" class="form-control" id="pcAccessTokenUrl" value="{{kupa}}">
+                                <input type="text" class="form-control" id="pcAccessTokenUrl" ng-model="pcAccessTokenUrl" ng-bind="pcAccessTokenUrl">
                             </div>
                             <div class="input-group">                                
                                 <div class="input-group-addon">Client ID</div>
-                                <input type="text" class="form-control" id="pcClientId">
+                                <input type="text" class="form-control" id="pcClientId" ng-model="pcClientId" ng-bind="pcClientId">
                             </div>
                             <div class="input-group">                                
                                 <div class="input-group-addon">Client Secret</div>
-                                <input type="text" class="form-control" id="pcClientSecret">
+                                <input type="text" class="form-control" id="pcClientSecret" ng-model="pcClientSecret" ng-bind="pcClientSecret">
                             </div>                                                  
                         </div>
                     </div>
@@ -122,11 +122,6 @@
             </div>
         </div>
     </div> <!-- container -->    
-    
-    
-<script type="text/javascript">
-  
-</script>      
     
     <!-- build:js scripts/options-vendor.js -->
     <!-- bower:js -->
