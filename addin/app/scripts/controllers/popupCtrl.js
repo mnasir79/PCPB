@@ -9,7 +9,8 @@
 **/
 
 angular.module('app', [])
-  .controller('PopupCtrl', function($scope, $log) {
+  .controller('PopupCtrl', function($rootScope, $scope, $log) {
+    
     $scope.testLog = function(message) {
       console.log('message from testLog');
       try {
@@ -19,37 +20,36 @@ angular.module('app', [])
       }
       $log.debug(message);
     }
-  });    .controller('popupCtrl', function ($rootScope, $scope, $log) {
-
-        $scope.togglePCConnectionIndicator = function (obj) {
-            if ($scope.isPCConnected) {
-                $scope.isPCConnected = false;
-            }
-            else {
-                $scope.isPCConnected = true;
-            }
+  
+    $scope.togglePCConnectionIndicator = function (obj) {
+        if ($scope.isPCConnected) {
+            $scope.isPCConnected = false;
         }
-
-        $scope.toggleCICConnectionIndicator = function (obj) {
-            if ($scope.isCICConnected) {
-                $scope.isCICConnected = false;
-            }
-            else {
-                $scope.isCICConnected = true;
-            }
+        else {
+            $scope.isPCConnected = true;
         }
+    }
 
-        $scope.togglePowerBIConnectionIndicator = function (obj) {
-            if ($scope.isPowerBIConnected) {
-                $scope.isPowerBIConnected = false;
-            }
-            else {
-                $scope.isPowerBIConnected = true;
-            }
+    $scope.toggleCICConnectionIndicator = function (obj) {
+        if ($scope.isCICConnected) {
+            $scope.isCICConnected = false;
         }
+        else {
+            $scope.isCICConnected = true;
+        }
+    }
 
-        $scope.openUrl = function (obj) {
-            var url = obj.target.attributes.href.value;
-            chrome.tabs.create({ url: url });
+    $scope.togglePowerBIConnectionIndicator = function (obj) {
+        if ($scope.isPowerBIConnected) {
+            $scope.isPowerBIConnected = false;
         }
-    });
+        else {
+            $scope.isPowerBIConnected = true;
+        }
+    }
+
+    $scope.openUrl = function (obj) {
+        var url = obj.target.attributes.href.value;
+        chrome.tabs.create({ url: url });
+    }
+  });
