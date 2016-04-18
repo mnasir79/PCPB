@@ -8,31 +8,46 @@
  * Controller of the app
 **/
 
-angular.module('app')
-  .controller('optionsCtrl',function($rootScope, $scope, $log, chromeStorageService) {
+angular.module('app', ['chromeStorage'])
+  .controller('optionsCtrl',function($rootScope, $scope, $log, chromeStorage) {
         
     // <Initializing>      
     getPcOptions();
     // </Initializing>
     
     // <PureCloud options>
-    $scope.pcOptionsChanged = function(){
-        var pcOptions = new Object();
-        pcOptions.pcAuthUrl = $scope.pcAuthUrl;
-        pcOptions.pcAccessTokenUrl = $scope.pcAccessTokenUrl;
-        pcOptions.pcClientId = $scope.pcClientId;
-        pcOptions.pcClientSecret = $scope.pcClientSecret;
-        chromeStorageService.setPcOptions(pcOptions);
+    $scope.pcOptionsChanged = function(){                                
+        try {
+            if ($scope.pcAuthUrl === 'clear')
+            {
+                chromeStorage.drop('pcOptions');
+            }
+            var pcOptions = {}; 
+            pcOptions.pcAuthUrl = $scope.pcAuthUrl;                
+            pcOptions.pcAccessTokenUrl = $scope.pcAccessTokenUrl;
+            pcOptions.pcClientId = $scope.pcClientId;
+            pcOptions.pcClientSecret = $scope.pcClientSecret;            
+            var storageItem = {};
+            storageItem['pcOptions'] = pcOptions;                 
+            chrome.storage.local.set(storageItem);
+        } 
+        catch (err) {
+            $log.err(err);
+        }                
     };
         
-    function getPcOptions() {  
-     
-        chromeStorageService.getPcOptions( function(pcOptions) {                    
-            $scope.pcAuthUrl = pcOptions.pcAuthUrl;
-            $scope.pcAccessTokenUrl = pcOptions.pcAccessTokenUrl;
-            $scope.pcClientId = pcOptions.pcClientId
-            $scope.pcClientSecret = pcOptions.pcClientSecret;
-        })
+    function getPcOptions() {
+        try {                       
+            chromeStorage.get('pcOptions').then(function(pcOptions) {
+                $scope.pcAuthUrl = pcOptions.pcAuthUrl;
+                $scope.pcAccessTokenUrl = pcOptions.pcAccessTokenUrl;
+                $scope.pcClientId = pcOptions.pcClientId;
+                $scope.pcClientSecret = pcOptions.pcClientSecret;
+            });
+        }  
+        catch (err) {
+            $log.err(err);
+        }         
     }
     // </PureCloud options>
     

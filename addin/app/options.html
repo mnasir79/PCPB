@@ -53,15 +53,15 @@
                             </div>                            
                             <div class="input-group">
                                 <div class="input-group-addon">Access Token URL</div>                                
-                                <input type="text" class="form-control" id="pcAccessTokenUrl" ng-model="pcAccessTokenUrl" ng-bind="pcAccessTokenUrl">
+                                <input type="text" class="form-control" id="pcAccessTokenUrl" ng-model="pcAccessTokenUrl" ng-bind="pcAccessTokenUrl" ng-change="pcOptionsChanged()">
                             </div>
                             <div class="input-group">                                
                                 <div class="input-group-addon">Client ID</div>
-                                <input type="text" class="form-control" id="pcClientId" ng-model="pcClientId" ng-bind="pcClientId">
+                                <input type="text" class="form-control" id="pcClientId" ng-model="pcClientId" ng-bind="pcClientId" ng-change="pcOptionsChanged()">
                             </div>
                             <div class="input-group">                                
                                 <div class="input-group-addon">Client Secret</div>
-                                <input type="text" class="form-control" id="pcClientSecret" ng-model="pcClientSecret" ng-bind="pcClientSecret">
+                                <input type="text" class="form-control" id="pcClientSecret" ng-model="pcClientSecret" ng-bind="pcClientSecret" ng-change="pcOptionsChanged()">
                             </div>                                                  
                         </div>
                     </div>
@@ -123,8 +123,16 @@
         </div>
     </div> <!-- container -->    
     
+    <script type="text/javascript" src="lib/angular/angular.min.js"></script>
+    <script type="text/javascript" src="lib/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="styles/bootstrap/dist/js/bootstrap.js"></script>
+    <script type="text/javascript" src="scripts/app.js"></script>        
+    <script type="text/javascript" src="scripts/controllers/optionsCtrl.js"></script>
+    <script type="text/javascript" src="scripts/providers/loggerProvider.js"></script>    
+    
     <!-- build:js scripts/options-vendor.js -->
     <!-- bower:js -->
+    <script src="bower_components/angular-chrome-storage/angular-chrome-storage.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 
@@ -132,16 +140,7 @@
     <script src="scripts/options.js"></script>
     
     <!-- endbuild -->
-    
-    <script type="text/javascript" src="lib/angular/angular.min.js"></script>
-    <script type="text/javascript" src="lib/jquery/dist/jquery.min.js"></script>
-    <script type="text/javascript" src="styles/bootstrap/dist/js/bootstrap.js"></script>
-    <script type="text/javascript" src="scripts/app.js"></script>
-    <script type="text/javascript" src="scripts/services/chromeStorageService.js"></script>    
-    <script type="text/javascript" src="scripts/controllers/optionsCtrl.js"></script>
-    <script type="text/javascript" src="scripts/providers/loggerProvider.js"></script>
-    
-    
+          
   </body>
     
 </html>
