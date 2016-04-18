@@ -75,26 +75,28 @@
                             <img src="images\logo-cic.png">
                         </div>
                         <div class="options-panel-right">                    
-                            <div class="form-group">
-                                <label for="x">Param 4:</label>
-                                <input type="text" class="form-control" id="x">
-                            </div>                            
-                            <div class="form-group">
-                                <label for="x">Param 5:</label>
-                                <input type="text" class="form-control" id="x">
-                            </div>
-                            <div class="form-group">
-                                <label for="x">Param 6:</label>
-                                <input type="text" class="form-control" id="x">
-                            </div>
-                            <div class="form-group">
-                                <label for="x">Param 7:</label>
-                                <input type="text" class="form-control" id="x">
-                            </div>
-                            <div class="form-group">
-                                <label for="x">Param 8:</label>
-                                <input type="text" class="form-control" id="x">
-                            </div>                                                        
+                            <div class="input-group">
+                                <div class="input-group-addon">IC Server</div>
+                                <input type="text" class="form-control" id="icIcServer" ng-model="icIcServer" ng-bind="icIcServer" ng-change="icOptionsChanged()">
+                            </div>                                      
+                            <div class="input-group">
+                                <div class="input-group-addon">Port</div>
+                                <input type="text" class="form-control" id="icPort" ng-model="icPort" ng-bind="icPort" ng-change="icOptionsChanged()">
+                            </div>       
+                            <div class="input-group">
+                                <div class="input-group-addon">Username</div>
+                                <input type="text" class="form-control" id="icUsername" ng-model="icUsername" ng-bind="icUsername" ng-change="icOptionsChanged()">
+                            </div>  
+                            <div class="input-group">
+                                <div class="input-group-addon">Password</div>
+                                <input type="password" class="form-control" id="icPassword" ng-model="icPassword" ng-bind="icPassword" ng-change="icOptionsChanged()">
+                            </div>  
+                            <div class="input-group">
+                                <div class="input-group-addon">Use SSL</div>                                    
+                                <div class="form-control checkbox-inline">
+                                    <input type="checkbox" class="form-control-checkbox" id="icUseSsl" ng-model="icUseSsl" ng-bind="icUseSsl" ng-change="icOptionsChanged()">
+                                </div>
+                            </div>                                                                                                                                        
                         </div>
                     </div>
                 </div>

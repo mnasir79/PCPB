@@ -42,3 +42,7 @@ body {
      min-width: 160px;
  }
  
+  .form-control-checkbox {
+     margin-left: -10px !important;
+ }
+ 
