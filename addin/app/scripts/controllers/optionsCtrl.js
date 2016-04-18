@@ -18,10 +18,6 @@ angular.module('app', ['chromeStorage'])
     // <PureCloud options>
     $scope.pcOptionsChanged = function(){                                
         try {
-            if ($scope.pcAuthUrl === 'clear')
-            {
-                chromeStorage.drop('pcOptions');
-            }
             var pcOptions = {}; 
             pcOptions.pcAuthUrl = $scope.pcAuthUrl;                
             pcOptions.pcAccessTokenUrl = $scope.pcAccessTokenUrl;
