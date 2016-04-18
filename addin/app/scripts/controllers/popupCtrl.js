@@ -2,15 +2,14 @@
 
 /**
  * @ngdoc function
- * @name app.controller:popupCtrl
+ * @name app.controller:PopupCtrl
  * @description
- * # popupCtrl
+ * # PopupCtrl
  * Controller of the app
 **/
 
 angular.module('app', [])
-  .controller('popupCtrl', function($rootScope, $scope, $log) {
-    
+  .controller('PopupCtrl', function($scope, $log) {
     $scope.testLog = function(message) {
       console.log('message from testLog');
       try {
