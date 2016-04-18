@@ -8,15 +8,32 @@
  * Controller of the app
 **/
 
-angular.module('app', [])
-  .controller('optionsCtrl', function($rootScope, $scope, $log) {
+angular.module('app')
+  .controller('optionsCtrl',function($rootScope, $scope, $log, chromeStorageService) {
+        
+    // <Initializing>      
+    getPcOptions();
+    // </Initializing>
     
+    // <PureCloud options>
+    $scope.pcOptionsChanged = function(){
+        var pcOptions = new Object();
+        pcOptions.pcAuthUrl = $scope.pcAuthUrl;
+        pcOptions.pcAccessTokenUrl = $scope.pcAccessTokenUrl;
+        pcOptions.pcClientId = $scope.pcClientId;
+        pcOptions.pcClientSecret = $scope.pcClientSecret;
+        chromeStorageService.setPcOptions(pcOptions);
+    };
+        
+    function getPcOptions() {  
+     
+        chromeStorageService.getPcOptions( function(pcOptions) {                    
+            $scope.pcAuthUrl = pcOptions.pcAuthUrl;
+            $scope.pcAccessTokenUrl = pcOptions.pcAccessTokenUrl;
+            $scope.pcClientId = pcOptions.pcClientId
+            $scope.pcClientSecret = pcOptions.pcClientSecret;
+        })
+    }
+    // </PureCloud options>
     
-    
-    $scope.pcAuthUrl = "http://cupa";
-    $scope.pcAccessTokenUrl = "fttp://access.kuuppaa";
-    $scope.pcClientId = "Cliento";
-    $scope.pcClientSecret = "secreto";
-    
-    $scope.kupa = 'yo man';
   });

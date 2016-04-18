@@ -49,7 +49,7 @@
                         <div class="options-panel-right">                    
                             <div class="input-group">
                                 <div class="input-group-addon">Auth URL</div>
-                                <input type="text" class="form-control" id="pcAuthUrl" ng-model="pcAuthUrl" ng-bind="pcAuthUrl">
+                                <input type="text" class="form-control" id="pcAuthUrl" ng-model="pcAuthUrl" ng-bind="pcAuthUrl" ng-change="pcOptionsChanged()">
                             </div>                            
                             <div class="input-group">
                                 <div class="input-group-addon">Access Token URL</div>                                
@@ -137,8 +137,11 @@
     <script type="text/javascript" src="lib/jquery/dist/jquery.min.js"></script>
     <script type="text/javascript" src="styles/bootstrap/dist/js/bootstrap.js"></script>
     <script type="text/javascript" src="scripts/app.js"></script>
+    <script type="text/javascript" src="scripts/services/chromeStorageService.js"></script>    
     <script type="text/javascript" src="scripts/controllers/optionsCtrl.js"></script>
     <script type="text/javascript" src="scripts/providers/loggerProvider.js"></script>
+    
+    
   </body>
     
 </html>
