@@ -9,29 +9,37 @@
 **/
 
 angular.module('app', [])
-  .controller('menuCtrl', function($rootScope, $scope, $log) {
+    .controller('menuCtrl', function ($rootScope, $scope, $log) {
 
-   $scope.toggleConnectionIndicator = function(obj) {
-        var id = obj.target.id;
-        var arr = id.split('_');
-        var id = "connectionIndicator_" + arr[1];
-        var jquery_id = '#' + id;
-        if ($(jquery_id).hasClass(CSS_CLASS_CONNECTED)) {
-            setDisconnected(id)
+        $scope.togglePCConnectionIndicator = function (obj) {
+            if ($scope.isPCConnected) {
+                $scope.isPCConnected = false;
+            }
+            else {
+                $scope.isPCConnected = true;
+            }
         }
-        else if ($(jquery_id).hasClass(CSS_CLASS_DISCONNECTED)) {
-            setConnected(id);
-        }     
-    }
-    
-    $scope.openUrl = function(obj) {
-        var url = obj.target.attributes.href.value;
-        chrome.tabs.create({ url: url });    
-    }
-    
-    initConnectionIndicator('connectionIndicator_PC');
-    initConnectionIndicator('connectionIndicator_CIC');
-    initConnectionIndicator('connectionIndicator_PowerBI');
-    $log.debug('menu loaded succesfully'); 
-    
-});
+
+        $scope.toggleCICConnectionIndicator = function (obj) {
+            if ($scope.isCICConnected) {
+                $scope.isCICConnected = false;
+            }
+            else {
+                $scope.isCICConnected = true;
+            }
+        }
+
+        $scope.togglePowerBIConnectionIndicator = function (obj) {
+            if ($scope.isPowerBIConnected) {
+                $scope.isPowerBIConnected = false;
+            }
+            else {
+                $scope.isPowerBIConnected = true;
+            }
+        }
+
+        $scope.openUrl = function (obj) {
+            var url = obj.target.attributes.href.value;
+            chrome.tabs.create({ url: url });
+        }
+    });
