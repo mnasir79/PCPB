@@ -8,8 +8,8 @@
  * Controller of the app
 **/
 
-angular.module('app', [])
-    .controller('popupCtrl', function ($scope, $log) {
+angular.module('app', ['cicService'])
+    .controller('popupCtrl', function ($scope, $log, cicService) {
 
         $scope.testLog = function (message) {
             console.log('message from testLog');
@@ -32,10 +32,12 @@ angular.module('app', [])
 
         $scope.toggleCICConnectionIndicator = function (obj) {
             if ($scope.isCICConnected) {
-                $scope.isCICConnected = false;
+                //$scope.isCICConnected = false;
+                cicService.Logoff();
             }
             else {
-                $scope.isCICConnected = true;
+                cicService.Login();
+                //$scope.isCICConnected = true;
             }
         }
 
