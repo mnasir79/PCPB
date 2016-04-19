@@ -19,6 +19,7 @@ module.exports = function(config) {
       'node_modules/angular-mocks/angular-mocks.js',
       'app/bower_components/log4javascript/log4javascript.js',
       'app/bower_components/store-js/store.js',
+      'app/scripts/app.js',
       'app/scripts/providers/**/*.js',
       'test/spec/providers/**/*.js'
     ],
