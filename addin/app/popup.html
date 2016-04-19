@@ -27,7 +27,8 @@
         </button>
         <button type="button" class="btn btn-default menuItem btn-xs" id="connectButton_CIC" ng-click="toggleCICConnectionIndicator($event)">
             <span class="label" ng-class="isCICConnected ? 'label-success' : 'label-danger'" id="connectionIndicator_CIC">IN</span>
-            CIC            
+            CIC 
+           <loading></loading>
         </button>
     </div>
     <hr class="menuDevider" />
@@ -48,6 +49,7 @@
     <script type="text/javascript" src="lib/jquery/dist/jquery.min.js"></script>
     <script type="text/javascript" src="scripts/app.js"></script>
     <script type="text/javascript" src="scripts/controllers/popupCtrl.js"></script>
+    <script type="text/javascript" src="scripts/services/cicService.js"></script>
     <script type="text/javascript" src="scripts/providers/loggerProvider.js"></script>
     
     <!-- build:js scripts/popup-vendor.js -->
