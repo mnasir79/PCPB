@@ -9,7 +9,7 @@ describe('Popup Controller', function () {
 
   beforeEach(inject(function($rootScope, $controller) {
     scope = $rootScope.$new();
-    $controller('PopupCtrl', {
+    $controller('popupCtrl', {
       $scope: scope
     });
   }));

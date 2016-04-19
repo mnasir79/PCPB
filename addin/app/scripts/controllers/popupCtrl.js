@@ -2,54 +2,54 @@
 
 /**
  * @ngdoc function
- * @name app.controller:PopupCtrl
+ * @name app.controller:popupCtrl
  * @description
- * # PopupCtrl
+ * # popupCtrl
  * Controller of the app
 **/
 
 angular.module('app', [])
-  .controller('PopupCtrl', function($rootScope, $scope, $log) {
-    
-    $scope.testLog = function(message) {
-      console.log('message from testLog');
-      try {
-        $log.isEnabled;
-      } catch (error) {
-        console.log(error);
-      }
-      $log.debug(message);
-    }
-  
-    $scope.togglePCConnectionIndicator = function (obj) {
-        if ($scope.isPCConnected) {
-            $scope.isPCConnected = false;
-        }
-        else {
-            $scope.isPCConnected = true;
-        }
-    }
+    .controller('popupCtrl', function ($scope, $log) {
 
-    $scope.toggleCICConnectionIndicator = function (obj) {
-        if ($scope.isCICConnected) {
-            $scope.isCICConnected = false;
+        $scope.testLog = function (message) {
+            console.log('message from testLog');
+            try {
+                $log.isEnabled;
+            } catch (error) {
+                console.log(error);
+            }
+            $log.debug(message);
         }
-        else {
-            $scope.isCICConnected = true;
-        }
-    }
 
-    $scope.togglePowerBIConnectionIndicator = function (obj) {
-        if ($scope.isPowerBIConnected) {
-            $scope.isPowerBIConnected = false;
+        $scope.togglePCConnectionIndicator = function (obj) {
+            if ($scope.isPCConnected) {
+                $scope.isPCConnected = false;
+            }
+            else {
+                $scope.isPCConnected = true;
+            }
         }
-        else {
-            $scope.isPowerBIConnected = true;
-        }
-    }
 
-    $scope.openUrl = function (obj) {
-        var url = obj.target.attributes.href.value;
-        chrome.tabs.create({ url: url });
-    }
-  });
+        $scope.toggleCICConnectionIndicator = function (obj) {
+            if ($scope.isCICConnected) {
+                $scope.isCICConnected = false;
+            }
+            else {
+                $scope.isCICConnected = true;
+            }
+        }
+
+        $scope.togglePowerBIConnectionIndicator = function (obj) {
+            if ($scope.isPowerBIConnected) {
+                $scope.isPowerBIConnected = false;
+            }
+            else {
+                $scope.isPowerBIConnected = true;
+            }
+        }
+
+        $scope.openUrl = function (obj) {
+            var url = obj.target.attributes.href.value;
+            chrome.tabs.create({ url: url });
+        }
+    });
