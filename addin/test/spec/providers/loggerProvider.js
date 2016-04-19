@@ -4,7 +4,7 @@ describe('Logger Provider', function() {
   var $log;
   
   beforeEach(function() {
-    module('app');
+    module('loggerProvider');
   });
   
   beforeEach(function() {
