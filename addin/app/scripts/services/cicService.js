@@ -22,7 +22,7 @@ angular.module('cicService', ['chromeStorage'])
 
     var _sessionId;
     var _accessToken;
-    
+
     var _host;
     var _port;
     var _icUsername;
@@ -30,7 +30,7 @@ angular.module('cicService', ['chromeStorage'])
     var _icUseSsl;
 
     chromeStorage.get('icOptions').then(function (icOptions) {
-      _host = icOptions.icIcServer; 
+      _host = icOptions.icIcServer;
       _port = icOptions.icPort;
       _icUsername = icOptions.icUsername;
       _icPassword = icOptions.icPassword;
@@ -40,6 +40,15 @@ angular.module('cicService', ['chromeStorage'])
     this.sendRestRequest = function (requestName, method, path, body) {
 
       if (!_host) {
+        throw new Error('setEnvironment first!');
+      }
+      if (!_port) {
+        throw new Error('setEnvironment first!');
+      }
+      if (!_icUsername) {
+        throw new Error('setEnvironment first!');
+      }
+      if (!_icPassword) {
         throw new Error('setEnvironment first!');
       }
       if (!requestName) {
@@ -53,13 +62,13 @@ angular.module('cicService', ['chromeStorage'])
       }
 
       var tmp_url = "";
-      
+
       if (_icUseSsl) {
         tmp_url = "https://";
       } else {
         tmp_url = "http://";
       }
-      
+
       tmp_url = tmp_url + _host + ":" + _port + "/";
 
       if (_sessionId) {
@@ -99,7 +108,7 @@ angular.module('cicService', ['chromeStorage'])
 
     this.Login = function (id) {
 
-    $log.debug(_host);
+      $log.debug(_host);
 
       var jSON_Object = {
         "__type": "urn:inin.com:connection:icAuthConnectionRequestSettings",
