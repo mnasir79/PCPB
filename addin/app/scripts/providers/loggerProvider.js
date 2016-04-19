@@ -6,7 +6,7 @@
  * @description
  * # $log
  */
-angular.module('app', [])
+angular.module('loggerProvider', [])
   .provider('logger', function() {
     /* ---------------------------------------------------------------------- */
     // LocalStorageAppender
