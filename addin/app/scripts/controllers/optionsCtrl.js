@@ -31,7 +31,7 @@ angular.module('app', ['chromeStorage'])
             chrome.storage.local.set(storageItem);
         } 
         catch (err) {
-            $log.err(err);
+            $log.error(err);
         }                
     };
         
@@ -46,7 +46,7 @@ angular.module('app', ['chromeStorage'])
             });
         }  
         catch (err) {
-            $log.err(err);
+            $log.error(err);
         }         
     }
     // </Power BI options>
@@ -64,7 +64,7 @@ angular.module('app', ['chromeStorage'])
             chrome.storage.local.set(storageItem);
         } 
         catch (err) {
-            $log.err(err);
+            $log.error(err);
         }                
     };
         
@@ -78,7 +78,7 @@ angular.module('app', ['chromeStorage'])
             });
         }  
         catch (err) {
-            $log.err(err);
+            $log.error(err);
         }         
     }
     // </PureCloud options>
@@ -97,7 +97,7 @@ angular.module('app', ['chromeStorage'])
             chrome.storage.local.set(storageItem);
         } 
         catch (err) {
-            $log.err(err);
+            $log.error(err);
         }                
     };
         
@@ -112,7 +112,7 @@ angular.module('app', ['chromeStorage'])
             });
         }  
         catch (err) {
-            $log.err(err);
+            $log.error(err);
         }         
     }
     // </CIC options>

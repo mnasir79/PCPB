@@ -9,12 +9,12 @@ describe('Popup Controller', function () {
 
   beforeEach(inject(function($rootScope, $controller) {
     scope = $rootScope.$new();
-    $controller('PopupCtrl', {
+    $controller('popupCtrl', {
       $scope: scope
     });
   }));
 
   it('Should expose a testLog function', function() {
-    expect(scope.testLog).to.not.be.undefined;
+    expect(scope.testLog).toBeDefined();
   });
 });
