@@ -67,7 +67,7 @@ module.exports = function(config) {
     customLaunchers: {
       Chrome_with_extension: {
         base: 'Chrome',
-        flags: ['--load-extension=./app']
+        flags: ['--load-extension=' + __dirname + '/app']
       }
     },
 
