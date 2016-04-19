@@ -21,7 +21,9 @@ module.exports = function(config) {
       'app/bower_components/store-js/store.js',
       'app/scripts/app.js',
       'app/scripts/providers/**/*.js',
-      'test/spec/providers/**/*.js'
+      'app/scripts/controllers/**/*.js',
+      'test/spec/providers/**/*.js',
+      'test/spec/controllers/**/*.js'
     ],
 
 
