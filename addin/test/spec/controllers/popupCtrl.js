@@ -15,6 +15,6 @@ describe('Popup Controller', function () {
   }));
 
   it('Should expose a testLog function', function() {
-    expect(scope.testLog).to.not.be.undefined;
+    expect(scope.testLog).toBeDefined();
   });
 });
