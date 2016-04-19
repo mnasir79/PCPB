@@ -1,7 +1,7 @@
 'use strict';
 
 
-angular.module('cicService', [])
+angular.module('cicService', ['chromeStorage'])
   .directive('loading', function () {
     return {
       restrict: 'E',
@@ -18,15 +18,24 @@ angular.module('cicService', [])
     }
   })
 
-  .service('cicService', function ($rootScope, $http, $log) {
+  .service('cicService', function ($rootScope, $http, $log, chromeStorage) {
 
     var _sessionId;
     var _accessToken;
+    
     var _host;
+    var _port;
+    var _icUsername;
+    var _icPassword;
+    var _icUseSsl;
 
-
-    _host = '192.168.0.25:8018/'
-
+    chromeStorage.get('icOptions').then(function (icOptions) {
+      _host = icOptions.icIcServer; 
+      _port = icOptions.icPort;
+      _icUsername = icOptions.icUsername;
+      _icPassword = icOptions.icPassword;
+      _icUseSsl = icOptions.icUseSsl;
+    });
 
     this.sendRestRequest = function (requestName, method, path, body) {
 
@@ -44,11 +53,19 @@ angular.module('cicService', [])
       }
 
       var tmp_url = "";
+      
+      if (_icUseSsl) {
+        tmp_url = "https://";
+      } else {
+        tmp_url = "http://";
+      }
+      
+      tmp_url = tmp_url + _host + ":" + _port + "/";
 
       if (_sessionId) {
-        tmp_url = 'http://' + _host + 'icws/' + _sessionId + path;
+        tmp_url = tmp_url + 'icws/' + _sessionId + path;
       } else {
-        tmp_url = 'http://' + _host + 'icws/' + path;
+        tmp_url = tmp_url + 'icws/' + path;
       }
 
       var config = {
@@ -82,11 +99,13 @@ angular.module('cicService', [])
 
     this.Login = function (id) {
 
+    $log.debug(_host);
+
       var jSON_Object = {
         "__type": "urn:inin.com:connection:icAuthConnectionRequestSettings",
-        "applicationName": "www",
-        "userID": "icadmin",
-        "password": "1234"
+        "applicationName": "AnalyticsHub",
+        "userID": _icUsername,
+        "password": _icPassword
       }
 
 

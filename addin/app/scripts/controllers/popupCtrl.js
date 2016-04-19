@@ -9,7 +9,7 @@
 **/
 
 angular.module('app', ['cicService'])
-    .controller('popupCtrl', function ($scope, $log, cicService) {
+    .controller('popupCtrl', function ($rootScope, $scope, $log, cicService) {
 
         $scope.testLog = function (message) {
             console.log('message from testLog');
