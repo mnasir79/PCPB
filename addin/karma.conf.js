@@ -22,8 +22,10 @@ module.exports = function(config) {
       'app/scripts/app.js',
       'app/scripts/providers/**/*.js',
       'app/scripts/controllers/**/*.js',
+      'app/scripts/services/**/*.js',
       'test/spec/providers/**/*.js',
-      'test/spec/controllers/**/*.js'
+      'test/spec/controllers/**/*.js',
+      'test/spec/services/**/*.js'
     ],
 
 
