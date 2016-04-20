@@ -15,7 +15,6 @@ Install from the Google Chrome Store:
 * Run `cd addin`
 * Run `npm install`
 * Run `bower install`
-* Run `bower install adal-angular`
 * Run `gulp watch`
 * Go to: `chrome://extensions`, enable Developer mode and load app as an unpacked extension and select the 'app' folder.
 * To run unit tests, run `karma start` from the `addin` folder
