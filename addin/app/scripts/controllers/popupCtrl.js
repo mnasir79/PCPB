@@ -36,7 +36,12 @@ angular.module('app', ['cicService'])
                 cicService.Logoff();
             }
             else {
-                cicService.Login();
+                //cicService.Login();
+                cicService.isCICConnected = true;
+                var bgPage = chrome.extension.getBackgroundPage();
+                var controller = bgPage.getController();
+                var connected = controller.isCICConnected();
+                controller.setIsCICConnected(true);
                 //$scope.isCICConnected = true;
             }
         }

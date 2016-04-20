@@ -5,3 +5,8 @@ chrome.runtime.onInstalled.addListener(details => {
 });
 
 console.log('Chrome Extension Id: ' + chrome.runtime.id);
+
+function getController() {
+    var scope = angular.element(document.getElementById("backgroundCtrl")).scope();
+    return scope;
+}
