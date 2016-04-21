@@ -30,6 +30,12 @@ angular.module('cicService', ['chromeStorage'])
       _icUseSsl = icOptions.icUseSsl;
     });
 
+    function ClearSession() {
+      _sessionId = undefined;
+      _accessToken = undefined;
+      _isConnected = false;
+    };
+
     this.sendRestRequest = function (requestName, method, path, body) {
 
       if (!_host || !_port || !_icUsername || !_icPassword) {
@@ -77,11 +83,11 @@ angular.module('cicService', ['chromeStorage'])
         config.data = JSON.stringify(body);
       }
 
-      $log.debug('Begin CIC Request: [' + requestName + '] -> ' + tmp_url);
+      $log.debug('CIC Begin Request: [' + requestName + '] -> ' + tmp_url);
       var request = $http(config);
 
       request.then(function successCallback(response) {
-        $log.debug('End CIC Request: [' + requestName + ']');
+        $log.debug('CIC End Request: [' + requestName + ']');
       }, function errorCallback(response) {
         $log.error('CIC Request: [' + requestName + ']: ' + JSON.stringify(response));
       });
@@ -126,14 +132,10 @@ angular.module('cicService', ['chromeStorage'])
       var deferred = $q.defer();
       try {
         this.sendRestRequest('CIC Logoff', 'DELETE', '/connection').then(function success(response) {
-          _sessionId = undefined;
-          _accessToken = undefined;
-          _isConnected = false;
+          ClearSession();
           deferred.resolve();
         }, function error(response) {
-          _sessionId = undefined;
-          _accessToken = undefined;
-          _isConnected = false;
+          ClearSession();
           deferred.reject();
         });
       }
@@ -151,8 +153,7 @@ angular.module('cicService', ['chromeStorage'])
         this.sendRestRequest('CIC CheckConnection', 'GET', '/connection').then(function success(response) {
           if (response.data.hasOwnProperty('shouldReconnect')) {
             if (response.data.shouldReconnect) {
-              _sessionId = undefined;
-              _accessToken = undefined;
+              ClearSession();
               $log.debug('CIC Should reconnect: true');
               deferred.resolve(true);
             } else {
@@ -163,8 +164,7 @@ angular.module('cicService', ['chromeStorage'])
           $log.debug('CIC Should reconnect: false');
           deferred.resolve(false);
         }, function error(response) {
-          _sessionId = undefined;
-          _accessToken = undefined;
+          ClearSession();
           $log.debug('CIC Should reconnect: true');
           deferred.reject(true);
         });
