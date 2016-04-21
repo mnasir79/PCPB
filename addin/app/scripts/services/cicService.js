@@ -4,9 +4,11 @@
 angular.module('cicService', ['chromeStorage'])
   .service('cicService', function ($q, $http, $log, chromeStorage) {
 
+    // Session variables
     var _sessionId;
     var _accessToken;
 
+    // Enviroment variables, loaded from Chrome localStorage
     var _host;
     var _port;
     var _icUsername;
@@ -19,7 +21,7 @@ angular.module('cicService', ['chromeStorage'])
       return _isConnected;
     };
 
-
+    // Load Enviroment Options from ChromeLocalStorage
     chromeStorage.get('icOptions').then(function (icOptions) {
       _host = icOptions.icIcServer;
       _port = icOptions.icPort;
@@ -27,8 +29,6 @@ angular.module('cicService', ['chromeStorage'])
       _icPassword = icOptions.icPassword;
       _icUseSsl = icOptions.icUseSsl;
     });
-
-
 
     this.sendRestRequest = function (requestName, method, path, body) {
 
@@ -85,9 +85,8 @@ angular.module('cicService', ['chromeStorage'])
         config.data = JSON.stringify(body);
       }
 
-      $log.debug('Begin Request: ' + requestName);
+      $log.debug('Begin Request: [' + requestName + "] -> " + tmp_url);
       var request = $http(config);
-
 
       request.then(function successCallback(response) {
         $log.debug("Request success");
@@ -100,7 +99,6 @@ angular.module('cicService', ['chromeStorage'])
 
     this.Login = function () {
       _isConnected = false;
-      $log.debug(_host);
 
       var jSON_Object = {
         "__type": "urn:inin.com:connection:icAuthConnectionRequestSettings",
@@ -110,10 +108,10 @@ angular.module('cicService', ['chromeStorage'])
       }
 
       var deferred = $q.defer();
+      this.sendRestRequest("Login", "POST", "connection", jSON_Object).then(function success(response) {
 
-      this.sendRestRequest("Logon", "POST", "connection", jSON_Object).then(function success(response) {
-        _isConnected = true;
         if (response.data.hasOwnProperty('sessionId')) {
+          _isConnected = true;
           _sessionId = response.data.sessionId;
           _accessToken = response.data.csrfToken;
         }
@@ -125,13 +123,24 @@ angular.module('cicService', ['chromeStorage'])
       return deferred.promise;
     };
 
-    this.Logoff = function (id) {
+    this.Logoff = function () {
       $log.debug("Reset _sessionId and _accessToken variables");
-      _sessionId = {};
-      _accessToken = {};
-      //$rootScope.isCICConnected = false;
 
-    }
+      var deferred = $q.defer();
+      this.sendRestRequest("Logoff", "DELETE", "/connection").then(function success(response) {
+        _sessionId = "";
+        _accessToken = "";
+        _isConnected = false;
+        deferred.resolve();
+      }, function error(response) {
+        _sessionId = "";
+        _accessToken = "";
+        _isConnected = false;
+        deferred.reject();
+      });
+      return deferred.promise;
+
+    };
 
     this.GetVersion = function () {
 
@@ -141,9 +150,8 @@ angular.module('cicService', ['chromeStorage'])
 
       }, function error(response) {
         console.log("Error");
-
       });
-    }
+    };
 
 
 

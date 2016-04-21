@@ -27,13 +27,12 @@ angular.module('app', ['cicService'])
 
     .controller('popupCtrl', function ($rootScope, $scope, $log, cicService) {
 
-         var _BgController;
+        var _BgController;
 
         function init() {
             var bgPage = chrome.extension.getBackgroundPage();
             _BgController = bgPage.getController();
             $scope.isCICConnected = _BgController.getCICService().getIsConnected();
-               
         }
 
         init();
@@ -59,17 +58,31 @@ angular.module('app', ['cicService'])
 
         $scope.toggleCICConnectionIndicator = function (obj) {
             if ($scope.isCICConnected) {
-                //$scope.isCICConnected = false;
-                cicService.Logoff();
+                // LogOff
+                $scope.loading = true;
+                try {
+                    _BgController.getCICService().Logoff().then(function success(response) {
+                        $scope.loading = false;
+                        $scope.isCICConnected = false;
+                        $scope.$apply();
+                    }, function error(response) {
+                        $scope.loading = false;
+                        $scope.isCICConnected = false;
+                        $scope.$apply();
+                    });
+                } catch (Err) {
+                    $log.debug(Err);
+                    $scope.loading = false;
+                }
             }
             else {
+                // Login
                 $scope.loading = true;
                 try {
                     _BgController.getCICService().Login().then(function success(response) {
                         $scope.loading = false;
                         $scope.isCICConnected = true;
                         $scope.$apply();
-
                     }, function error(response) {
                         $scope.loading = false;
                         $scope.isCICConnected = false;
@@ -81,7 +94,6 @@ angular.module('app', ['cicService'])
                 }
             };
         }
-
 
         $scope.togglePowerBIConnectionIndicator = function (obj) {
             if ($scope.isPowerBIConnected) {
