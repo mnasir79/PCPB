@@ -32,18 +32,10 @@ angular.module('cicService', ['chromeStorage'])
 
     this.sendRestRequest = function (requestName, method, path, body) {
 
-      if (!_host) {
+      if (!_host || !_port || !_icUsername || !_icPassword) {
         throw new Error('setEnvironment first!');
       }
-      if (!_port) {
-        throw new Error('setEnvironment first!');
-      }
-      if (!_icUsername) {
-        throw new Error('setEnvironment first!');
-      }
-      if (!_icPassword) {
-        throw new Error('setEnvironment first!');
-      }
+
       if (!requestName) {
         throw new Error('Missing required parameter: requestName');
       }
@@ -54,15 +46,15 @@ angular.module('cicService', ['chromeStorage'])
         throw new Error('Missing required parameter: path');
       }
 
-      var tmp_url = "";
+      var tmp_url = '';
 
       if (_icUseSsl) {
-        tmp_url = "https://";
+        tmp_url = 'https://';
       } else {
-        tmp_url = "http://";
+        tmp_url = 'http://';
       }
 
-      tmp_url = tmp_url + _host + ":" + _port + "/";
+      tmp_url = tmp_url + _host + ':' + _port + '/';
 
       if (_sessionId) {
         tmp_url = tmp_url + 'icws/' + _sessionId + path;
@@ -85,11 +77,11 @@ angular.module('cicService', ['chromeStorage'])
         config.data = JSON.stringify(body);
       }
 
-      $log.debug('Begin Request: [' + requestName + "] -> " + tmp_url);
+      $log.debug('Begin Request: [' + requestName + '] -> ' + tmp_url);
       var request = $http(config);
 
       request.then(function successCallback(response) {
-        $log.debug("Request success");
+        $log.debug('Request success');
       }, function errorCallback(response) {
         $log.debug(response);
       });
@@ -101,14 +93,14 @@ angular.module('cicService', ['chromeStorage'])
       _isConnected = false;
 
       var jSON_Object = {
-        "__type": "urn:inin.com:connection:icAuthConnectionRequestSettings",
-        "applicationName": "AnalyticsHub",
-        "userID": _icUsername,
-        "password": _icPassword
+        '__type': 'urn:inin.com:connection:icAuthConnectionRequestSettings',
+        'applicationName': 'AnalyticsHub',
+        'userID': _icUsername,
+        'password': _icPassword
       }
 
       var deferred = $q.defer();
-      this.sendRestRequest("Login", "POST", "connection", jSON_Object).then(function success(response) {
+      this.sendRestRequest('Login', 'POST', 'connection', jSON_Object).then(function success(response) {
 
         if (response.data.hasOwnProperty('sessionId')) {
           _isConnected = true;
@@ -126,14 +118,14 @@ angular.module('cicService', ['chromeStorage'])
     this.Logoff = function () {
 
       var deferred = $q.defer();
-      this.sendRestRequest("Logoff", "DELETE", "/connection").then(function success(response) {
-        _sessionId = "";
-        _accessToken = "";
+      this.sendRestRequest('Logoff', 'DELETE', '/connection').then(function success(response) {
+        _sessionId = undefined;
+        _accessToken = undefined;
         _isConnected = false;
         deferred.resolve();
       }, function error(response) {
-        _sessionId = "";
-        _accessToken = "";
+        _sessionId = undefined;
+        _accessToken = undefined;
         _isConnected = false;
         deferred.reject();
       });
@@ -170,21 +162,21 @@ angular.module('cicService', ['chromeStorage'])
 
     this.GetVersion = function () {
 
-      this.sendRestRequest("GetVersion", "GET", "connection/version").then(function success(response) {
+      this.sendRestRequest('GetVersion', 'GET', 'connection/version').then(function success(response) {
         console.log(response.data);
-        $scope.CICDescription = "[" + response.data.productPatchDisplayString + "]";
+        $scope.CICDescription = '[' + response.data.productPatchDisplayString + ']';
 
       }, function error(response) {
-        console.log("Error");
+        console.log('Error');
       });
     };
 
     this.GetWorkgroups = function () {
       var jSON_Object = {
-        "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup"
+        'parameterTypeId': 'ININ.People.WorkgroupStats:Workgroup'
       }
 
-      this.sendRestRequest("GetWorkgroups", "POST", "/statistics/statistic-parameter-values/queries", jSON_Object).then(function success(response) {
+      this.sendRestRequest('GetWorkgroups', 'POST', '/statistics/statistic-parameter-values/queries', jSON_Object).then(function success(response) {
         $log.debug(response);
       }, function error(response) {
 
@@ -198,17 +190,17 @@ angular.module('cicService', ['chromeStorage'])
 
     //   var jSON_Object = {
 
-    //     "statisticIdentifier": "inin.workgroup:AgentsLoggedIn",
-    //     "parameterValueItems":
+    //     'statisticIdentifier': 'inin.workgroup:AgentsLoggedIn',
+    //     'parameterValueItems':
     //     [
     //       {
-    //         "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
-    //         "value": "Marketing"
+    //         'parameterTypeId': 'ININ.People.WorkgroupStats:Workgroup',
+    //         'value': 'Marketing'
     //       }
     //     ]
     //   }
 
-    //   this.sendRestRequest("MessageSubscription", "POST", "statistics/statistic-parameter-values", jSON_Object).then(function success(response) {
+    //   this.sendRestRequest('MessageSubscription', 'POST', 'statistics/statistic-parameter-values', jSON_Object).then(function success(response) {
     //     $log.debug(response);
     //   }, function error(response) {
 
