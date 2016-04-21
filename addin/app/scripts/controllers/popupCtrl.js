@@ -29,13 +29,54 @@ angular.module('app', ['cicService'])
 
         var _BgController;
 
+
         function init() {
             var bgPage = chrome.extension.getBackgroundPage();
             _BgController = bgPage.getController();
-            $scope.isCICConnected = _BgController.getCICService().getIsConnected();
-        }
+            if (_BgController.getCICService().getIsConnected()) {
+                // Check conenction state
+                try {
+                    _BgController.getCICService().ShouldReconnect().then(function success(response) {
+                        $log.debug('CIC: Should reconnect: ' + response);
+                        if (response) {
+                            LoginCIC();
+                        } else {
+                            $scope.isCICConnected = true;
+                            $scope.$apply();
+                        }
+                    }, function error(response) {
+                        LoginCIC();
+                    });
+                } catch (Err) {
+                    $log.debug(Err + response);
+                }
+            } else {
+                // Display NotConnected State
+                $scope.isCICConnected = false;
+            }
+        };
 
         init();
+
+        function LoginCIC() {
+            // Login
+            $scope.loading = true;
+            try {
+                _BgController.getCICService().Login().then(function success(response) {
+                    $scope.loading = false;
+                    $scope.isCICConnected = true;
+                    $scope.$apply();
+                }, function error(response) {
+                    $scope.loading = false;
+                    $scope.isCICConnected = false;
+                    $scope.$apply();
+                });
+            } catch (Err) {
+                $log.debug(Err);
+                $scope.loading = false;
+            }
+
+        }
 
         $scope.testLog = function (message) {
             console.log('message from testLog');
@@ -76,22 +117,7 @@ angular.module('app', ['cicService'])
                 }
             }
             else {
-                // Login
-                $scope.loading = true;
-                try {
-                    _BgController.getCICService().Login().then(function success(response) {
-                        $scope.loading = false;
-                        $scope.isCICConnected = true;
-                        $scope.$apply();
-                    }, function error(response) {
-                        $scope.loading = false;
-                        $scope.isCICConnected = false;
-                        $scope.$apply();
-                    });
-                } catch (Err) {
-                    $log.debug(Err);
-                    $scope.loading = false;
-                }
+                LoginCIC();
             };
         }
 
