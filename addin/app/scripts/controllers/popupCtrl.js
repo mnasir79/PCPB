@@ -37,7 +37,6 @@ angular.module('app', ['cicService'])
                 // Check conenction state
                 try {
                     _BgController.getCICService().ShouldReconnect().then(function success(response) {
-                        $log.debug('CIC: Should reconnect: ' + response);
                         if (response) {
                             LoginCIC();
                         } else {

@@ -77,13 +77,13 @@ angular.module('cicService', ['chromeStorage'])
         config.data = JSON.stringify(body);
       }
 
-      $log.debug('Begin Request: [' + requestName + '] -> ' + tmp_url);
+      $log.debug('Begin CIC Request: [' + requestName + '] -> ' + tmp_url);
       var request = $http(config);
 
       request.then(function successCallback(response) {
-        $log.debug('Request success');
+        $log.debug('End CIC Request: [' + requestName + ']');
       }, function errorCallback(response) {
-        $log.debug(response);
+        $log.error('CIC Request: [' + requestName + ']: ' + JSON.stringify(response));
       });
 
       return request;
@@ -100,35 +100,46 @@ angular.module('cicService', ['chromeStorage'])
       }
 
       var deferred = $q.defer();
-      this.sendRestRequest('Login', 'POST', 'connection', jSON_Object).then(function success(response) {
+      try {
+        this.sendRestRequest('CIC Login', 'POST', 'connection', jSON_Object).then(function success(response) {
 
-        if (response.data.hasOwnProperty('sessionId')) {
-          _isConnected = true;
-          _sessionId = response.data.sessionId;
-          _accessToken = response.data.csrfToken;
-        }
-        deferred.resolve();
-      }, function error(response) {
-        _isConnected = false;
+          if (response.data.hasOwnProperty('sessionId')) {
+            _isConnected = true;
+            _sessionId = response.data.sessionId;
+            _accessToken = response.data.csrfToken;
+            deferred.resolve();
+          }
+          deferred.reject();
+        }, function error(response) {
+          _isConnected = false;
+          deferred.reject();
+        });
+      }
+      catch (e) {
         deferred.reject();
-      });
+      }
       return deferred.promise;
     };
 
     this.Logoff = function () {
 
       var deferred = $q.defer();
-      this.sendRestRequest('Logoff', 'DELETE', '/connection').then(function success(response) {
-        _sessionId = undefined;
-        _accessToken = undefined;
-        _isConnected = false;
-        deferred.resolve();
-      }, function error(response) {
-        _sessionId = undefined;
-        _accessToken = undefined;
-        _isConnected = false;
+      try {
+        this.sendRestRequest('CIC Logoff', 'DELETE', '/connection').then(function success(response) {
+          _sessionId = undefined;
+          _accessToken = undefined;
+          _isConnected = false;
+          deferred.resolve();
+        }, function error(response) {
+          _sessionId = undefined;
+          _accessToken = undefined;
+          _isConnected = false;
+          deferred.reject();
+        });
+      }
+      catch (e) {
         deferred.reject();
-      });
+      }
       return deferred.promise;
 
     };
@@ -136,39 +147,48 @@ angular.module('cicService', ['chromeStorage'])
     this.ShouldReconnect = function () {
 
       var deferred = $q.defer();
-      this.sendRestRequest('CheckConnection', 'GET', '/connection').then(function success(response) {
-        if (response.data.hasOwnProperty('shouldReconnect')) {
-          if (response.data.shouldReconnect) {
-            _sessionId = undefined;
-            _accessToken = undefined;
-            $log.debug('Should reconnect: true');
-            deferred.resolve(true);
-          } else {
-            $log.debug('Should reconnect: false');
-            deferred.resolve(false);
+      try {
+        this.sendRestRequest('CIC CheckConnection', 'GET', '/connection').then(function success(response) {
+          if (response.data.hasOwnProperty('shouldReconnect')) {
+            if (response.data.shouldReconnect) {
+              _sessionId = undefined;
+              _accessToken = undefined;
+              $log.debug('CIC Should reconnect: true');
+              deferred.resolve(true);
+            } else {
+              $log.debug('CIC Should reconnect: false');
+              deferred.resolve(false);
+            }
           }
-        }
-        $log.debug('Should reconnect: false');
-        deferred.resolve(false);
-      }, function error(response) {
-        _sessionId = undefined;
-        _accessToken = undefined;
-        $log.debug('Should reconnect: true');
+          $log.debug('CIC Should reconnect: false');
+          deferred.resolve(false);
+        }, function error(response) {
+          _sessionId = undefined;
+          _accessToken = undefined;
+          $log.debug('CIC Should reconnect: true');
+          deferred.reject(true);
+        });
+      }
+      catch (e) {
         deferred.reject(true);
-      });
+      }
       return deferred.promise;
     };
 
 
     this.GetVersion = function () {
-
-      this.sendRestRequest('GetVersion', 'GET', 'connection/version').then(function success(response) {
-        console.log(response.data);
-        $scope.CICDescription = '[' + response.data.productPatchDisplayString + ']';
-
-      }, function error(response) {
-        console.log('Error');
-      });
+      var deferred = $q.defer();
+      try {
+        this.sendRestRequest('CIC GetVersion', 'GET', 'connection/version').then(function success(response) {
+          deferred.resolve({ 'productPatchDisplayString': response.data.productPatchDisplayString });
+        }, function error(response) {
+          deferred.reject();
+        });
+      }
+      catch (e) {
+        deferred.reject();
+      }
+      return deferred.promise;
     };
 
     this.GetWorkgroups = function () {
@@ -176,7 +196,7 @@ angular.module('cicService', ['chromeStorage'])
         'parameterTypeId': 'ININ.People.WorkgroupStats:Workgroup'
       }
 
-      this.sendRestRequest('GetWorkgroups', 'POST', '/statistics/statistic-parameter-values/queries', jSON_Object).then(function success(response) {
+      this.sendRestRequest('CIC GetWorkgroups', 'POST', '/statistics/statistic-parameter-values/queries', jSON_Object).then(function success(response) {
         $log.debug(response);
       }, function error(response) {
 
