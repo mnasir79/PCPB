@@ -11,8 +11,8 @@
 angular.module('app', ['cicService'])
     .controller('backgroundCtrl', function ($scope, $log, cicService) {
 
-        $scope.getCICService = function() {
+        $scope.getCICService = function () {
             return cicService;
         }
-        
+
     });

@@ -32,16 +32,7 @@ angular.module('cicService', ['chromeStorage'])
 
     this.sendRestRequest = function (requestName, method, path, body) {
 
-      if (!_host) {
-        throw new Error('setEnvironment first!');
-      }
-      if (!_port) {
-        throw new Error('setEnvironment first!');
-      }
-      if (!_icUsername) {
-        throw new Error('setEnvironment first!');
-      }
-      if (!_icPassword) {
+      if (!_host || !port || !_icUsername || !_icPassword) {
         throw new Error('setEnvironment first!');
       }
       if (!requestName) {
@@ -54,15 +45,15 @@ angular.module('cicService', ['chromeStorage'])
         throw new Error('Missing required parameter: path');
       }
 
-      var tmp_url = "";
+      var tmp_url = '';
 
       if (_icUseSsl) {
-        tmp_url = "https://";
+        tmp_url = 'https://';
       } else {
-        tmp_url = "http://";
+        tmp_url = 'http://';
       }
 
-      tmp_url = tmp_url + _host + ":" + _port + "/";
+      tmp_url = tmp_url + _host + ':' + _port + '/';
 
       if (_sessionId) {
         tmp_url = tmp_url + 'icws/' + _sessionId + path;
@@ -85,13 +76,13 @@ angular.module('cicService', ['chromeStorage'])
         config.data = JSON.stringify(body);
       }
 
-      $log.debug('Begin Request: [' + requestName + "] -> " + tmp_url);
+      $log.trace('Begin Request: [' + requestName + '] -> ' + tmp_url);
       var request = $http(config);
 
-      request.then(function successCallback(response) {
-        $log.debug("Request success");
-      }, function errorCallback(response) {
-        $log.debug(response);
+      request.then(function success(response) {
+        $log.trace('End Request: [' + requestName + ']');
+      }, function error(response) {
+        $log.error('Request: [' + requestName + ']: ' + JSON.stringify(response));
       });
 
       return request;
@@ -101,56 +92,72 @@ angular.module('cicService', ['chromeStorage'])
       _isConnected = false;
 
       var jSON_Object = {
-        "__type": "urn:inin.com:connection:icAuthConnectionRequestSettings",
-        "applicationName": "AnalyticsHub",
-        "userID": _icUsername,
-        "password": _icPassword
+        '__type': 'urn:inin.com:connection:icAuthConnectionRequestSettings',
+        'applicationName': 'AnalyticsHub',
+        'userID': _icUsername,
+        'password': _icPassword
       }
 
       var deferred = $q.defer();
-      this.sendRestRequest("Login", "POST", "connection", jSON_Object).then(function success(response) {
+      try {
+        this.sendRestRequest('Login', 'POST', 'connection', jSON_Object).then(function success(response) {
 
-        if (response.data.hasOwnProperty('sessionId')) {
-          _isConnected = true;
-          _sessionId = response.data.sessionId;
-          _accessToken = response.data.csrfToken;
-        }
-        deferred.resolve();
-      }, function error(response) {
-        _isConnected = false;
+          if (response.data.hasOwnProperty('sessionId')) {
+            _sessionId = response.data.sessionId;
+            _accessToken = response.data.csrfToken;
+            _isConnected = true;
+            deferred.resolve();
+          }
+          else {
+            deferred.reject();
+          }
+        }, function error(response) {
+          _isConnected = false;
+          deferred.reject();
+        });
+      }
+      catch (e) {
         deferred.reject();
-      });
+      }
       return deferred.promise;
     };
 
     this.Logoff = function () {
-      $log.debug("Reset _sessionId and _accessToken variables");
+      $log.debug('Reset _sessionId and _accessToken variables');
 
       var deferred = $q.defer();
-      this.sendRestRequest("Logoff", "DELETE", "/connection").then(function success(response) {
-        _sessionId = "";
-        _accessToken = "";
-        _isConnected = false;
-        deferred.resolve();
-      }, function error(response) {
-        _sessionId = "";
-        _accessToken = "";
-        _isConnected = false;
+      try {
+        this.sendRestRequest('Logoff', 'DELETE', '/connection').then(function success(response) {
+          _sessionId = undefined;
+          _accessToken = undefined;
+          _isConnected = false;
+          deferred.resolve();
+        }, function error(response) {
+          _sessionId = '';
+          _accessToken = '';
+          _isConnected = false;
+          deferred.reject();
+        });
+      }
+      catch (e) {
         deferred.reject();
-      });
+      }
       return deferred.promise;
-
     };
 
     this.GetVersion = function () {
-
-      this.sendRestRequest("GetVersion", "GET", "connection/version").then(function success(response) {
-        console.log(response.data);
-        $scope.CICDescription = "[" + response.data.productPatchDisplayString + "]";
-
-      }, function error(response) {
-        console.log("Error");
-      });
+      var deferred = $q.defer();
+      try {
+        this.sendRestRequest('GetVersion', 'GET', 'connection/version').then(function success(response) {
+          deferred.resolve({ 'productPatchDisplayString': response.data.productPatchDisplayString });
+        }, function error(response) {
+          deferred.reject();
+        });
+      }
+      catch (e) {
+        deferred.reject();
+      }
+      return deferred.promise;
     };
 
 

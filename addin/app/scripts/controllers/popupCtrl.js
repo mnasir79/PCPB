@@ -25,7 +25,7 @@ angular.module('app', ['cicService'])
         }
     })
 
-    .controller('popupCtrl', function ($rootScope, $scope, $log, cicService) {
+    .controller('popupCtrl', function ($scope, $log, cicService) {
 
         var _BgController;
 
