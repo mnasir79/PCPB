@@ -2,23 +2,7 @@
 
 
 angular.module('cicService', ['chromeStorage'])
-  .directive('loading', function () {
-    return {
-      restrict: 'E',
-      replace: true,
-      template: '<img class="loading" src="http://www.nasa.gov/multimedia/videogallery/ajax-loader.gif" width="14" height="14" align="right" />',
-      link: function (scope, element, attr) {
-        scope.$watch('loading', function (val) {
-          if (val)
-            $(element).show();
-          else
-            $(element).hide();
-        });
-      }
-    }
-  })
-
-  .service('cicService', function ($rootScope, $http, $log, chromeStorage) {
+  .service('cicService', function ($q, $http, $log, chromeStorage) {
 
     var _sessionId;
     var _accessToken;
@@ -29,6 +13,13 @@ angular.module('cicService', ['chromeStorage'])
     var _icPassword;
     var _icUseSsl;
 
+    var _isConnected = false;
+
+    this.getIsConnected = function () {
+      return _isConnected;
+    };
+
+
     chromeStorage.get('icOptions').then(function (icOptions) {
       _host = icOptions.icIcServer;
       _port = icOptions.icPort;
@@ -36,6 +27,8 @@ angular.module('cicService', ['chromeStorage'])
       _icPassword = icOptions.icPassword;
       _icUseSsl = icOptions.icUseSsl;
     });
+
+
 
     this.sendRestRequest = function (requestName, method, path, body) {
 
@@ -95,7 +88,6 @@ angular.module('cicService', ['chromeStorage'])
       $log.debug('Begin Request: ' + requestName);
       var request = $http(config);
 
-      $rootScope.loading = true;
 
       request.then(function successCallback(response) {
         $log.debug("Request success");
@@ -103,11 +95,11 @@ angular.module('cicService', ['chromeStorage'])
         $log.debug(response);
       });
 
-      return request
+      return request;
     };
 
-    this.Login = function (id) {
-
+    this.Login = function () {
+      _isConnected = false;
       $log.debug(_host);
 
       var jSON_Object = {
@@ -117,25 +109,27 @@ angular.module('cicService', ['chromeStorage'])
         "password": _icPassword
       }
 
+      var deferred = $q.defer();
 
       this.sendRestRequest("Logon", "POST", "connection", jSON_Object).then(function success(response) {
-        $rootScope.loading = false;
+        _isConnected = true;
         if (response.data.hasOwnProperty('sessionId')) {
           _sessionId = response.data.sessionId;
           _accessToken = response.data.csrfToken;
-          $rootScope.isCICConnected = true;
         }
+        deferred.resolve();
       }, function error(response) {
-        $rootScope.loading = false;
-        $rootScope.isCICConnected = false;
+        _isConnected = false;
+        deferred.reject();
       });
+      return deferred.promise;
     };
 
     this.Logoff = function (id) {
       $log.debug("Reset _sessionId and _accessToken variables");
       _sessionId = {};
       _accessToken = {};
-      $rootScope.isCICConnected = false;
+      //$rootScope.isCICConnected = false;
 
     }
 

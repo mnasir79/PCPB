@@ -1,5 +1,6 @@
 <!doctype html>
 <html>
+
 <head>
     <meta charset="utf-8">
     <!-- build:css styles/popup-vendor.css -->
@@ -44,19 +45,20 @@
             <a href="https://bitbucket.org/eccemea/analytics-hub/issues" id="link_issues" class="menuItem" ng-click="openUrl($event)">Report an issue</a>
         </li>
     </ul>
-    
+
     <!-- build:js scripts/popup-vendor.js -->
     <!-- bower:js -->
+    <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/angular-chrome-storage/angular-chrome-storage.js"></script>
     <script src="bower_components/log4javascript/log4javascript.js"></script>
     <script src="bower_components/store-js/store.js"></script>
-    <script src="bower_components/angular/angular.js"></script>
+
     <!-- endbower -->
     <!-- endbuild -->
 
     <!-- build:js scripts/popup.js -->
     <!-- endbuild -->
-    
+
     <script type="text/javascript" src="lib/jquery/dist/jquery.min.js"></script>
     <script type="text/javascript" src="scripts/controllers/popupCtrl.js"></script>
     <script type="text/javascript" src="scripts/services/cicService.js"></script>

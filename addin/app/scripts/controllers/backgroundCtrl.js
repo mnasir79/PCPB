@@ -11,11 +11,8 @@
 angular.module('app', ['cicService'])
     .controller('backgroundCtrl', function ($scope, $log, cicService) {
 
-        $scope.isCICConnected = function () {
-            return cicService.isCICConnected;
+        $scope.getCICService = function() {
+            return cicService;
         }
         
-        $scope.setIsCICConnected = function (val) {
-            cicService.isCICConnected = val;
-        }
     });

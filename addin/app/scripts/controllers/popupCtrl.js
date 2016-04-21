@@ -9,7 +9,34 @@
 **/
 
 angular.module('app', ['cicService'])
+    .directive('loading', function () {
+        return {
+            restrict: 'E',
+            replace: true,
+            template: '<img class="loading" src="http://www.nasa.gov/multimedia/videogallery/ajax-loader.gif" width="14" height="14" align="right" />',
+            link: function (scope, element, attr) {
+                scope.$watch('loading', function (val) {
+                    if (val)
+                        $(element).show();
+                    else
+                        $(element).hide();
+                });
+            }
+        }
+    })
+
     .controller('popupCtrl', function ($rootScope, $scope, $log, cicService) {
+
+         var _BgController;
+
+        function init() {
+            var bgPage = chrome.extension.getBackgroundPage();
+            _BgController = bgPage.getController();
+            $scope.isCICConnected = _BgController.getCICService().getIsConnected();
+               
+        }
+
+        init();
 
         $scope.testLog = function (message) {
             console.log('message from testLog');
@@ -36,15 +63,25 @@ angular.module('app', ['cicService'])
                 cicService.Logoff();
             }
             else {
-                //cicService.Login();
-                cicService.isCICConnected = true;
-                var bgPage = chrome.extension.getBackgroundPage();
-                var controller = bgPage.getController();
-                var connected = controller.isCICConnected();
-                controller.setIsCICConnected(true);
-                //$scope.isCICConnected = true;
-            }
+                $scope.loading = true;
+                try {
+                    _BgController.getCICService().Login().then(function success(response) {
+                        $scope.loading = false;
+                        $scope.isCICConnected = true;
+                        $scope.$apply();
+
+                    }, function error(response) {
+                        $scope.loading = false;
+                        $scope.isCICConnected = false;
+                        $scope.$apply();
+                    });
+                } catch (Err) {
+                    $log.debug(Err);
+                    $scope.loading = false;
+                }
+            };
         }
+
 
         $scope.togglePowerBIConnectionIndicator = function (obj) {
             if ($scope.isPowerBIConnected) {
