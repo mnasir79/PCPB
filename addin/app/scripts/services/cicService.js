@@ -124,7 +124,6 @@ angular.module('cicService', ['chromeStorage'])
     };
 
     this.Logoff = function () {
-      $log.debug("Reset _sessionId and _accessToken variables");
 
       var deferred = $q.defer();
       this.sendRestRequest("Logoff", "DELETE", "/connection").then(function success(response) {
@@ -142,6 +141,33 @@ angular.module('cicService', ['chromeStorage'])
 
     };
 
+    this.ShouldReconnect = function () {
+
+      var deferred = $q.defer();
+      this.sendRestRequest('CheckConnection', 'GET', '/connection').then(function success(response) {
+        if (response.data.hasOwnProperty('shouldReconnect')) {
+          if (response.data.shouldReconnect) {
+            _sessionId = undefined;
+            _accessToken = undefined;
+            $log.debug('Should reconnect: true');
+            deferred.resolve(true);
+          } else {
+            $log.debug('Should reconnect: false');
+            deferred.resolve(false);
+          }
+        }
+        $log.debug('Should reconnect: false');
+        deferred.resolve(false);
+      }, function error(response) {
+        _sessionId = undefined;
+        _accessToken = undefined;
+        $log.debug('Should reconnect: true');
+        deferred.reject(true);
+      });
+      return deferred.promise;
+    };
+
+
     this.GetVersion = function () {
 
       this.sendRestRequest("GetVersion", "GET", "connection/version").then(function success(response) {
@@ -152,6 +178,43 @@ angular.module('cicService', ['chromeStorage'])
         console.log("Error");
       });
     };
+
+    this.GetWorkgroups = function () {
+      var jSON_Object = {
+        "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup"
+      }
+
+      this.sendRestRequest("GetWorkgroups", "POST", "/statistics/statistic-parameter-values/queries", jSON_Object).then(function success(response) {
+        $log.debug(response);
+      }, function error(response) {
+
+      });
+    };
+
+
+
+
+    // this.SetMessageSubscription = function () {
+
+    //   var jSON_Object = {
+
+    //     "statisticIdentifier": "inin.workgroup:AgentsLoggedIn",
+    //     "parameterValueItems":
+    //     [
+    //       {
+    //         "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
+    //         "value": "Marketing"
+    //       }
+    //     ]
+    //   }
+
+    //   this.sendRestRequest("MessageSubscription", "POST", "statistics/statistic-parameter-values", jSON_Object).then(function success(response) {
+    //     $log.debug(response);
+    //   }, function error(response) {
+
+    //   });
+    // }
+
 
 
 
