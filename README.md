@@ -43,6 +43,20 @@ The following keys are available:
 ## cicService - guidelines for developers
 
 cicService is a service that acts like a bridge between Analytics Hub and CIC server.
+
+Available functions:
+
+* cicService.Login() - Login to the CIC server
+* cicService.Logoff() - Logoff from the CIC server
+* cicService.ShouldReconnect() - check if connection is still active
+* cicService.GetWorkgroups() - get all available workgroups from CIC server
+* cicService.Subscrive(in:JSON) - subscribe for statistics to watch
+* cicService.GetMessage() - get newest set of subscribed statistics
+
+
+Below sample scenario:
+
+
 To retrieve live statistics from CIC server, first cicService should get `_sessionId` and `_accessToken` from CIC Server. 
 
 To complete that you should call function `cicService.Login();`
