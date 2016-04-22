@@ -38,3 +38,35 @@ The following keys are available:
 * __icOptions__ - contains an object with CIC configuration.
 
 * __gOptions__ - contains an object with a general configuration.
+
+
+## cicService - guidelines for developers
+
+cicService is a service that acts like a bridge between Analytics Hub and CIC server.
+To retrieve live statistics from CIC server, first cicService should get `_sessionId` and `_accessToken` from CIC Server. 
+To complete that you should call function cicService.Login();
+
+Every 20-30 sec. you should call function cicService.ShouldReconnect(); 
+When its return TRUE, you should login again (switchover, connections issues, subsystem restarted).
+
+After successful connection, you should subscribe for statistics that you want to get from a Server.
+Call for `cicService.Subscribe(JSON);`
+This function as an input gets JSON with statistics to get.
+Sample JSON :
+
+`'statisticKeys':
+          [
+              {
+                  "statisticIdentifier": "inin.workgroup:AgentsLoggedIn",
+                  "parameterValueItems":
+                  [
+                      {
+                          "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
+                          "value": "Marketing"
+                      }
+                  ]
+              }
+          ]
+      }`
+
+After successful subscribe (Status:200) you can call function `cicService.GetMessage();` to get newest statistics.
