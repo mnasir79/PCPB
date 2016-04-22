@@ -44,6 +44,7 @@ The following keys are available:
 
 cicService is a service that acts like a bridge between Analytics Hub and CIC server.
 To retrieve live statistics from CIC server, first cicService should get `_sessionId` and `_accessToken` from CIC Server. 
+
 To complete that you should call function `cicService.Login();`
 
 Every 20-30 sec. you should call function `cicService.ShouldReconnect();`
