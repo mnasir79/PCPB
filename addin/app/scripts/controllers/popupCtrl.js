@@ -9,42 +9,26 @@
 **/
 
 angular.module('app', [])
-    .directive('loading', function () {
-        return {
-            restrict: 'E',
-            replace: true,
-            template: '<img class="loading" src="http://www.nasa.gov/multimedia/videogallery/ajax-loader.gif" width="14" height="14" align="right" />',
-            link: function (scope, element, attr) {
-                scope.$watch('loading', function (val) {
-                    if (val)
-                        $(element).show();
-                    else
-                        $(element).hide();
-                });
-            }
-        };
-    })
-
     .controller('popupCtrl', function ($scope, $log) {
 
         var _BgController;
         
         function loginCIC() {
             // Login
-            $scope.loading = true;
+            $scope.cicLoading = true;
             try {
                 _BgController.getCICService().Login().then(function success() {
-                    $scope.loading = false;
+                    $scope.cicLoading = false;
                     $scope.isCICConnected = true;
                     $scope.$apply();
                 }, function error() {
-                    $scope.loading = false;
+                    $scope.cicLoading = false;
                     $scope.isCICConnected = false;
                     $scope.$apply();
                 });
             } catch (Err) {
                 $log.error(Err);
-                $scope.loading = false;
+                $scope.cicLoading = false;
             }
 
         }
@@ -75,16 +59,6 @@ angular.module('app', [])
         }
         init();
 
-        $scope.testLog = function (message) {
-            console.log('message from testLog');
-            try {
-                $log.isEnabled;
-            } catch (error) {
-                console.log(error);
-            }
-            $log.debug(message);
-        };
-
         $scope.togglePCConnectionIndicator = function () {
             if ($scope.isPCConnected) {
                 $scope.isPCConnected = false;
@@ -97,20 +71,20 @@ angular.module('app', [])
         $scope.toggleCICConnectionIndicator = function () {
             if ($scope.isCICConnected) {
                 // LogOff
-                $scope.loading = true;
+                $scope.cicLoading = true;
                 try {
                     _BgController.getCICService().Logoff().then(function success() {
-                        $scope.loading = false;
+                        $scope.cicLoading = false;
                         $scope.isCICConnected = false;
                         $scope.$apply();
                     }, function error() {
-                        $scope.loading = false;
+                        $scope.cicLoading = false;
                         $scope.isCICConnected = false;
                         $scope.$apply();
                     });
                 } catch (Err) {
                     $log.error(Err);
-                    $scope.loading = false;
+                    $scope.cicLoading = false;
                 }
             }
             else {

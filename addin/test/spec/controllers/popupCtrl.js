@@ -14,7 +14,7 @@ describe('Popup Controller', function () {
     });
   }));
 
-  it('Should expose a testLog function', function() {
-    expect(scope.testLog).toBeDefined();
+  it('Should expose a toggleCICConnectionIndicator function', function() {
+    expect(scope.toggleCICConnectionIndicator).toBeDefined();
   });
 });
