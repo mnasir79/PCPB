@@ -46,8 +46,9 @@ cicService is a service that acts like a bridge between Analytics Hub and CIC se
 
 Available functions:
 
-* __cicService.Login()__ - Login to the CIC server
-* __cicService.Logoff()__ - Logoff from the CIC server
+* __cicService.Login()__ - login to the CIC server
+* __cicService.Logoff()__ - logoff from the CIC server
+* __cicService.GetVersion()__ - get information about CIC server (no login required)
 * __cicService.ShouldReconnect()__ - check if connection is still active
 * __cicService.GetWorkgroups()__ - get all available workgroups from CIC server
 * __cicService.Subscrive(in:JSON)__ - subscribe for statistics to watch
