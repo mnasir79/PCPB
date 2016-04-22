@@ -55,7 +55,7 @@ Available functions:
 * __cicService.GetMessage()__ - get newest set of subscribed statistics
 
 
-Below sample scenario:
+### Below sample scenario: ###
 
 
 To retrieve live statistics from CIC server, first cicService should get `_sessionId` and `_accessToken` from CIC Server. 
