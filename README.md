@@ -89,6 +89,6 @@ Sample JSON :
           ]
       }`
 
-Full list of available statisticsIdentifiers are available at: https://developer.inin.com/documentation/Documents/ICWS/WebHelp/ConceptualContent/StatisticsCatalog.htm#ININ.Workgroup
+Full list of available statisticsIdentifiers are available at: https://developer.inin.com/documentation/Documents/ICWS/WebHelp/ConceptualContent/StatisticsCatalog.htm
 
 After successful subscribe (Status:200) you can call function `cicService.GetMessage();` to get newest statistics.
