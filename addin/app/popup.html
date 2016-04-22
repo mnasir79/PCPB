@@ -22,11 +22,11 @@
     </ul>
     <hr class="menuDevider" />
     <div class="btn-group-vertical" role="group" aria-label="...">
-        <button type="button" class="btn btn-default menuItem btn-xs" id="connectButton_PC" ng-click="togglePCConnectionIndicator($event)">
+        <button type="button" class="btn btn-default menuItem btn-xs" id="connectButton_PC" ng-click="togglePCConnectionIndicator()">
             <span class="label" ng-class="isPCConnected ? 'label-success' : 'label-danger'" id="connectionIndicator_PC">IN</span>
             PureCloud
         </button>
-        <button type="button" class="btn btn-default menuItem btn-xs" id="connectButton_CIC" ng-click="toggleCICConnectionIndicator($event)">
+        <button type="button" class="btn btn-default menuItem btn-xs" id="connectButton_CIC" ng-click="toggleCICConnectionIndicator()">
             <span class="label" ng-class="isCICConnected ? 'label-success' : 'label-danger'" id="connectionIndicator_CIC">IN</span>
             CIC 
            <loading></loading>
@@ -34,7 +34,7 @@
     </div>
     <hr class="menuDevider" />
     <div class="btn-group-vertical" role="group" aria-label="...">
-        <button type="button" class="btn btn-default menuItem btn-xs" id="connectButton_PowerBI" ng-click="togglePowerBIConnectionIndicator($event)">
+        <button type="button" class="btn btn-default menuItem btn-xs" id="connectButton_PowerBI" ng-click="togglePowerBIConnectionIndicator()">
             <span class="label" ng-class="isPowerBIConnected ? 'label-success' : 'label-danger'" id="connectionIndicator_PowerBI">OUT</span>
             PowerBI            
         </button>
