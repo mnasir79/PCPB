@@ -46,12 +46,12 @@ cicService is a service that acts like a bridge between Analytics Hub and CIC se
 
 Available functions:
 
-* cicService.Login() - Login to the CIC server
-* cicService.Logoff() - Logoff from the CIC server
-* cicService.ShouldReconnect() - check if connection is still active
-* cicService.GetWorkgroups() - get all available workgroups from CIC server
-* cicService.Subscrive(in:JSON) - subscribe for statistics to watch
-* cicService.GetMessage() - get newest set of subscribed statistics
+* __cicService.Login()__ - Login to the CIC server
+* __cicService.Logoff()__ - Logoff from the CIC server
+* __cicService.ShouldReconnect()__ - check if connection is still active
+* __cicService.GetWorkgroups()__ - get all available workgroups from CIC server
+* __cicService.Subscrive(in:JSON)__ - subscribe for statistics to watch
+* __cicService.GetMessage()__ - get newest set of subscribed statistics
 
 
 Below sample scenario:
@@ -88,5 +88,6 @@ Sample JSON :
           ]
       }`
 
+Full list of available statisticsIdentifiers are available at: https://developer.inin.com/documentation/Documents/ICWS/WebHelp/ConceptualContent/StatisticsCatalog.htm#ININ.Workgroup
 
 After successful subscribe (Status:200) you can call function `cicService.GetMessage();` to get newest statistics.
