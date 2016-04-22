@@ -4,4 +4,4 @@ chrome.runtime.onInstalled.addListener(details => {
   console.log('previousVersion', details.previousVersion);
 });
 
-console.log('\'Allo \'Allo! Event Page for Browser Action');
+console.log('Chrome Extension Id: ' + chrome.runtime.id);
