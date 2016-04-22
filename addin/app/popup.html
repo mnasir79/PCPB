@@ -45,13 +45,9 @@
         </li>
     </ul>
     
-    <script type="text/javascript" src="lib/angular/angular.min.js"></script>
-    <script type="text/javascript" src="lib/jquery/dist/jquery.min.js"></script>
-    <script type="text/javascript" src="scripts/app.js"></script>
-    <script type="text/javascript" src="scripts/controllers/popupCtrl.js"></script>
-    <script type="text/javascript" src="scripts/services/cicService.js"></script>
-    <script type="text/javascript" src="scripts/services/powerbiService.js"></script>
-    <script type="text/javascript" src="scripts/providers/loggerProvider.js"></script>
+    <script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="bower_components/angular/angular.js"></script>
+    <script type="text/javascript" src="bower_components/angular-route/angular-route.min.js"></script>
     
     <!-- build:js scripts/popup-vendor.js -->
     <!-- bower:js -->
@@ -64,6 +60,19 @@
 
     <!-- build:js scripts/popup.js -->
     <!-- endbuild -->
+
+    <!-- Main App -->
+    <script type="text/javascript" src="scripts/app.js"></script>
+
+    <!-- providers -->
+    <script type="text/javascript" src="scripts/providers/loggerProvider.js"></script>
+    
+    <!-- services -->
+    <script type="text/javascript" src="scripts/services/cicService.js"></script>
+    <script type="text/javascript" src="scripts/services/powerbiService.js"></script>
+
+    <!-- controllers -->
+    <script type="text/javascript" src="scripts/controllers/popupCtrl.js"></script>
 
 </body>
 

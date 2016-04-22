@@ -8,8 +8,8 @@
  * Controller of the app
 **/
 
-angular.module('app', ['cicService'])
-    .controller('popupCtrl', function ($scope, $log, cicService) {
+angular.module('app', ['cicService', 'powerbiService', 'AdalAngular'])
+    .controller('popupCtrl', function ($scope, $log, cicService, powerbiService, adalAuthenticationService) {
 
         $scope.testLog = function (message) {
             console.log('message from testLog');
@@ -42,12 +42,15 @@ angular.module('app', ['cicService'])
         }
 
         $scope.togglePowerBIConnectionIndicator = function (obj) {
-            if ($scope.isPowerBIConnected) {
-                $scope.isPowerBIConnected = false;
-            }
-            else {
-                $scope.isPowerBIConnected = true;
-            }
+            $log.info('Getting dashboards');
+            adalAuthenticationService.login();
+            powerbiService.getDashboards()
+                .then(function(response) {
+                    $log.info(response);
+                })
+                .catch(function(error, exception) {
+                    $log.error('Error while getting dashboards');
+                });
         }
 
         $scope.openUrl = function (obj) {
