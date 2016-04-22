@@ -204,28 +204,107 @@ angular.module('cicService', ['chromeStorage'])
     };
 
 
+    this.GetMessage = function () {
+
+      var deferred = $q.defer();
+      try {
+        this.sendRestRequest('GetMessage', 'GET', '/messaging/messages').then(function success(response) {
+          $log.debug(response.data);
+          deferred.resolve();
+        }, function error(response) {
+          $log.debug(response);
+          deferred.reject();
+        });
+      }
+      catch (e) {
+        deferred.reject();
+      }
+      return deferred.promise;
+
+    };
+
+    this.Subscribe = function (jSON_Object) {
+
+      // Example JSON:
+
+      // var jSON_Object = {
+      //     'statisticKeys':
+      //     [
+      //         {
+      //             "statisticIdentifier": "inin.workgroup:AgentsLoggedIn",
+      //             "parameterValueItems":
+      //             [
+      //                 {
+      //                     "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
+      //                     "value": "Marketing"
+      //                 }
+      //             ]
+      //         },
+      //         {
+      //             "statisticIdentifier": "inin.workgroup:TotalAgents",
+      //             "parameterValueItems":
+      //             [
+      //                 {
+      //                     "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
+      //                     "value": "Marketing"
+      //                 }
+      //             ]
+      //         },
+      //         {
+      //             "statisticIdentifier": "inin.workgroup:InteractionsWaiting",
+      //             "parameterValueItems":
+      //             [
+      //                 {
+      //                     "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
+      //                     "value": "Marketing"
+      //                 }
+      //             ]
+      //         },
+      //         {
+      //             "statisticIdentifier": "inin.workgroup:InteractionsOnHold",
+      //             "parameterValueItems":
+      //             [
+      //                 {
+      //                     "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
+      //                     "value": "Marketing"
+      //                 }
+      //             ]
+      //         },
+      //         {
+      //             "statisticIdentifier": "inin.workgroup:InteractionsEntered",
+      //             "parameterValueItems":
+      //             [
+      //                 {
+      //                     "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
+      //                     "value": "Marketing"
+      //                 },
+      //                 {
+      //                     "parameterTypeId": "ININ.Queue:Interval",
+      //                     "value": "120"
+      //                 }
+      //             ]
+      //         }
+      //     ]
+      // }
+
+      var deferred = $q.defer();
+      try {
+        this.sendRestRequest('Subscribe', 'PUT', '/messaging/subscriptions/statistics/statistic-values', jSON_Object).then(function success(response) {
+          $log.debug(response);
+          deferred.resolve();
+        }, function error(response) {
+          $log.debug(response);
+          deferred.reject();
+        });
+      }
+      catch (e) {
+        deferred.reject();
+      }
+      return deferred.promise;
+
+    };
 
 
-    // this.SetMessageSubscription = function () {
-
-    //   var jSON_Object = {
-
-    //     'statisticIdentifier': 'inin.workgroup:AgentsLoggedIn',
-    //     'parameterValueItems':
-    //     [
-    //       {
-    //         'parameterTypeId': 'ININ.People.WorkgroupStats:Workgroup',
-    //         'value': 'Marketing'
-    //       }
-    //     ]
-    //   }
-
-    //   this.sendRestRequest('MessageSubscription', 'POST', 'statistics/statistic-parameter-values', jSON_Object).then(function success(response) {
-    //     $log.debug(response);
-    //   }, function error(response) {
-
-    //   });
-    // }
 
 
 
