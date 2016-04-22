@@ -47,11 +47,15 @@ To retrieve live statistics from CIC server, first cicService should get `_sessi
 To complete that you should call function cicService.Login();
 
 Every 20-30 sec. you should call function cicService.ShouldReconnect(); 
+
 When its return TRUE, you should login again (switchover, connections issues, subsystem restarted).
 
 After successful connection, you should subscribe for statistics that you want to get from a Server.
+
 Call for `cicService.Subscribe(JSON);`
+
 This function as an input gets JSON with statistics to get.
+
 Sample JSON :
 
 `'statisticKeys':
@@ -68,5 +72,6 @@ Sample JSON :
               }
           ]
       }`
+
 
 After successful subscribe (Status:200) you can call function `cicService.GetMessage();` to get newest statistics.
