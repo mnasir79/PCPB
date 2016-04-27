@@ -4,6 +4,7 @@ import gulpLoadPlugins from 'gulp-load-plugins';
 import del from 'del';
 import runSequence from 'run-sequence';
 import {stream as wiredep} from 'wiredep';
+import jshint from 'gulp-jshint';
 
 const $ = gulpLoadPlugins();
 
@@ -24,11 +25,13 @@ function lint(files, options) {
   return () => {
     return gulp.src(files)
       .pipe($.eslint(options))
-      .pipe($.eslint.format());
+      .pipe($.eslint.format())
+      .pipe(jshint())
+      .pipe(jshint.reporter('default'));
   };
 }
 
-gulp.task('lint', lint('app/scripts.babel/**/*.js', {
+gulp.task('lint', lint(['app/scripts.babel/**/*.js', 'app/scripts/**/*.js'], {
   env: {
     es6: true
   }

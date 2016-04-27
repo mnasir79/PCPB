@@ -13,6 +13,6 @@ angular.module('app', ['cicService'])
 
         $scope.getCICService = function () {
             return cicService;
-        }
+        };
 
     });

@@ -30,11 +30,11 @@ angular.module('cicService', ['chromeStorage'])
       _icUseSsl = icOptions.icUseSsl;
     });
 
-    function ClearSession() {
+    function clearSession() {
       _sessionId = undefined;
       _accessToken = undefined;
       _isConnected = false;
-    };
+    }
 
     this.sendRestRequest = function (requestName, method, path, body) {
 
@@ -87,7 +87,7 @@ angular.module('cicService', ['chromeStorage'])
       var request = $http(config);
 
       request.then(function successCallback(response) {
-        $log.debug('CIC End Request: [' + requestName + ']');
+        $log.debug('CIC End Request: [' + requestName + ']' + JSON.stringify(response));
       }, function errorCallback(response) {
         $log.error('CIC Request: [' + requestName + ']: ' + JSON.stringify(response));
       });
@@ -103,7 +103,7 @@ angular.module('cicService', ['chromeStorage'])
         'applicationName': 'AnalyticsHub',
         'userID': _icUsername,
         'password': _icPassword
-      }
+      };
 
       var deferred = $q.defer();
       try {
@@ -116,7 +116,7 @@ angular.module('cicService', ['chromeStorage'])
             deferred.resolve();
           }
           deferred.reject();
-        }, function error(response) {
+        }, function error() {
           _isConnected = false;
           deferred.reject();
         });
@@ -131,11 +131,11 @@ angular.module('cicService', ['chromeStorage'])
 
       var deferred = $q.defer();
       try {
-        this.sendRestRequest('CIC Logoff', 'DELETE', '/connection').then(function success(response) {
-          ClearSession();
+        this.sendRestRequest('CIC Logoff', 'DELETE', '/connection').then(function success() {
+          clearSession();
           deferred.resolve();
-        }, function error(response) {
-          ClearSession();
+        }, function error() {
+          clearSession();
           deferred.reject();
         });
       }
@@ -153,7 +153,7 @@ angular.module('cicService', ['chromeStorage'])
         this.sendRestRequest('CIC CheckConnection', 'GET', '/connection').then(function success(response) {
           if (response.data.hasOwnProperty('shouldReconnect')) {
             if (response.data.shouldReconnect) {
-              ClearSession();
+              clearSession();
               $log.debug('CIC Should reconnect: true');
               deferred.resolve(true);
             } else {
@@ -163,8 +163,8 @@ angular.module('cicService', ['chromeStorage'])
           }
           $log.debug('CIC Should reconnect: false');
           deferred.resolve(false);
-        }, function error(response) {
-          ClearSession();
+        }, function error() {
+          clearSession();
           $log.debug('CIC Should reconnect: true');
           deferred.reject(true);
         });
@@ -181,7 +181,7 @@ angular.module('cicService', ['chromeStorage'])
       try {
         this.sendRestRequest('CIC GetVersion', 'GET', 'connection/version').then(function success(response) {
           deferred.resolve({ 'productPatchDisplayString': response.data.productPatchDisplayString });
-        }, function error(response) {
+        }, function error() {
           deferred.reject();
         });
       }
@@ -194,11 +194,11 @@ angular.module('cicService', ['chromeStorage'])
     this.GetWorkgroups = function () {
       var jSON_Object = {
         'parameterTypeId': 'ININ.People.WorkgroupStats:Workgroup'
-      }
+      };
 
       this.sendRestRequest('CIC GetWorkgroups', 'POST', '/statistics/statistic-parameter-values/queries', jSON_Object).then(function success(response) {
         $log.debug(response);
-      }, function error(response) {
+      }, function error() {
 
       });
     };
