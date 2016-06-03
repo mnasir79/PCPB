@@ -21,6 +21,8 @@ Install from the Google Chrome Store:
 
 Google Chrome documentation: https://developer.chrome.com/extensions/devguide
 
+Azure application configuration: https://manage.windowsazure.com/inin.onmicrosoft.com#Workspaces/ActiveDirectoryExtension/Directory/8d07eb62-a903-4bae-bcc2-66c244e76b27/ClientApp/4f824f48-924a-44e8-aa5a-1a9383ca4810/clientAppConfigure
+
 ## Options - guidelines for developers
 
 The Analytics Hub stores its configuration in the chrome.storage - https://developer.chrome.com/extensions/storage . The configuration can be modified through the Options page. Other modules of the extension should be able to read parameters. It could be achieved in two ways:

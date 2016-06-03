@@ -8,19 +8,9 @@
  * Controller of the app
 **/
 
-angular.module('app', ['cicService', 'powerbiService', 'AdalAngular'])
-    .controller('popupCtrl', function ($scope, $log, cicService, powerbiService, adalAuthenticationService) {
-
-        $scope.testLog = function (message) {
-            console.log('message from testLog');
-            try {
-                $log.isEnabled;
-            } catch (error) {
-                console.log(error);
-            }
-            $log.debug(message);
-        }
-
+angular.module('app', ['powerbiService'])
+    .controller('popupCtrl', function ($scope, $log, powerbiService) {
+        
         $scope.togglePCConnectionIndicator = function (obj) {
             if ($scope.isPCConnected) {
                 $scope.isPCConnected = false;
@@ -30,27 +20,32 @@ angular.module('app', ['cicService', 'powerbiService', 'AdalAngular'])
             }
         }
 
-        $scope.toggleCICConnectionIndicator = function (obj) {
-            if ($scope.isCICConnected) {
-                //$scope.isCICConnected = false;
-                cicService.Logoff();
+        $scope.togglePowerBIConnectionIndicator = function () {
+            if ($scope.isPowerBIConnected) {
+                // LogOff
+                $scope.powerbiLoading = true;
+                try {
+                    powerbiService.Logoff().then(function success() {
+                        $scope.powerbiLoading = false;
+                        $scope.isPowerBIConnected = false;
+                        $scope.$apply();
+                    }, function error() {
+                        $scope.powerbiLoading = false;
+                        $scope.isPowerBIConnected = false;
+                        $scope.$apply();
+                    });
+                } catch (Err) {
+                    $log.error(Err);
+                    $scope.powerbiLoading = false;
+                }
             }
             else {
-                cicService.Login();
-                //$scope.isCICConnected = true;
+                //loginPowerBI();
             }
-        }
+        };
 
-        $scope.togglePowerBIConnectionIndicator = function (obj) {
-            $log.info('Getting dashboards');
-            adalAuthenticationService.login();
-            powerbiService.getDashboards()
-                .then(function(response) {
-                    $log.info(response);
-                })
-                .catch(function(error, exception) {
-                    $log.error('Error while getting dashboards');
-                });
+        $scope.sendToPowerBI = function(dataset, table, rows) {
+          powerbiService.SendToPowerBI(dataset, table, rows);
         }
 
         $scope.openUrl = function (obj) {

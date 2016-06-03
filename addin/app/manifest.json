@@ -18,11 +18,11 @@
   },
   "permissions": [
     "tabs",
-    "http://*/*",
-    "https://*/*",
+    "<all_urls>",
     "debugger",
     "notifications",
-    "storage"
+    "storage",
+    "webRequest"
   ],
   "options_ui": {
     "page": "options.html",
@@ -31,11 +31,12 @@
   "content_scripts": [
     {
       "matches": [
-        "http://*/*",
-        "https://*/*"
+        "<all_urls>"
       ],
       "js": [
-        "scripts/contentscript.js"
+        "lib/jquery/dist/jquery.min.js",
+        "scripts/contentscript.js",
+        "scripts/login.js"
       ],
       "run_at": "document_end",
       "all_frames": false
