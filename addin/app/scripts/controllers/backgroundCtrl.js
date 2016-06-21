@@ -8,11 +8,12 @@
  * Controller of the app
 **/
 
-angular.module('app', ['cicService'])
-    .controller('backgroundCtrl', function ($scope, $log, cicService, $interval) {
+angular.module('app', ['cicService', 'jsonTranslator'])
+    .controller('backgroundCtrl', function ($scope, $log, $interval, cicService, jsonTranslator) {
 
         var CICTimer;
 
+        jsonTranslator.dupa();
         $scope.getCICService = function () {
             return cicService;
         };
