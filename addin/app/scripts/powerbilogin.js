@@ -34,20 +34,22 @@ function getAccessToken(clientId, accessCode, successCallback, failureCallback) 
           JSON.parse(XHR.response, function (k, v) {
             if (k.toString() === 'access_token') {
               _accessToken = v;
+
+              // Store the access token
+              if (_accessToken) {
+                chrome.storage.local.set({'powerbi_access_token': _accessToken}, function () {
+                  console.log('Access token saved');
+                });
+              }
+
+              if (successCallback) {
+                successCallback();
+              }
+
               return;
             }
           });
 
-          // Store the access token
-          if (_accessToken) {
-            chrome.storage.local.set({"powerbi_access_token": _accessToken}, function () {
-              console.log('Access token saved');
-            });
-          }
-
-          if (successCallback) {
-            successCallback();
-          }
           break;
         case 400:
           console.error('request error:', XHR);

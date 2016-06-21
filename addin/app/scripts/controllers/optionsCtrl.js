@@ -18,14 +18,11 @@ angular.module('app', ['chromeStorage'])
     // </Initializing>
 
     // <Power BI options>
-    $scope.pbiOptionsChanged = function(){                                
+    $scope.pbiOptionsChanged = function(){
+        console.log('PBI Options Changed');
         try {
             var pbiOptions = {}; 
-            pbiOptions.pbiInstance = $scope.pbiInstance;                
-            pbiOptions.pbiTentant = $scope.pbiTentant;
-            pbiOptions.pbiClientId = $scope.pbiClientId;
-            pbiOptions.pbiRedirectUri = $scope.pbiRedirectUri;
-            pbiOptions.pbiEndpoint = $scope.pbiEndpoint;   
+            pbiOptions.pbiClientId = $scope.pbiClientId;                
             var storageItem = {};
             storageItem['pbiOptions'] = pbiOptions;                 
             chrome.storage.local.set(storageItem);
@@ -38,11 +35,7 @@ angular.module('app', ['chromeStorage'])
     function getPbiOptions() {
         try {                       
             chromeStorage.get('pbiOptions').then(function(pbiOptions) {
-                $scope.pbiInstance = pbiOptions.pbiInstance;
-                $scope.pbiTentant = pbiOptions.pbiTentant;
                 $scope.pbiClientId = pbiOptions.pbiClientId;
-                $scope.pbiRedirectUri = pbiOptions.pbiRedirectUri;
-                $scope.pbiEndpoint = pbiOptions.pbiEndpoint;
             });
         }  
         catch (err) {

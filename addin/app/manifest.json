@@ -36,7 +36,7 @@
       "js": [
         "lib/jquery/dist/jquery.min.js",
         "scripts/contentscript.js",
-        "scripts/login.js"
+        "scripts/powerbilogin.js"
       ],
       "run_at": "document_end",
       "all_frames": false

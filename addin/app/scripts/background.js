@@ -5,10 +5,9 @@ var accessToken;
 //Adding handlers when messages are received from scripts
 chrome.extension.onMessage.addListener(function (response, sender) {
   switch (response.target) {
-    case "PowerBI":
+    case 'PowerBI':
       chrome.storage.local.get('powerbi_access_token', function (result) {
         if (result.powerbi_access_token != null) {
-
           accessToken = result.powerbi_access_token;
           DataSetExists(response.dataset, function (dataSetId) {
             if (dataSetId) {

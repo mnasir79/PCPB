@@ -3,17 +3,23 @@
 angular.module('powerbiService', ['chromeStorage'])
 
   .service('powerbiService', function($rootScope, $window, $http, $log, chromeStorage) {
-
-    var _isConnected = false;
-    var accessToken;
-    
     console.debug('PowerBI Service started');
 
-    $rootScope.getIsConnected = function() {
-      return _isConnected;
-    }
-    
+    var accessToken;
+
+    // This watches for the access token in the local storage
+    // The current module used (chromeStorage (https://github.com/infomofo/angular-chrome-storage)) does not have that functionality
+    // This can be resource-intensive so we might need to find a better way of doing this
+    $rootScope.$watch(function() {
+      chromeStorage.get('powerbi_access_token').then(function(retrievedAccessToken) {
+        //console.log('retrieved token:', retrievedAccessToken);
+        accessToken = retrievedAccessToken;
+        $rootScope.isPowerBIConnected = retrievedAccessToken != undefined;
+      });
+    }, null)
+
     // Load Enviroment Options from ChromeLocalStorage
+    // ===============
     // chromeStorage.get('icOptions').then(function (icOptions) {
     //   _host = icOptions.icIcServer;
     //   _port = icOptions.icPort;
@@ -22,37 +28,35 @@ angular.module('powerbiService', ['chromeStorage'])
     //   _icUseSsl = icOptions.icUseSsl;
     // });
     
-    this.Logoff = function() {
-      chrome.storage.local.set({"powerbi_access_token": _accessToken}, function () {
-        console.log('Access token cleared');
-      });
-      _isConnected = false;
+    this.Logoff = function(callback) {
+      console.log('Clearing PowerBI token');
+      chromeStorage.drop('powerbi_access_token');
+      $rootScope.isPowerBIConnected = false;
+      if (callback) {
+        callback();
+      }
     }
     
     this.SendToPowerBI = function(dataset, table, rows) {
-      chrome.storage.local.get('powerbi_access_token', function (result) {
-        if (result.powerbi_access_token != null) {
-          accessToken = result.powerbi_access_token;
+      if ($rootScope.isPowerBIConnected) {
+        // Creates the dataset it if it doesn't exist yet
+        DataSetExists(dataset, function (dataSetId) {
+          if (dataSetId) {
+            console.log(dataset, 'dataset found!:', dataSetId);
+          } else {
+            console.log(dataset, 'dataset NOT found!');
+            var dataSetId = CreateDataSet(dataset);
+            console.log('New Dataset Id:', dataSetId);
+          }
 
-          // Creates the dataset it if it doesn't exist yet
-          DataSetExists(dataset, function (dataSetId) {
-            if (dataSetId) {
-              console.log(dataset, 'dataset found!:', dataSetId);
-            } else {
-              console.log(dataset, 'dataset NOT found!');
-              var dataSetId = CreateDataSet(dataset);
-              console.log('New Dataset Id:', dataSetId);
-            }
-
-            // Add rows
-            console.log('Adding data:', rows, 'to', table, ' table in dataset:', dataset);
-            AddRows(dataSetId, table, rows);
-          });
-        } else {
-          console.error('Please sign in to PowerBI first.');
-          alert('Not connected to PowerBI');
-        }
-      });
+          // Add rows
+          console.log('Dataset:', dataset, '. Table:', table, '. Adding rows:', rows);
+          AddRows(dataSetId, table, rows);
+        });
+      } else {
+        console.error('Please sign in to PowerBI first.');
+        alert('Not connected to PowerBI');
+      }
     }
     
     // Check if a PowerBI dataset exists
@@ -73,37 +77,13 @@ angular.module('powerbiService', ['chromeStorage'])
 
     // Create a PowerBI dataset
     function CreateDataSet(name) {
-      var body = {
-        'name': name,
-        'tables': [
-          {
-            'name': 'Conversations',
-            'columns': [
-              {
-                'name': 'Id',
-                'dataType': 'string'
-              },
-              {
-                'name': 'Name',
-                'dataType': 'string'
-              },
-              {
-                'name': 'StartTime',
-                'dataType': 'DateTime'
-              },
-              {
-                'name': 'EndTime',
-                'dataType': 'DateTime'
-              },
-              {
-                'name': 'RecordingState',
-                'dataType': 'string'
-              }
-            ]
-          }
-        ]
-      };
-      return PBIPost('https://api.powerbi.com/v1.0/myorg/datasets?defaultRetentionPolicy=None', body);
+      //We have to hardcode the tables and it sucks since we can't add tables to an existing dataset
+      //Feature requests: 
+      //  https://ideas.powerbi.com/forums/268152-developer-apis/suggestions/7111791-alter-datasets-by-adding-removing-individual-table
+      //  https://ideas.powerbi.com/forums/268152-developer-apis/suggestions/10445529-add-rest-api-call-to-add-new-table-to-existing-dat 
+      var body = $.getJSON('../powerBiPureCloudTableSchema.json', function(json) {
+        return PBIPost('https://api.powerbi.com/v1.0/myorg/datasets?defaultRetentionPolicy=None', json);
+      })
     }
 
     // Add rows to a dataset table
