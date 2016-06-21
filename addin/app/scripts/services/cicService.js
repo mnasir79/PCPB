@@ -18,23 +18,30 @@ angular.module('cicService', ['chromeStorage'])
     var _isConnected = false;
 
     this.getIsConnected = function () {
+      GetOptions();
       return _isConnected;
     };
 
-    // Load Enviroment Options from ChromeLocalStorage
-    chromeStorage.get('icOptions').then(function (icOptions) {
-      _host = icOptions.icIcServer;
-      _port = icOptions.icPort;
-      _icUsername = icOptions.icUsername;
-      _icPassword = icOptions.icPassword;
-      _icUseSsl = icOptions.icUseSsl;
-    });
+
+    function GetOptions() {
+      // Load Enviroment Options from ChromeLocalStorage
+      chromeStorage.get('icOptions').then(function (icOptions) {
+        _host = icOptions.icIcServer;
+        _port = icOptions.icPort;
+        _icUsername = icOptions.icUsername;
+        _icPassword = icOptions.icPassword;
+        _icUseSsl = icOptions.icUseSsl;
+      });
+
+    }
 
     function clearSession() {
       _sessionId = undefined;
       _accessToken = undefined;
       _isConnected = false;
     }
+
+    GetOptions();
 
     this.sendRestRequest = function (requestName, method, path, body) {
 
