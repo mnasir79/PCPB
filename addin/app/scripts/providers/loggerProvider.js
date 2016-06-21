@@ -8,6 +8,9 @@
  */
 angular.module('loggerProvider', [])
   .provider('logger', function() {
+    var NAME = 'ININ.ECCEMEA.AnalyticsHub.Logger';
+    var log = log4javascript.getLogger('ININ.ECCEMEA.AnalyticsHub');
+    
     /* ---------------------------------------------------------------------- */
     // LocalStorageAppender
     function LocalStorageAppender() { }
@@ -59,8 +62,6 @@ angular.module('loggerProvider', [])
     log4javascript.LocalStorageAppender = LocalStorageAppender;
     /* ---------------------------------------------------------------------- */
     // Logger
-    var NAME = 'ININ.ECCEMEA.AnalyticsHub.Logger';
-    var log = log4javascript.getLogger('ININ.ECCEMEA.AnalyticsHub');
     var consoleAppender = new log4javascript.BrowserConsoleAppender();
     consoleAppender.setLayout(new log4javascript.PatternLayout('%d{HH:mm:ss,SSS} %c %p %m'));
     consoleAppender.setThreshold(log4javascript.Level.ALL);

@@ -9,12 +9,7 @@
   },
   "default_locale": "en",
   "background": {
-    "scripts": [
-      "lib/angular/angular.min.js",
-      "scripts/chromereload.js",
-      "scripts/background.js",
-      "scripts/app.js"
-    ]
+    "page": "background.html"
   },
   "permissions": [
     "tabs",

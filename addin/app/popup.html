@@ -1,5 +1,6 @@
 <!doctype html>
 <html>
+
 <head>
     <meta charset="utf-8">
     <!-- build:css styles/popup-vendor.css -->
@@ -21,18 +22,19 @@
     </ul>
     <hr class="menuDevider" />
     <div class="btn-group-vertical" role="group" aria-label="...">
-        <button type="button" class="btn btn-default menuItem btn-xs" id="connectButton_PC" ng-click="togglePCConnectionIndicator($event)">
+        <button type="button" class="btn btn-default menuItem btn-xs" id="connectButton_PC" ng-click="togglePCConnectionIndicator()">
             <span class="label" ng-class="isPCConnected ? 'label-success' : 'label-danger'" id="connectionIndicator_PC">IN</span>
             PureCloud
         </button>
-        <button type="button" class="btn btn-default menuItem btn-xs" id="connectButton_CIC" ng-click="toggleCICConnectionIndicator($event)">
+        <button type="button" class="btn btn-default menuItem btn-xs" id="connectButton_CIC" ng-click="toggleCICConnectionIndicator()">
             <span class="label" ng-class="isCICConnected ? 'label-success' : 'label-danger'" id="connectionIndicator_CIC">IN</span>
-            CIC            
+            CIC 
+           <img class="loading" src="images/ajax-loader.gif" width="14" height="14" align="right" ng-show="cicLoading" />
         </button>
     </div>
     <hr class="menuDevider" />
     <div class="btn-group-vertical" role="group" aria-label="...">
-        <button type="button" class="btn btn-default menuItem btn-xs" id="connectButton_PowerBI" ng-click="togglePowerBIConnectionIndicator($event)">
+        <button type="button" class="btn btn-default menuItem btn-xs" id="connectButton_PowerBI" ng-click="togglePowerBIConnectionIndicator()">
             <span class="label" ng-class="isPowerBIConnected ? 'label-success' : 'label-danger'" id="connectionIndicator_PowerBI">OUT</span>
             PowerBI            
         </button>
@@ -43,21 +45,23 @@
             <a href="https://bitbucket.org/eccemea/analytics-hub/issues" id="link_issues" class="menuItem" ng-click="openUrl($event)">Report an issue</a>
         </li>
     </ul>
-    
-    <script type="text/javascript" src="lib/angular/angular.min.js"></script>
-    <script type="text/javascript" src="lib/jquery/dist/jquery.min.js"></script>
-    <script type="text/javascript" src="../node_modules/jsonpath/lib/jsonpath.js"></script>
-    <script type="text/javascript" src="../node_modules/jsonpath-object-transform/lib/jsonpath-object-transform.js"></script><!-- endbower -->
-    <script type="text/javascript" src="scripts/app.js"></script>
-    <script type="text/javascript" src="scripts/controllers/popupCtrl.js"></script>
-    <script type="text/javascript" src="scripts/providers/loggerProvider.js"></script>
-    <script type="text/javascript" src="scripts/mapping.js"></script>
+
     <!-- build:js scripts/popup-vendor.js -->
     <!-- bower:js -->
+    <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/angular-chrome-storage/angular-chrome-storage.js"></script>
+    <script src="bower_components/log4javascript/log4javascript.js"></script>
+    <script src="bower_components/store-js/store.js"></script>
+    <!-- endbower -->
     <!-- endbuild -->
+
     <!-- build:js scripts/popup.js -->
     <!-- endbuild -->
+
+    <script type="text/javascript" src="lib/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="scripts/controllers/popupCtrl.js"></script>
+    <script type="text/javascript" src="scripts/services/cicService.js"></script>
+    <script type="text/javascript" src="scripts/providers/loggerProvider.js"></script>
 
 </body>
 

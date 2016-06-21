@@ -13,6 +13,7 @@
   "globals": {
     "angular": false,
     "store": false,
-    "log4javascript": false
+    "log4javascript": false,
+    "chrome": false
   }
 }

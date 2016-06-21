@@ -11,45 +11,98 @@
 angular.module('app', [])
     .controller('popupCtrl', function ($scope, $log) {
 
-        $scope.testLog = function (message) {
-            console.log('message from testLog');
+        var _BgController;
+        
+        function loginCIC() {
+            // Login
+            $scope.cicLoading = true;
             try {
-                $log.isEnabled;
-            } catch (error) {
-                console.log(error);
+                _BgController.getCICService().Login().then(function success() {
+                    $scope.cicLoading = false;
+                    $scope.isCICConnected = true;
+                    $scope.$apply();
+                }, function error() {
+                    $scope.cicLoading = false;
+                    $scope.isCICConnected = false;
+                    $scope.$apply();
+                });
+            } catch (Err) {
+                $log.error(Err);
+                $scope.cicLoading = false;
             }
-            $log.debug(message);
+
         }
 
-        $scope.togglePCConnectionIndicator = function (obj) {
+        function init() {
+            var bgPage = chrome.extension.getBackgroundPage();
+            _BgController = bgPage.getController();
+            if (_BgController.getCICService().getIsConnected()) {
+                // Check conenction state
+                try {
+                    _BgController.getCICService().ShouldReconnect().then(function success(response) {
+                        if (response) {
+                            loginCIC();
+                        } else {
+                            $scope.isCICConnected = true;
+                            $scope.$apply();
+                        }
+                    }, function error() {
+                        loginCIC();
+                    });
+                } catch (Err) {
+                    $log.error(Err);
+                }
+            } else {
+                // Display NotConnected State
+                $scope.isCICConnected = false;
+            }
+        }
+        init();
+
+        $scope.togglePCConnectionIndicator = function () {
             if ($scope.isPCConnected) {
                 $scope.isPCConnected = false;
             }
             else {
                 $scope.isPCConnected = true;
             }
-        }
+        };
 
-        $scope.toggleCICConnectionIndicator = function (obj) {
+        $scope.toggleCICConnectionIndicator = function () {
             if ($scope.isCICConnected) {
-                $scope.isCICConnected = false;
+                // LogOff
+                $scope.cicLoading = true;
+                try {
+                    _BgController.getCICService().Logoff().then(function success() {
+                        $scope.cicLoading = false;
+                        $scope.isCICConnected = false;
+                        $scope.$apply();
+                    }, function error() {
+                        $scope.cicLoading = false;
+                        $scope.isCICConnected = false;
+                        $scope.$apply();
+                    });
+                } catch (Err) {
+                    $log.error(Err);
+                    $scope.cicLoading = false;
+                }
             }
             else {
-                $scope.isCICConnected = true;
+                loginCIC();
             }
-        }
+        };
 
-        $scope.togglePowerBIConnectionIndicator = function (obj) {
+        $scope.togglePowerBIConnectionIndicator = function () {
             if ($scope.isPowerBIConnected) {
                 $scope.isPowerBIConnected = false;
             }
             else {
                 $scope.isPowerBIConnected = true;
             }
-        }
+        };
 
         $scope.openUrl = function (obj) {
             var url = obj.target.attributes.href.value;
             chrome.tabs.create({ url: url });
-        }
+        };
     });
