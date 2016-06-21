@@ -9,7 +9,6 @@ chrome.extension.onMessage.addListener(function (response, sender) {
       chrome.storage.local.get('powerbi_access_token', function (result) {
         if (result.powerbi_access_token != null) {
           accessToken = result.powerbi_access_token;
-          console.log('Got access token:', accessToken);
           DataSetExists(response.dataset, function(dataSetId) {
             if (dataSetId) {
               console.log(response.dataset, 'dataset found!:', dataSetId);

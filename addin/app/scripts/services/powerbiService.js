@@ -101,7 +101,6 @@ angular.module('powerbiService', ['chromeStorage'])
       request.setRequestHeader('Authorization', 'Bearer ' + accessToken);
 
       request.onreadystatechange = function () {
-        console.log(this);
         if (this.readyState === 4) {
           var response = JSON.parse(this.response);
           switch(this.status) {

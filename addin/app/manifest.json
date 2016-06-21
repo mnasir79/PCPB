@@ -10,7 +10,6 @@
   "default_locale": "en",
   "background": {
     "scripts": [
-      "lib/angular/angular.min.js",
       "scripts/chromereload.js",
       "scripts/background.js",
       "scripts/app.js"
@@ -34,7 +33,6 @@
         "<all_urls>"
       ],
       "js": [
-        "lib/jquery/dist/jquery.min.js",
         "scripts/contentscript.js",
         "scripts/powerbilogin.js"
       ],

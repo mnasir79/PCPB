@@ -15,9 +15,9 @@ if (window.location.origin == 'https://login.live.com') {
     var accessCode = hash.substring(start, end);
 
     // Get Access token
-    getAccessToken(clientId, accessCode, function () {
+    getAccessToken(clientId, accessCode, function() {
       window.close();
-    }, function (request) {
+    }, function(request) {
       console.log('Redirecting to login page...');
       window.location.assign('https://login.windows.net/common/oauth2/authorize?resource=https%3A%2F%2Fanalysis.windows.net%2Fpowerbi%2Fapi&client_id=' + clientId + '&response_type=code&redirect_uri=https://login.live.com/oauth20_desktop.srf&site_id=500453', 'name', 'height=700,width=550');
     });
@@ -27,9 +27,9 @@ if (window.location.origin == 'https://login.live.com') {
 function getAccessToken(clientId, accessCode, successCallback, failureCallback) {
   var XHR = new XMLHttpRequest();
 
-  XHR.onreadystatechange = function () {
+  XHR.onreadystatechange = function() {
     if (XHR.readyState == 4) {
-      switch (XHR.status) {
+      switch(XHR.status) {
         case 200:
           JSON.parse(XHR.response, function (k, v) {
             if (k.toString() === 'access_token') {
@@ -37,7 +37,7 @@ function getAccessToken(clientId, accessCode, successCallback, failureCallback) 
 
               // Store the access token
               if (_accessToken) {
-                chrome.storage.local.set({ 'powerbi_access_token': _accessToken }, function () {
+                chrome.storage.local.set({'powerbi_access_token': _accessToken}, function () {
                   console.log('Access token saved');
                 });
               }
@@ -61,8 +61,8 @@ function getAccessToken(clientId, accessCode, successCallback, failureCallback) 
           console.error('Received status:', XHR.status, '. XHR:', XHR);
       }
     }
-  };
+  }
   XHR.open('POST', 'https://login.windows.net/common/oauth2/token', false);
-  XHR.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+  XHR.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
   XHR.send('client_id=' + clientId + '&redirect_uri=https://login.live.com/oauth20_desktop.srf&grant_type=authorization_code&code=' + accessCode);
 }
