@@ -12,7 +12,7 @@ angular.module('app', [])
     .controller('popupCtrl', function ($scope, $log) {
 
         var _BgController;
-        
+
         function loginCIC() {
             // Login
             $scope.cicLoading = true;
@@ -21,6 +21,13 @@ angular.module('app', [])
                     $scope.cicLoading = false;
                     $scope.isCICConnected = true;
                     $scope.$apply();
+
+                    // Subscribe for messages & start Timer
+                    _BgController.getCICService().Subscribe().then(function success(params) {
+                        _BgController.StartTimer_CIC();
+                    }, function error(params) {
+                        $log.error('Cannot subscribe for notifications');
+                    });
                 }, function error() {
                     $scope.cicLoading = false;
                     $scope.isCICConnected = false;
@@ -30,7 +37,6 @@ angular.module('app', [])
                 $log.error(Err);
                 $scope.cicLoading = false;
             }
-
         }
 
         function init() {
@@ -72,6 +78,7 @@ angular.module('app', [])
             if ($scope.isCICConnected) {
                 // LogOff
                 $scope.cicLoading = true;
+                _BgController.StopTimer_CIC();
                 try {
                     _BgController.getCICService().Logoff().then(function success() {
                         $scope.cicLoading = false;
@@ -85,6 +92,7 @@ angular.module('app', [])
                 } catch (Err) {
                     $log.error(Err);
                     $scope.cicLoading = false;
+
                 }
             }
             else {

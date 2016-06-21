@@ -9,10 +9,24 @@
 **/
 
 angular.module('app', ['cicService'])
-    .controller('backgroundCtrl', function ($scope, $log, cicService) {
+    .controller('backgroundCtrl', function ($scope, $log, cicService, $interval) {
+
+        var CICTimer;
 
         $scope.getCICService = function () {
             return cicService;
         };
+
+        $scope.StartTimer_CIC = function () {
+            $interval.cancel(CICTimer);
+            CICTimer = $interval(function () {
+                cicService.GetMessage();
+            }, 5000);
+        }
+
+        $scope.StopTimer_CIC = function () {
+            $interval.cancel(CICTimer);
+        }
+
 
     });
