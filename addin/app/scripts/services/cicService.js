@@ -269,6 +269,26 @@ angular.module('cicService', ['chromeStorage'])
             ]
           },
           {
+            "statisticIdentifier": "inin.workgroup:NumberAvailableForACDInteractions",
+            "parameterValueItems":
+            [
+              {
+                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
+                "value": "Marketing"
+              }
+            ]
+          },
+          {
+            "statisticIdentifier": "inin.workgroup:NotAvailable",
+            "parameterValueItems":
+            [
+              {
+                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
+                "value": "Marketing"
+              }
+            ]
+          },
+          {
             "statisticIdentifier": "inin.workgroup:LongestAvailable",
             "parameterValueItems":
             [
@@ -299,7 +319,37 @@ angular.module('cicService', ['chromeStorage'])
             ]
           },
           {
+            "statisticIdentifier": "inin.workgroup:LongestOutboundACDInteraction",
+            "parameterValueItems":
+            [
+              {
+                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
+                "value": "Marketing"
+              }
+            ]
+          },
+          {
             "statisticIdentifier": "inin.workgroup:InteractionsWaiting",
+            "parameterValueItems":
+            [
+              {
+                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
+                "value": "Marketing"
+              }
+            ]
+          },
+           {
+            "statisticIdentifier": "inin.workgroup:LongestOnHoldTime",
+            "parameterValueItems":
+            [
+              {
+                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
+                "value": "Marketing"
+              }
+            ]
+          },
+           {
+            "statisticIdentifier": "inin.workgroup:LongestWaitTime",
             "parameterValueItems":
             [
               {
