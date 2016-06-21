@@ -8,19 +8,9 @@
  * Controller of the app
 **/
 
-angular.module('app', ['cicService'])
-    .controller('popupCtrl', function ($scope, $log, cicService) {
-
-        $scope.testLog = function (message) {
-            console.log('message from testLog');
-            try {
-                $log.isEnabled;
-            } catch (error) {
-                console.log(error);
-            }
-            $log.debug(message);
-        }
-
+angular.module('app', ['powerbiService'])
+    .controller('popupCtrl', function ($scope, $log, $window, powerbiService) {
+        
         $scope.togglePCConnectionIndicator = function (obj) {
             if ($scope.isPCConnected) {
                 $scope.isPCConnected = false;
@@ -46,13 +36,27 @@ angular.module('app', ['cicService'])
             }
         }
 
-        $scope.togglePowerBIConnectionIndicator = function (obj) {
+        $scope.togglePowerBIConnectionIndicator = function () {
             if ($scope.isPowerBIConnected) {
-                $scope.isPowerBIConnected = false;
+                // Logoff
+                $scope.powerbiLoading = true;
+                console.log('Logging off of PowerBI');
+                powerbiService.Logoff(function() {
+                    $scope.powerbiLoading = false;
+                    $scope.isPowerBIConnected = false;
+                });
             }
             else {
-                $scope.isPowerBIConnected = true;
+                // Login
+                console.log('Logging in to PowerBI from angular');
+                var clientId = '4f824f48-924a-44e8-aa5a-1a9383ca4810'; //TODO Get this from options
+                $window.open('https://login.windows.net/common/oauth2/authorize?resource=https%3A%2F%2Fanalysis.windows.net%2Fpowerbi%2Fapi&client_id=' + clientId + '&response_type=code&redirect_uri=https://login.live.com/oauth20_desktop.srf&site_id=500453', 'name', 'height=700,width=550');
+                // Rest of the login process is performed by powerbilogin.js
             }
+        };
+
+        $scope.sendToPowerBI = function(dataset, table, rows) {
+          powerbiService.SendToPowerBI(dataset, table, rows);
         }
 
         $scope.openUrl = function (obj) {
