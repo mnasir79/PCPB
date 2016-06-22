@@ -20,7 +20,7 @@ angular.module('app', ['chromeStorage'])
                 pcOptions.pcClientId = $scope.pcClientId;
                 pcOptions.pcClientSecret = $scope.pcClientSecret;            
                 var storageItem = {};
-                storageItem['pcOptions'] = pcOptions;                 
+                storageItem.pcOptions = pcOptions;                 
                 chrome.storage.local.set(storageItem);
             } 
             catch (err) {
@@ -53,7 +53,7 @@ angular.module('app', ['chromeStorage'])
                 icOptions.icPassword = $scope.icPassword;  
                 icOptions.icUseSsl = $scope.icUseSsl;          
                 var storageItem = {};
-                storageItem['icOptions'] = icOptions;                 
+                storageItem.icOptions = icOptions;                 
                 chrome.storage.local.set(storageItem);
             } 
             catch (err) {
@@ -116,5 +116,5 @@ angular.module('app', ['chromeStorage'])
         getIcOptions();
         getPbiOptions();
         // </Initializing>
-        
+
   });

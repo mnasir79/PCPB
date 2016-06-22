@@ -28,7 +28,7 @@ function getAccessToken(clientId, accessCode, successCallback, failureCallback) 
   var XHR = new XMLHttpRequest();
 
   XHR.onreadystatechange = function() {
-    if (XHR.readyState == 4) {
+    if (XHR.readyState === 4) {
       switch(XHR.status) {
         case 200:
           JSON.parse(XHR.response, function (k, v) {
@@ -61,8 +61,8 @@ function getAccessToken(clientId, accessCode, successCallback, failureCallback) 
           console.error('Received status:', XHR.status, '. XHR:', XHR);
       }
     }
-  }
+  };
   XHR.open('POST', 'https://login.windows.net/common/oauth2/token', false);
-  XHR.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+  XHR.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
   XHR.send('client_id=' + clientId + '&redirect_uri=https://login.live.com/oauth20_desktop.srf&grant_type=authorization_code&code=' + accessCode);
 }

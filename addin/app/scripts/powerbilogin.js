@@ -28,7 +28,7 @@ function getAccessToken(clientId, accessCode, successCallback, failureCallback) 
   var XHR = new XMLHttpRequest();
 
   XHR.onreadystatechange = function () {
-    if (XHR.readyState == 4) {
+    if (XHR.readyState === 4) {
       switch (XHR.status) {
         case 200:
           JSON.parse(XHR.response, function (k, v) {

@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 angular.module('powerbiService', ['chromeStorage'])
 
@@ -14,9 +14,9 @@ angular.module('powerbiService', ['chromeStorage'])
       chromeStorage.get('powerbi_access_token').then(function(retrievedAccessToken) {
         //console.log('retrieved token:', retrievedAccessToken);
         accessToken = retrievedAccessToken;
-        $rootScope.isPowerBIConnected = retrievedAccessToken != undefined;
+        $rootScope.isPowerBIConnected = retrievedAccessToken !== undefined;
       });
-    }, null)
+    }, null);
 
     // Load Enviroment Options from ChromeLocalStorage
     // ===============
@@ -35,7 +35,7 @@ angular.module('powerbiService', ['chromeStorage'])
       if (callback) {
         callback();
       }
-    }
+    };
     
     this.SendToPowerBI = function(dataset, table, rows) {
       if ($rootScope.isPowerBIConnected) {
@@ -45,7 +45,7 @@ angular.module('powerbiService', ['chromeStorage'])
             console.log(dataset, 'dataset found!:', dataSetId);
           } else {
             console.log(dataset, 'dataset NOT found!');
-            var dataSetId = CreateDataSet(dataset);
+            dataSetId = CreateDataSet(); // TODO Differentiate datasets for PC and CIC
             console.log('New Dataset Id:', dataSetId);
           }
 
@@ -55,9 +55,8 @@ angular.module('powerbiService', ['chromeStorage'])
         });
       } else {
         console.error('Please sign in to PowerBI first.');
-        alert('Not connected to PowerBI');
       }
-    }
+    };
     
     // Check if a PowerBI dataset exists
     function DataSetExists(name, callback) {
@@ -76,14 +75,21 @@ angular.module('powerbiService', ['chromeStorage'])
     }
 
     // Create a PowerBI dataset
-    function CreateDataSet(name) {
+    function CreateDataSet() {
       //We have to hardcode the tables and it sucks since we can't add tables to an existing dataset
       //Feature requests: 
       //  https://ideas.powerbi.com/forums/268152-developer-apis/suggestions/7111791-alter-datasets-by-adding-removing-individual-table
       //  https://ideas.powerbi.com/forums/268152-developer-apis/suggestions/10445529-add-rest-api-call-to-add-new-table-to-existing-dat 
-      var body = $.getJSON('../powerBiPureCloudTableSchema.json', function(json) {
+      
+      // PureCloud Schema
+      $.getJSON('../schemas/powerBiPureCloudTableSchema.json', function(json) {
         return PBIPost('https://api.powerbi.com/v1.0/myorg/datasets?defaultRetentionPolicy=None', json);
-      })
+      });
+
+      // CIC Schema
+      $.getJSON('../schemas/powerBiCicTableSchema.json', function(json) {
+        return PBIPost('https://api.powerbi.com/v1.0/myorg/datasets?defaultRetentionPolicy=None', json);
+      });
     }
 
     // Add rows to a dataset table
@@ -111,7 +117,7 @@ angular.module('powerbiService', ['chromeStorage'])
               }
               break;
             case 403: // Forbidden
-              if (response.error.code == 'TokenExpired') {
+              if (response.error.code === 'TokenExpired') {
                 console.error('Token expired. Need to login to PowerBI');
                 //TODO Redirect to login page?
                 return;
@@ -136,6 +142,11 @@ angular.module('powerbiService', ['chromeStorage'])
           console.log('Status:', this.status);
           //console.log('Headers:', this.getAllResponseHeaders());
           //console.log('Body:', this.responseText);
+          if (this.status === 200) {
+            if (callback) {
+              callback();
+            }
+          }
         }
       };
       
@@ -152,16 +163,18 @@ angular.module('powerbiService', ['chromeStorage'])
     function getObjects(obj, key, val) {
       var objects = [];
       for (var i in obj) {
-        if (!obj.hasOwnProperty(i)) continue;
-        if (typeof obj[i] == 'object') {
+        if (!obj.hasOwnProperty(i)) {
+          continue;
+        }
+        if (typeof obj[i] === 'object') {
           objects = objects.concat(getObjects(obj[i], key, val));    
         } else 
         //if key matches and value matches or if key matches and value is not passed (eliminating the case where key matches but passed value does not)
-        if (i == key && obj[i] == val || i == key && val == '') { //
+        if (i === key && obj[i] === val || i === key && val === '') { //
           objects.push(obj);
-        } else if (obj[i] == val && key == ''){
+        } else if (obj[i] === val && key === ''){
           //only add if the object is not already in the array
-          if (objects.lastIndexOf(obj) == -1){
+          if (objects.lastIndexOf(obj) === -1){
               objects.push(obj);
           }
         }
@@ -173,10 +186,12 @@ angular.module('powerbiService', ['chromeStorage'])
     function getValues(obj, key) {
       var objects = [];
       for (var i in obj) {
-        if (!obj.hasOwnProperty(i)) continue;
-        if (typeof obj[i] == 'object') {
+        if (!obj.hasOwnProperty(i)) {
+          continue;
+        }
+        if (typeof obj[i] === 'object') {
             objects = objects.concat(getValues(obj[i], key));
-        } else if (i == key) {
+        } else if (i === key) {
             objects.push(obj[i]);
         }
       }
@@ -187,10 +202,12 @@ angular.module('powerbiService', ['chromeStorage'])
     function getKeys(obj, val) {
       var objects = [];
       for (var i in obj) {
-        if (!obj.hasOwnProperty(i)) continue;
-        if (typeof obj[i] == 'object') {
+        if (!obj.hasOwnProperty(i)) {
+          continue;
+        }
+        if (typeof obj[i] === 'object') {
           objects = objects.concat(getKeys(obj[i], val));
-        } else if (obj[i] == val) {
+        } else if (obj[i] === val) {
           objects.push(i);
         }
       }

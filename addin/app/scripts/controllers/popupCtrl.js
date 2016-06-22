@@ -122,7 +122,7 @@ angular.module('app', ['powerbiService'])
 
         $scope.sendToPowerBI = function(dataset, table, rows) {
           powerbiService.SendToPowerBI(dataset, table, rows);
-        }
+        };
 
         $scope.openUrl = function (obj) {
             var url = obj.target.attributes.href.value;

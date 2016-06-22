@@ -19,7 +19,7 @@ chrome.extension.onMessage.addListener(function (response, sender) {
               console.log(response.dataset, 'dataset found!:', dataSetId);
             } else {
               console.log(response.dataset, 'dataset NOT found!');
-              dataSetId = CreateDataSet(response.dataset);
+              dataSetId = CreateDataSet();
               console.log('New Dataset Id:', dataSetId);
             }
             
