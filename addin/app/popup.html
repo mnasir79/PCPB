@@ -34,11 +34,18 @@
     </div>
     <hr class="menuDevider" />
     <div class="btn-group-vertical" role="group" aria-label="...">
-        <button type="button" class="btn btn-default menuItem btn-xs" id="connectButton_PowerBI" ng-click="togglePowerBIConnectionIndicator()">
-            <span class="label" ng-class="isPowerBIConnected ? 'label-success' : 'label-danger'" id="connectionIndicator_PowerBI">OUT</span>
-            PowerBI            
-        </button>
-    </div>
+         <button type="button" class="btn btn-default menuItem btn-xs" id="connectButton_PowerBI" ng-click="togglePowerBIConnectionIndicator($event)">
+             <span class="label" ng-class="isPowerBIConnected ? 'label-success' : 'label-danger'" id="connectionIndicator_PowerBI">OUT</span>
+             PowerBI
+         </button>
+     </div>
+    <hr class="menuDevider" />
+    <div class="btn-group-vertical" role="group" aria-label="...">
+         <button type="button" class="btn btn-default menuItem btn-xs" id="sendToPowerBI" ng-click="sendToPowerBI('PureCloud', 'Conversations', [{'Id':'1234567890111', 'Name':'Test', 'StartTime':'08/01/2016'}] )">
+             <span class="label" ng-class="isPowerBIConnected ? 'label-success' : 'label-danger'" id="sendToPowerBI">SEND</span>
+             PowerBI
+         </button>
+     </div>
     <hr class="menuDevider" />
     <ul class="nav nav-pills btn-xs">
         <li role="presentation">
@@ -48,20 +55,32 @@
 
     <!-- build:js scripts/popup-vendor.js -->
     <!-- bower:js -->
-    <script src="bower_components/angular/angular.js"></script>
-    <script src="bower_components/angular-chrome-storage/angular-chrome-storage.js"></script>
     <script src="bower_components/log4javascript/log4javascript.js"></script>
     <script src="bower_components/store-js/store.js"></script>
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/adal-angular/lib/adal.js"></script>
+    <script src="bower_components/adal-angular/lib/adal-angular.js"></script>
+    <script src="bower_components/angular-route/angular-route.js"></script>
+    <script src="bower_components/requirejs/require.js"></script>
+    <script src="bower_components/domReady/domReady.js"></script>
+    <script src="bower_components/require-css/css.js"></script>
+    <script src="bower_components/require-css/css-builder.js"></script>
+    <script src="bower_components/require-css/normalize.js"></script>
+    <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/angular-chrome-storage/angular-chrome-storage.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 
-    <!-- build:js scripts/popup.js -->
-    <!-- endbuild -->
+    <!-- Main App -->
+    <script type="text/javascript" src="scripts/app.js"></script>
 
-    <script type="text/javascript" src="lib/jquery/dist/jquery.min.js"></script>
     <script type="text/javascript" src="scripts/controllers/popupCtrl.js"></script>
     <script type="text/javascript" src="scripts/services/cicService.js"></script>
+    <script type="text/javascript" src="scripts/services/powerbiService.js"></script>
     <script type="text/javascript" src="scripts/providers/loggerProvider.js"></script>
+
+    <!-- PowerBI -->    
+    <script type="text/javascript" src="scripts/powerbilogin.js"></script>
 
 </body>
 

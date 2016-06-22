@@ -19,10 +19,10 @@
     <div class="container">
         <div id="content">
             <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
-                <li class="active"><a href="#powerbi" data-toggle="tab">Power BI</a></li>
-                <li><a href="#purecloud" data-toggle="tab">PureCloud</a></li>
+                <li class="active"><a href="#purecloud" data-toggle="tab">PureCloud</a></li>
                 <li><a href="#cic" data-toggle="tab">CIC</a></li>
-                <li><a href="#general" data-toggle="tab">General</a></li>
+                <li><a href="#powerbi" data-toggle="tab">Power BI</a></li>
+                <li><a href="#general" data-toggle="tab">General</a></li>                
             </ul>
             <div id="my-tab-content" class="tab-content">
 
@@ -60,7 +60,7 @@
                 <!-- </Power BI tab> -->
 
                 <!-- <Pure Cloud tab> -->
-                <div class="tab-pane" id="purecloud">
+                <div class="tab-pane active" id="purecloud">
                     <div class="options-panel-box">
                         <div class="options-panel-left">
                             <img src="images\logo-purecloud.png">
@@ -121,6 +121,22 @@
                 </div>
                 <!-- </CIC tab> -->
 
+                <!-- <Power BI tab> -->
+                <div class="tab-pane" id="powerbi">
+                    <div class="options-panel-box">
+                        <div class="options-panel-left">
+                            <img src="images\logo-powerbi.png">
+                        </div>
+                        <div class="options-panel-right">                                                
+                            <div class="input-group">
+                                <div class="input-group-addon">Client Id</div>
+                                <input type="text" class="form-control" id="pbiClientId" ng-model="pbiClientId" ng-bind="pbiClientId" ng-change="pbiOptionsChanged()">
+                            </div> 
+                        </div>
+                    </div>
+                </div>
+                <!-- </Power BI tab> -->
+
                 <!-- <General tab> -->
                 <div class="tab-pane" id="general">
                     <div class="options-panel-box">
@@ -142,15 +158,32 @@
                 <!-- </General tab> -->
             </div>
         </div>
+    </div> <!-- container -->    
+    
+    <script type="text/javascript" src="lib/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="styles/bootstrap/dist/js/bootstrap.js"></script>
+    <script type="text/javascript" src="scripts/app.js"></script>        
+    <script type="text/javascript" src="scripts/controllers/optionsCtrl.js"></script>
+    <script type="text/javascript" src="scripts/providers/loggerProvider.js"></script>    
+    
     </div>
     <!-- container -->
 
     <!-- build:js scripts/options-vendor.js -->
     <!-- bower:js -->
-    <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/angular-chrome-storage/angular-chrome-storage.js"></script>
     <script src="bower_components/log4javascript/log4javascript.js"></script>
     <script src="bower_components/store-js/store.js"></script>
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/adal-angular/lib/adal.js"></script>
+    <script src="bower_components/adal-angular/lib/adal-angular.js"></script>
+    <script src="bower_components/angular-route/angular-route.js"></script>
+    <script src="bower_components/requirejs/require.js"></script>
+    <script src="bower_components/domReady/domReady.js"></script>
+    <script src="bower_components/require-css/css.js"></script>
+    <script src="bower_components/require-css/css-builder.js"></script>
+    <script src="bower_components/require-css/normalize.js"></script>
+    <script src="bower_components/jquery/dist/jquery.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 
