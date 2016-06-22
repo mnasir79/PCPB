@@ -82,12 +82,12 @@ angular.module('powerbiService', ['chromeStorage'])
       //  https://ideas.powerbi.com/forums/268152-developer-apis/suggestions/10445529-add-rest-api-call-to-add-new-table-to-existing-dat 
       
       // PureCloud Schema
-      $.getJSON('../schemas/powerBiPureCloudTableSchema.json', function(json) {
+      $.getJSON('scripts/schemas/powerBiPureCloudTableSchema.json', function(json) {
         return PBIPost('https://api.powerbi.com/v1.0/myorg/datasets?defaultRetentionPolicy=None', json);
       });
 
       // CIC Schema
-      $.getJSON('../schemas/powerBiCicTableSchema.json', function(json) {
+      $.getJSON('scripts/schemas/powerBiCicTableSchema.json', function(json) {
         return PBIPost('https://api.powerbi.com/v1.0/myorg/datasets?defaultRetentionPolicy=None', json);
       });
     }
