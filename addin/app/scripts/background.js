@@ -1,5 +1,7 @@
 'use strict';
 
+var accessToken;
+
 function getController() {
   var scope = angular.element(document.getElementById('backgroundCtrl')).scope();
   return scope;
@@ -10,14 +12,14 @@ chrome.extension.onMessage.addListener(function (response, sender) {
   switch (response.target) {
     case 'PowerBI':
       chrome.storage.local.get('powerbi_access_token', function (result) {
-        if (result.powerbi_access_token != null) {
+        if (result.powerbi_access_token !== null) {
           accessToken = result.powerbi_access_token;
           DataSetExists(response.dataset, function (dataSetId) {
             if (dataSetId) {
               console.log(response.dataset, 'dataset found!:', dataSetId);
             } else {
               console.log(response.dataset, 'dataset NOT found!');
-              var dataSetId = CreateDataSet(response.dataset);
+              dataSetId = CreateDataSet(response.dataset);
               console.log('New Dataset Id:', dataSetId);
             }
 

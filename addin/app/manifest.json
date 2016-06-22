@@ -9,12 +9,13 @@
   },
   "default_locale": "en",
   "background": {
-    "page": "background.html",
-    "scripts": [
-      "scripts/chromereload.js",
-      "scripts/background.js",
-      "scripts/app.js"
-    ]
+    "page": "background.html"//,
+    // "scripts": [
+    //   "bower_components/angular/angular.min.js",
+    //   "scripts/chromereload.js",
+    //   "scripts/background.js",
+    //   "scripts/app.js"
+    // ]
   },
   "permissions": [
     "tabs",

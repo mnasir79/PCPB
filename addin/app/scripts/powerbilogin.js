@@ -3,7 +3,7 @@
 var _accessToken;
 var clientId = '4f824f48-924a-44e8-aa5a-1a9383ca4810';
 
-if (window.location.origin == 'https://login.live.com') {
+if (window.location.origin === 'https://login.live.com') {
   console.log(window.location.href);
   var hash = window.location.href.split('?')[1];
 
@@ -17,7 +17,7 @@ if (window.location.origin == 'https://login.live.com') {
     // Get Access token
     getAccessToken(clientId, accessCode, function () {
       window.close();
-    }, function (request) {
+    }, function () {
       console.log('Redirecting to login page...');
       window.location.assign('https://login.windows.net/common/oauth2/authorize?resource=https%3A%2F%2Fanalysis.windows.net%2Fpowerbi%2Fapi&client_id=' + clientId + '&response_type=code&redirect_uri=https://login.live.com/oauth20_desktop.srf&site_id=500453', 'name', 'height=700,width=550');
     });

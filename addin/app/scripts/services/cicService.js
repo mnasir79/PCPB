@@ -1,38 +1,54 @@
 'use strict';
 
 
-angular.module('cicService', [])
-  .directive('loading', function () {
-    return {
-      restrict: 'E',
-      replace: true,
-      template: '<img class="loading" src="http://www.nasa.gov/multimedia/videogallery/ajax-loader.gif" width="14" height="14" align="right" />',
-      link: function (scope, element, attr) {
-        scope.$watch('loading', function (val) {
-          if (val)
-            $(element).show();
-          else
-            $(element).hide();
-        });
-      }
-    }
-  })
+angular.module('cicService', ['chromeStorage'])
+  .service('cicService', function ($q, $http, $log, chromeStorage) {
 
-  .service('cicService', function ($rootScope, $http, $log) {
-
+    // Session variables
     var _sessionId;
     var _accessToken;
+
+    // Enviroment variables, loaded from Chrome localStorage
     var _host;
+    var _port;
+    var _icUsername;
+    var _icPassword;
+    var _icUseSsl;
+
+    var _isConnected = false;
+
+    this.getIsConnected = function () {
+      GetOptions();
+      return _isConnected;
+    };
 
 
-    _host = '192.168.0.25:8018/'
+    function GetOptions() {
+      // Load Enviroment Options from ChromeLocalStorage
+      chromeStorage.get('icOptions').then(function (icOptions) {
+        _host = icOptions.icIcServer;
+        _port = icOptions.icPort;
+        _icUsername = icOptions.icUsername;
+        _icPassword = icOptions.icPassword;
+        _icUseSsl = icOptions.icUseSsl;
+      });
 
+    }
+
+    function clearSession() {
+      _sessionId = undefined;
+      _accessToken = undefined;
+      _isConnected = false;
+    }
+
+    GetOptions();
 
     this.sendRestRequest = function (requestName, method, path, body) {
 
-      if (!_host) {
+      if (!_host || !_port || !_icUsername || !_icPassword) {
         throw new Error('setEnvironment first!');
       }
+
       if (!requestName) {
         throw new Error('Missing required parameter: requestName');
       }
@@ -43,12 +59,20 @@ angular.module('cicService', [])
         throw new Error('Missing required parameter: path');
       }
 
-      var tmp_url = "";
+      var tmp_url = '';
+
+      if (_icUseSsl) {
+        tmp_url = 'https://';
+      } else {
+        tmp_url = 'http://';
+      }
+
+      tmp_url = tmp_url + _host + ':' + _port + '/';
 
       if (_sessionId) {
-        tmp_url = 'http://' + _host + 'icws/' + _sessionId + path;
+        tmp_url = tmp_url + 'icws/' + _sessionId + path;
       } else {
-        tmp_url = 'http://' + _host + 'icws/' + path;
+        tmp_url = tmp_url + 'icws/' + path;
       }
 
       var config = {
@@ -66,62 +90,334 @@ angular.module('cicService', [])
         config.data = JSON.stringify(body);
       }
 
-      $log.debug('Begin Request: ' + requestName);
+      $log.debug('CIC Begin Request: [' + requestName + '] -> ' + tmp_url);
       var request = $http(config);
 
-      $rootScope.loading = true;
-
       request.then(function successCallback(response) {
-        $log.debug("Request success");
+        $log.debug('CIC End Request: [' + requestName + ']' + JSON.stringify(response));
       }, function errorCallback(response) {
-        $log.debug(response);
+        $log.error('CIC Request: [' + requestName + ']: ' + JSON.stringify(response));
       });
 
-      return request
+      return request;
     };
 
-    this.Login = function (id) {
+    this.Login = function () {
+      _isConnected = false;
 
       var jSON_Object = {
-        "__type": "urn:inin.com:connection:icAuthConnectionRequestSettings",
-        "applicationName": "www",
-        "userID": "icadmin",
-        "password": "1234"
+        '__type': 'urn:inin.com:connection:icAuthConnectionRequestSettings',
+        'applicationName': 'AnalyticsHub',
+        'userID': _icUsername,
+        'password': _icPassword
+      };
+
+      var deferred = $q.defer();
+      try {
+        this.sendRestRequest('CIC Login', 'POST', 'connection', jSON_Object).then(function success(response) {
+
+          if (response.data.hasOwnProperty('sessionId')) {
+            _isConnected = true;
+            _sessionId = response.data.sessionId;
+            _accessToken = response.data.csrfToken;
+            deferred.resolve();
+          }
+          deferred.reject();
+        }, function error() {
+          _isConnected = false;
+          deferred.reject();
+        });
+      }
+      catch (e) {
+        deferred.reject();
+      }
+      return deferred.promise;
+    };
+
+    this.Logoff = function () {
+
+      var deferred = $q.defer();
+      try {
+        this.sendRestRequest('CIC Logoff', 'DELETE', '/connection').then(function success() {
+          clearSession();
+          deferred.resolve();
+        }, function error() {
+          clearSession();
+          deferred.reject();
+        });
+      }
+      catch (e) {
+        deferred.reject();
+      }
+      return deferred.promise;
+
+    };
+
+    this.ShouldReconnect = function () {
+
+      var deferred = $q.defer();
+      try {
+        this.sendRestRequest('CIC CheckConnection', 'GET', '/connection').then(function success(response) {
+          if (response.data.hasOwnProperty('shouldReconnect')) {
+            if (response.data.shouldReconnect) {
+              clearSession();
+              $log.debug('CIC Should reconnect: true');
+              deferred.resolve(true);
+            } else {
+              $log.debug('CIC Should reconnect: false');
+              deferred.resolve(false);
+            }
+          }
+          $log.debug('CIC Should reconnect: false');
+          deferred.resolve(false);
+        }, function error() {
+          clearSession();
+          $log.debug('CIC Should reconnect: true');
+          deferred.reject(true);
+        });
+      }
+      catch (e) {
+        deferred.reject(true);
+      }
+      return deferred.promise;
+    };
+
+
+    this.GetVersion = function () {
+      var deferred = $q.defer();
+      try {
+        this.sendRestRequest('CIC GetVersion', 'GET', 'connection/version').then(function success(response) {
+          deferred.resolve({ 'productPatchDisplayString': response.data.productPatchDisplayString });
+        }, function error() {
+          deferred.reject();
+        });
+      }
+      catch (e) {
+        deferred.reject();
+      }
+      return deferred.promise;
+    };
+
+    this.GetWorkgroups = function () {
+      var jSON_Object = {
+        'parameterTypeId': 'ININ.People.WorkgroupStats:Workgroup'
+      };
+
+      this.sendRestRequest('CIC GetWorkgroups', 'POST', '/statistics/statistic-parameter-values/queries', jSON_Object).then(function success(response) {
+        $log.debug(response);
+      }, function error() {
+
+      });
+    };
+
+
+    this.GetMessage = function () {
+
+      var deferred = $q.defer();
+      try {
+
+        this.sendRestRequest('GetMessage', 'GET', '/messaging/messages').then(function success(response) {
+          $log.debug(response.data);
+          deferred.resolve();
+        }, function error(response) {
+          $log.debug(response);
+          deferred.reject();
+        });
+      }
+      catch (e) {
+        deferred.reject();
+      }
+      return deferred.promise;
+
+    };
+
+    this.Subscribe = function (jSON_Object) {
+
+      // Example JSON:
+
+      var jSON_Object = {
+        'statisticKeys':
+        [
+          {
+            "statisticIdentifier": "inin.workgroup:AgentsLoggedIn",
+            "parameterValueItems":
+            [
+              {
+                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
+                "value": "Marketing"
+              }
+            ]
+          },
+          {
+            "statisticIdentifier": "inin.workgroup:TotalAgents",
+            "parameterValueItems":
+            [
+              {
+                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
+                "value": "Marketing"
+              }
+            ]
+          },
+          {
+            "statisticIdentifier": "inin.workgroup:PercentAvailable",
+            "parameterValueItems":
+            [
+              {
+                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
+                "value": "Marketing"
+              }
+            ]
+          },
+          {
+            "statisticIdentifier": "inin.workgroup:NumberAvailableForACDInteractions",
+            "parameterValueItems":
+            [
+              {
+                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
+                "value": "Marketing"
+              }
+            ]
+          },
+          {
+            "statisticIdentifier": "inin.workgroup:NotAvailable",
+            "parameterValueItems":
+            [
+              {
+                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
+                "value": "Marketing"
+              }
+            ]
+          },
+          {
+            "statisticIdentifier": "inin.workgroup:LongestAvailable",
+            "parameterValueItems":
+            [
+              {
+                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
+                "value": "Marketing"
+              }
+            ]
+          },
+          {
+            "statisticIdentifier": "inin.workgroup:OnInboundACDInteractions",
+            "parameterValueItems":
+            [
+              {
+                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
+                "value": "Marketing"
+              }
+            ]
+          },
+          {
+            "statisticIdentifier": "inin.workgroup:LongestInboundACDInteraction",
+            "parameterValueItems":
+            [
+              {
+                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
+                "value": "Marketing"
+              }
+            ]
+          },
+          {
+            "statisticIdentifier": "inin.workgroup:LongestOutboundACDInteraction",
+            "parameterValueItems":
+            [
+              {
+                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
+                "value": "Marketing"
+              }
+            ]
+          },
+          {
+            "statisticIdentifier": "inin.workgroup:InteractionsWaiting",
+            "parameterValueItems":
+            [
+              {
+                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
+                "value": "Marketing"
+              }
+            ]
+          },
+           {
+            "statisticIdentifier": "inin.workgroup:LongestOnHoldTime",
+            "parameterValueItems":
+            [
+              {
+                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
+                "value": "Marketing"
+              }
+            ]
+          },
+           {
+            "statisticIdentifier": "inin.workgroup:LongestWaitTime",
+            "parameterValueItems":
+            [
+              {
+                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
+                "value": "Marketing"
+              }
+            ]
+          },
+          {
+            "statisticIdentifier": "inin.workgroup:InteractionsOnHold",
+            "parameterValueItems":
+            [
+              {
+                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
+                "value": "Marketing"
+              }
+            ]
+          },
+          {
+            "statisticIdentifier": "inin.workgroup:InteractionsEntered",
+            "parameterValueItems":
+            [
+              {
+                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
+                "value": "Marketing"
+              },
+              {
+                "parameterTypeId": "ININ.Queue:Interval",
+                "value": "120"
+              }
+            ]
+          },
+          {
+            "statisticIdentifier": "inin.workgroup:InteractionsAbandoned",
+            "parameterValueItems":
+            [
+              {
+                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
+                "value": "Marketing"
+              },
+              {
+                "parameterTypeId": "ININ.Queue:Interval",
+                "value": "120"
+              }
+            ]
+          }
+        ]
       }
 
 
-      this.sendRestRequest("Logon", "POST", "connection", jSON_Object).then(function success(response) {
-        $rootScope.loading = false;
-        if (response.data.hasOwnProperty('sessionId')) {
-          _sessionId = response.data.sessionId;
-          _accessToken = response.data.csrfToken;
-          $rootScope.isCICConnected = true;
-        }
-      }, function error(response) {
-        $rootScope.loading = false;
-        $rootScope.isCICConnected = false;
-      });
+      var deferred = $q.defer();
+      try {
+        this.sendRestRequest('Subscribe', 'PUT', '/messaging/subscriptions/statistics/statistic-values', jSON_Object).then(function success(response) {
+          $log.debug(response);
+          deferred.resolve();
+        }, function error(response) {
+          $log.debug(response);
+          deferred.reject();
+        });
+      }
+      catch (e) {
+        deferred.reject();
+      }
+      return deferred.promise;
+
     };
 
-    this.Logoff = function (id) {
-      $log.debug("Reset _sessionId and _accessToken variables");
-      _sessionId = {};
-      _accessToken = {};
-      $rootScope.isCICConnected = false;
 
-    }
-
-    this.GetVersion = function () {
-
-      this.sendRestRequest("GetVersion", "GET", "connection/version").then(function success(response) {
-        console.log(response.data);
-        $scope.CICDescription = "[" + response.data.productPatchDisplayString + "]";
-
-      }, function error(response) {
-        console.log("Error");
-
-      });
-    }
 
 
 

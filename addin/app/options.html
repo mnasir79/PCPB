@@ -1,19 +1,21 @@
 <!doctype html>
 <html>
-  <head>
+
+<head>
     <!-- build:css styles/options-vendor.css -->
     <!-- bower:css -->
     <!-- endbower -->
     <!-- endbuild -->
     <!-- build:css styles/main.css -->
     <link href="styles/main.css" rel="stylesheet">
-    <link href="styles/options.css" rel="stylesheet">        
+    <link href="styles/options.css" rel="stylesheet">
     <link rel="stylesheet" href="styles/bootstrap/dist/css/bootstrap.css">
-          
+
     <!-- endbuild -->
-  </head>
-  <body ng-app="app" ng-controller="optionsCtrl">
-          
+</head>
+
+<body ng-app="app" ng-controller="optionsCtrl">
+
     <div class="container">
         <div id="content">
             <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
@@ -23,64 +25,97 @@
                 <li><a href="#general" data-toggle="tab">General</a></li>                
             </ul>
             <div id="my-tab-content" class="tab-content">
-                                               
+
+                <!-- <Power BI tab> -->
+                <div class="tab-pane active" id="powerbi">
+                    <div class="options-panel-box">
+                        <div class="options-panel-left">
+                            <img src="images\logo-powerbi.png">
+                        </div>
+                        <div class="options-panel-right">
+                            <div class="input-group">
+                                <div class="input-group-addon">Instance</div>
+                                <input type="text" class="form-control" id="pbiInstance" ng-model="pbiInstance" ng-bind="pbiInstance" ng-change="pbiOptionsChanged()">
+                            </div>
+                            <div class="input-group">
+                                <div class="input-group-addon">Tentant</div>
+                                <input type="text" class="form-control" id="pbiTentant" ng-model="pbiTentant" ng-bind="pbiTentant" ng-change="pbiOptionsChanged()">
+                            </div>
+                            <div class="input-group">
+                                <div class="input-group-addon">Client Id</div>
+                                <input type="text" class="form-control" id="pbiClientId" ng-model="pbiClientId" ng-bind="pbiClientId" ng-change="pbiOptionsChanged()">
+                            </div>
+                            <div class="input-group">
+                                <div class="input-group-addon">Redirect URI</div>
+                                <input type="text" class="form-control" id="pbiRedirectUri" ng-model="pbiRedirectUri" ng-bind="pbiRedirectUri" ng-change="pbiOptionsChanged()">
+                            </div>
+                            <div class="input-group">
+                                <div class="input-group-addon">Endpoint</div>
+                                <input type="text" class="form-control" id="pbiEndpoint" ng-model="pbiEndpoint" ng-bind="pbiEndpoint" ng-change="pbiOptionsChanged()">
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <!-- </Power BI tab> -->
+
                 <!-- <Pure Cloud tab> -->
                 <div class="tab-pane active" id="purecloud">
                     <div class="options-panel-box">
                         <div class="options-panel-left">
                             <img src="images\logo-purecloud.png">
                         </div>
-                        <div class="options-panel-right">                    
+                        <div class="options-panel-right">
                             <div class="input-group">
                                 <div class="input-group-addon">Auth URL</div>
                                 <input type="text" class="form-control" id="pcAuthUrl" ng-model="pcAuthUrl" ng-bind="pcAuthUrl" ng-change="pcOptionsChanged()">
-                            </div>                            
+                            </div>
                             <div class="input-group">
-                                <div class="input-group-addon">Access Token URL</div>                                
+                                <div class="input-group-addon">Access Token URL</div>
                                 <input type="text" class="form-control" id="pcAccessTokenUrl" ng-model="pcAccessTokenUrl" ng-bind="pcAccessTokenUrl" ng-change="pcOptionsChanged()">
                             </div>
-                            <div class="input-group">                                
+                            <div class="input-group">
                                 <div class="input-group-addon">Client ID</div>
                                 <input type="text" class="form-control" id="pcClientId" ng-model="pcClientId" ng-bind="pcClientId" ng-change="pcOptionsChanged()">
                             </div>
-                            <div class="input-group">                                
+                            <div class="input-group">
                                 <div class="input-group-addon">Client Secret</div>
                                 <input type="text" class="form-control" id="pcClientSecret" ng-model="pcClientSecret" ng-bind="pcClientSecret" ng-change="pcOptionsChanged()">
-                            </div>                                                  
+                            </div>
                         </div>
                     </div>
                 </div>
                 <!-- </Pure Cloud tab> -->
-                
+
                 <!-- <CIC tab> -->
                 <div class="tab-pane" id="cic">
                     <div class="options-panel-box">
                         <div class="options-panel-left">
                             <img src="images\logo-cic.png">
                         </div>
-                        <div class="options-panel-right">                    
+                        <div class="options-panel-right">
                             <div class="input-group">
                                 <div class="input-group-addon">IC Server</div>
                                 <input type="text" class="form-control" id="icIcServer" ng-model="icIcServer" ng-bind="icIcServer" ng-change="icOptionsChanged()">
-                            </div>                                      
+                            </div>
                             <div class="input-group">
                                 <div class="input-group-addon">Port</div>
                                 <input type="text" class="form-control" id="icPort" ng-model="icPort" ng-bind="icPort" ng-change="icOptionsChanged()">
-                            </div>       
+                            </div>
                             <div class="input-group">
                                 <div class="input-group-addon">Username</div>
                                 <input type="text" class="form-control" id="icUsername" ng-model="icUsername" ng-bind="icUsername" ng-change="icOptionsChanged()">
-                            </div>  
+                            </div>
                             <div class="input-group">
                                 <div class="input-group-addon">Password</div>
                                 <input type="password" class="form-control" id="icPassword" ng-model="icPassword" ng-bind="icPassword" ng-change="icOptionsChanged()">
-                            </div>  
+                            </div>
                             <div class="input-group">
-                                <div class="input-group-addon">Use SSL</div>                                    
+                                <div class="input-group-addon">Use SSL</div>
                                 <div class="form-control checkbox-inline">
                                     <input type="checkbox" class="form-control-checkbox" id="icUseSsl" ng-model="icUseSsl" ng-bind="icUseSsl" ng-change="icOptionsChanged()">
                                 </div>
-                            </div>                                                                                                                                        
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -103,12 +138,12 @@
                 <!-- </Power BI tab> -->
 
                 <!-- <General tab> -->
-                <div class="tab-pane" id="general">                
+                <div class="tab-pane" id="general">
                     <div class="options-panel-box">
                         <div class="options-panel-left">
                             <img src="images\logo-general.png">
                         </div>
-                        <div class="options-panel-right">                    
+                        <div class="options-panel-right">
                             <div class="form-group">
                                 <label for="x">Checkbox:</label>
                                 <input type="checkbox" class="form-control" id="x">
@@ -118,9 +153,9 @@
                                 <input type="password" class="form-control" id="pwd">
                             </div>
                         </div>
-                    </div>                
-                </div>    
-                <!-- </General tab> -->                                                
+                    </div>
+                </div>
+                <!-- </General tab> -->
             </div>
         </div>
     </div> <!-- container -->    
@@ -131,6 +166,9 @@
     <script type="text/javascript" src="scripts/controllers/optionsCtrl.js"></script>
     <script type="text/javascript" src="scripts/providers/loggerProvider.js"></script>    
     
+    </div>
+    <!-- container -->
+
     <!-- build:js scripts/options-vendor.js -->
     <!-- bower:js -->
     <script src="bower_components/angular-chrome-storage/angular-chrome-storage.js"></script>
@@ -150,14 +188,14 @@
     <!-- endbuild -->
 
     <!-- build:js scripts/options.js -->
-    
+
     <!-- endbuild -->
-    
+
     <script type="text/javascript" src="lib/jquery/dist/jquery.min.js"></script>
     <script type="text/javascript" src="styles/bootstrap/dist/js/bootstrap.js"></script>
     <script type="text/javascript" src="scripts/controllers/optionsCtrl.js"></script>
     <script type="text/javascript" src="scripts/providers/loggerProvider.js"></script>
-          
-  </body>
-    
+
+</body>
+
 </html>

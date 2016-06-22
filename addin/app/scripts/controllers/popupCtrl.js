@@ -10,31 +10,96 @@
 
 angular.module('app', ['powerbiService'])
     .controller('popupCtrl', function ($scope, $log, $window, powerbiService) {
-        
-        $scope.togglePCConnectionIndicator = function (obj) {
+
+        var _BgController;
+
+        function loginCIC() {
+            // Login
+            $scope.cicLoading = true;
+            try {
+                _BgController.getCICService().Login().then(function success() {
+                    $scope.cicLoading = false;
+                    $scope.isCICConnected = true;
+                    $scope.$apply();
+
+                    // Subscribe for messages & start Timer
+                    _BgController.getCICService().Subscribe().then(function success(params) {
+                        _BgController.StartTimer_CIC();
+                    }, function error(params) {
+                        $log.error('Cannot subscribe for notifications');
+                    });
+                }, function error() {
+                    $scope.cicLoading = false;
+                    $scope.isCICConnected = false;
+                    $scope.$apply();
+                });
+            } catch (Err) {
+                $log.error(Err);
+                $scope.cicLoading = false;
+            }
+        }
+
+        function init() {
+            var bgPage = chrome.extension.getBackgroundPage();
+            _BgController = bgPage.getController();
+            if (_BgController.getCICService().getIsConnected()) {
+                // Check connection state
+                try {
+                    _BgController.getCICService().ShouldReconnect().then(function success(response) {
+                        if (response) {
+                            loginCIC();
+                        } else {
+                            $scope.isCICConnected = true;
+                            $scope.$apply();
+                        }
+                    }, function error() {
+                        loginCIC();
+                    });
+                } catch (Err) {
+                    $log.error(Err);
+                }
+            } else {
+                // Display NotConnected State
+                $scope.isCICConnected = false;
+            }
+        }
+
+        init();
+
+        $scope.togglePCConnectionIndicator = function () {
             if ($scope.isPCConnected) {
                 $scope.isPCConnected = false;
             }
             else {
                 $scope.isPCConnected = true;
             }
-        }
+        };
 
-        $scope.toggleCICConnectionIndicator = function (obj) {
+        $scope.toggleCICConnectionIndicator = function () {
             if ($scope.isCICConnected) {
-                //$scope.isCICConnected = false;
-                cicService.Logoff();
+                // LogOff
+                $scope.cicLoading = true;
+                _BgController.StopTimer_CIC();
+                try {
+                    _BgController.getCICService().Logoff().then(function success() {
+                        $scope.cicLoading = false;
+                        $scope.isCICConnected = false;
+                        $scope.$apply();
+                    }, function error() {
+                        $scope.cicLoading = false;
+                        $scope.isCICConnected = false;
+                        $scope.$apply();
+                    });
+                } catch (Err) {
+                    $log.error(Err);
+                    $scope.cicLoading = false;
+
+                }
             }
             else {
-                //cicService.Login();
-                cicService.isCICConnected = true;
-                var bgPage = chrome.extension.getBackgroundPage();
-                var controller = bgPage.getController();
-                var connected = controller.isCICConnected();
-                controller.setIsCICConnected(true);
-                //$scope.isCICConnected = true;
+                loginCIC();
             }
-        }
+        };
 
         $scope.togglePowerBIConnectionIndicator = function () {
             if ($scope.isPowerBIConnected) {
@@ -62,5 +127,5 @@ angular.module('app', ['powerbiService'])
         $scope.openUrl = function (obj) {
             var url = obj.target.attributes.href.value;
             chrome.tabs.create({ url: url });
-        }
+        };
     });

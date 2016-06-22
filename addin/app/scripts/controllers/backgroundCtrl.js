@@ -8,14 +8,26 @@
  * Controller of the app
 **/
 
-angular.module('app', ['cicService'])
-    .controller('backgroundCtrl', function ($scope, $log, cicService) {
+angular.module('app', ['cicService', 'jsonTranslator'])
+    .controller('backgroundCtrl', function ($scope, $log, $interval, cicService, jsonTranslator) {
 
-        $scope.isCICConnected = function () {
-            return cicService.isCICConnected;
+        var CICTimer;
+
+        jsonTranslator.dupa();
+        $scope.getCICService = function () {
+            return cicService;
+        };
+
+        $scope.StartTimer_CIC = function () {
+            $interval.cancel(CICTimer);
+            CICTimer = $interval(function () {
+                cicService.GetMessage();
+            }, 5000);
         }
-        
-        $scope.setIsCICConnected = function (val) {
-            cicService.isCICConnected = val;
+
+        $scope.StopTimer_CIC = function () {
+            $interval.cancel(CICTimer);
         }
+
+
     });
