@@ -26,7 +26,7 @@ angular.module('jsonTranslator', ['ngJSONPath'])
                     // <updating the existing workgroup>                    
                     for (var j in output.data) {
                         if (output.data[j].name == workgroup) {
-                            output.data[j][statName] = value;
+                            output.data[j][statName] = adjustValueForCicOutput(value);
                         }
                     }
                     // </updating the existing workgroup>                 
@@ -35,7 +35,7 @@ angular.module('jsonTranslator', ['ngJSONPath'])
                     // <creating a new workgroup>
                     var newItem = new Object();
                     newItem['name'] = workgroup;
-                    newItem[statName] = value;
+                    newItem[statName] = adjustValueForCicOutput(value);
                     output.data.push(newItem);
                     // </creating a new workgroup>
                 }
@@ -90,5 +90,20 @@ angular.module('jsonTranslator', ['ngJSONPath'])
                 }
             }
             return output;
+        }
+
+        function adjustValueForCicOutput(oldVal) {
+            var newVal = oldVal;
+
+            // <correct date format>
+            var rex = /(\d{8})T(\d{6})Z/; // expression for 20160622T102319Z            
+            if (rex.test(oldVal)) {      
+                // converting 20160622T102319Z to 2016-06-22T12:23:19+02:00       
+                newVal = moment(oldVal, "YYYYMMDDThhmmssZ").format();      
+            }
+            // </correct date format>
+
+            // you can add another transformations here if necessery...                            
+            return newVal;
         }
     });
