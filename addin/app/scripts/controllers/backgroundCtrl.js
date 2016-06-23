@@ -13,7 +13,13 @@ angular.module('app', ['cicService', 'jsonTranslator'])
 
         var CICTimer;
 
+
+
         // <for test only - remove it later>
+
+         var d = moment("20160622T102319Z", "YYYYMMDDThhmmssZ").format();
+         console.debug(d);   
+
          var sourceCic = JSON.parse('[{"statisticKey":{"statisticIdentifier":"inin.workgroup:AgentsLoggedIn","parameterValueItems":[{"parameterTypeId":"ININ.People.WorkgroupStats:Workgroup","value":"Marketing"}]},"statisticValue":{"__type":"urn:inin.com:statistics:statisticIntValue","value":0,"statisticValueType":0}},{"statisticKey":{"statisticIdentifier":"inin.workgroup:TotalAgents","parameterValueItems":[{"parameterTypeId":"ININ.People.WorkgroupStats:Workgroup","value":"Marketing"}]},"statisticValue":{"__type":"urn:inin.com:statistics:statisticIntValue","value":2,"statisticValueType":0}},{"statisticKey":{"statisticIdentifier":"inin.workgroup:TotalAgents","parameterValueItems":[{"parameterTypeId":"ININ.People.WorkgroupStats:Workgroup","value":"GroupA"}]},"statisticValue":{"__type":"urn:inin.com:statistics:statisticIntValue","value":1,"statisticValueType":0}},{"statisticKey":{"statisticIdentifier":"inin.workgroup:PercentAvailable","parameterValueItems":[{"parameterTypeId":"ININ.People.WorkgroupStats:Workgroup","value":"Marketing"}]},"statisticValue":{"__type":"urn:inin.com:statistics:statisticPercentValue","value":0,"statisticValueType":9}},{"statisticKey":{"statisticIdentifier":"inin.workgroup:NumberAvailableForACDInteractions","parameterValueItems":[{"parameterTypeId":"ININ.People.WorkgroupStats:Workgroup","value":"Marketing"}]},"statisticValue":null},{"statisticKey":{"statisticIdentifier":"inin.workgroup:InteractionsWaiting","parameterValueItems":[{"parameterTypeId":"ININ.People.WorkgroupStats:Workgroup","value":"Marketing"}]},"statisticValue":{"__type":"urn:inin.com:statistics:statisticIntValue","value":0,"statisticValueType":0}},{"statisticKey":{"statisticIdentifier":"inin.workgroup:InteractionsWaiting","parameterValueItems":[{"parameterTypeId":"ININ.People.WorkgroupStats:Workgroup","value":"GroupA"}]},"statisticValue":{"__type":"urn:inin.com:statistics:statisticIntValue","value":0,"statisticValueType":0}}]');        
         var cicOut = jsonTranslator.translateCicStatSet(sourceCic);
         console.debug(JSON.stringify(cicOut));
