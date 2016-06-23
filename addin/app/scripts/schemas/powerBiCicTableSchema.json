@@ -5,8 +5,40 @@
       "name": "Workgroup",
       "columns": [
         {
-          "name": "Name",
+          "name": "name",
           "dataType": "String"
+        },
+        {
+          "name": "InteractionsAnswered",
+          "dataType": "Int64"
+        },
+        {
+          "name": "AverageWaitTime",
+          "dataType": "Int64"
+        },
+        {
+          "name": "LongestInboundACDInteraction",
+          "dataType": "Datetime"
+        },
+        {
+          "name": "LongestOnHoldTime",
+          "dataType": "Datetime"
+        },
+        {
+          "name": "LongestOutboundACDInteraction",
+          "dataType": "Datetime"
+        },
+        {
+          "name": "LongestWaitTime",
+          "dataType": "Datetime"
+        },
+        {
+          "name": "TotalTalkTime",
+          "dataType": "Datetime"
+        },
+        {
+          "name": "ServiceLevelTarget",
+          "dataType": "Int64"
         },
         {
           "name": "TotalAgents",
