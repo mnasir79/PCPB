@@ -26,39 +26,6 @@
             </ul>
             <div id="my-tab-content" class="tab-content">
 
-                <!-- <Power BI tab> -->
-                <div class="tab-pane" id="powerbi">
-                    <div class="options-panel-box">
-                        <div class="options-panel-left">
-                            <img src="images\logo-powerbi.png">
-                        </div>
-                        <div class="options-panel-right">
-                            <div class="input-group">
-                                <div class="input-group-addon">Instance</div>
-                                <input type="text" class="form-control" id="pbiInstance" ng-model="pbiInstance" ng-bind="pbiInstance" ng-change="pbiOptionsChanged()">
-                            </div>
-                            <div class="input-group">
-                                <div class="input-group-addon">Tentant</div>
-                                <input type="text" class="form-control" id="pbiTentant" ng-model="pbiTentant" ng-bind="pbiTentant" ng-change="pbiOptionsChanged()">
-                            </div>
-                            <div class="input-group">
-                                <div class="input-group-addon">Client Id</div>
-                                <input type="text" class="form-control" id="pbiClientId" ng-model="pbiClientId" ng-bind="pbiClientId" ng-change="pbiOptionsChanged()">
-                            </div>
-                            <div class="input-group">
-                                <div class="input-group-addon">Redirect URI</div>
-                                <input type="text" class="form-control" id="pbiRedirectUri" ng-model="pbiRedirectUri" ng-bind="pbiRedirectUri" ng-change="pbiOptionsChanged()">
-                            </div>
-                            <div class="input-group">
-                                <div class="input-group-addon">Endpoint</div>
-                                <input type="text" class="form-control" id="pbiEndpoint" ng-model="pbiEndpoint" ng-bind="pbiEndpoint" ng-change="pbiOptionsChanged()">
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-                <!-- </Power BI tab> -->
-
                 <!-- <Pure Cloud tab> -->
                 <div class="tab-pane active" id="purecloud">
                     <div class="options-panel-box">
@@ -131,7 +98,12 @@
                             <div class="input-group">
                                 <div class="input-group-addon">Client Id</div>
                                 <input type="text" class="form-control" id="pbiClientId" ng-model="pbiClientId" ng-bind="pbiClientId" ng-change="pbiOptionsChanged()">
-                            </div> 
+                            </div>
+                            <div class="input-group">
+                                <div class="input-group-addon">Redirect URI</div>
+                                <input type="text" class="form-control" id="pbiRedirectUri" ng-model="pbiRedirectUri" ng-bind="pbiRedirectUri" ng-change="pbiOptionsChanged()">
+                            </div>
+ 
                         </div>
                     </div>
                 </div>
