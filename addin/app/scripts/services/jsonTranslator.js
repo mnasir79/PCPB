@@ -5,14 +5,13 @@ angular.module('jsonTranslator', ['ngJSONPath'])
     .service('jsonTranslator', function (jsonPath) {
 
         this.translateCicStatSet = function (input) {
-            // initializing json paths
-            var statRootPath = '$.[0].statisticValueChanges'; //absolute
+            // initializing json paths            
             var statNamePath = 'statisticKey.statisticIdentifier'; //relative
             var workgroupPath = 'statisticKey.parameterValueItems[0].value'; //relative           
             var valuePath = 'statisticValue.value'; //relative
 
             // getting an array with statistics
-            var statRoot = jsonPath(input, statRootPath)[0];
+            var statRoot = input;
 
             // creating an output object
             var output = { "data": [] };
