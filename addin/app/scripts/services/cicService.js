@@ -1,8 +1,10 @@
 'use strict';
 
 
-angular.module('cicService', ['chromeStorage'])
-  .service('cicService', function ($q, $http, $log, chromeStorage) {
+angular.module('cicService', ['chromeStorage', 'jsonTranslator'])
+  .service('cicService', function ($q, $http, $log, chromeStorage, jsonTranslator, jsonPath) {
+
+    var _StatisticsJSON = [];
 
     // Session variables
     var _sessionId;
@@ -17,12 +19,6 @@ angular.module('cicService', ['chromeStorage'])
 
     var _isConnected = false;
 
-    this.getIsConnected = function () {
-      GetOptions();
-      return _isConnected;
-    };
-
-
     function GetOptions() {
       // Load Enviroment Options from ChromeLocalStorage
       chromeStorage.get('icOptions').then(function (icOptions) {
@@ -34,6 +30,14 @@ angular.module('cicService', ['chromeStorage'])
       });
 
     }
+
+    this.getIsConnected = function () {
+      GetOptions();
+      return _isConnected;
+    };
+
+
+
 
     function clearSession() {
       _sessionId = undefined;
@@ -104,6 +108,7 @@ angular.module('cicService', ['chromeStorage'])
 
     this.Login = function () {
       _isConnected = false;
+      _StatisticsJSON = '';
 
       var jSON_Object = {
         '__type': 'urn:inin.com:connection:icAuthConnectionRequestSettings',
@@ -217,7 +222,48 @@ angular.module('cicService', ['chromeStorage'])
       try {
 
         this.sendRestRequest('GetMessage', 'GET', '/messaging/messages').then(function success(response) {
-          $log.debug(response.data);
+
+          if ((response.data.length != 0) && (_StatisticsJSON.length == 0)) {
+            for (var i = 0; i < response.data.length; i++) {
+              if (response.data[i].isDelta == false) {
+                $log.debug('JSON Created');
+                _StatisticsJSON = response.data[i].statisticValueChanges;
+              }
+              if ((_StatisticsJSON.length > 0) && (response.data[i].isDelta == true)) {
+                $log.debug('JSON replaced');
+                _StatisticsJSON = response.data[i].statisticValueChanges;
+              }
+
+            }
+            //console.debug(_StatisticsJSON);
+          } else
+            if ((response.data.length != 0) && (_StatisticsJSON.length > 0)) {
+              // Update local stats
+              for (var y = 0; y < response.data.length; y++) {
+                var myObj = response.data[y].statisticValueChanges;
+                //console.debug(myObj);
+
+                var sWorkgroupName = myObj[y].statisticKey.parameterValueItems[0].value;
+                var sStatName = myObj[y].statisticKey.statisticIdentifier;
+                var sNewValue = myObj[y].statisticValue.value;
+
+
+                for (var i = 0; i < _StatisticsJSON.length; i++) {
+                  if ((_StatisticsJSON[i].statisticKey.statisticIdentifier === sStatName) &&
+                    (_StatisticsJSON[i].statisticKey.parameterValueItems[0].value === sWorkgroupName)) {
+                    _StatisticsJSON[i].statisticValue.value = sNewValue;
+                  }
+                }
+              }
+            }
+
+          $log.debug('Final JSON: ');
+          $log.debug(JSON.stringify(_StatisticsJSON));
+
+
+          jsonTranslator.translateCicStatSet(_StatisticsJSON);
+
+
           deferred.resolve();
         }, function error(response) {
           $log.debug(response);
@@ -236,6 +282,7 @@ angular.module('cicService', ['chromeStorage'])
       // Example JSON:
 
       var jSON_Object = {
+        'isDelta': false,
         'statisticKeys':
         [
           {
@@ -255,6 +302,16 @@ angular.module('cicService', ['chromeStorage'])
               {
                 "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
                 "value": "Marketing"
+              }
+            ]
+          },
+          {
+            "statisticIdentifier": "inin.workgroup:TotalAgents",
+            "parameterValueItems":
+            [
+              {
+                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
+                "value": "GroupA"
               }
             ]
           },
@@ -279,47 +336,7 @@ angular.module('cicService', ['chromeStorage'])
             ]
           },
           {
-            "statisticIdentifier": "inin.workgroup:NotAvailable",
-            "parameterValueItems":
-            [
-              {
-                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
-                "value": "Marketing"
-              }
-            ]
-          },
-          {
-            "statisticIdentifier": "inin.workgroup:LongestAvailable",
-            "parameterValueItems":
-            [
-              {
-                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
-                "value": "Marketing"
-              }
-            ]
-          },
-          {
-            "statisticIdentifier": "inin.workgroup:OnInboundACDInteractions",
-            "parameterValueItems":
-            [
-              {
-                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
-                "value": "Marketing"
-              }
-            ]
-          },
-          {
-            "statisticIdentifier": "inin.workgroup:LongestInboundACDInteraction",
-            "parameterValueItems":
-            [
-              {
-                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
-                "value": "Marketing"
-              }
-            ]
-          },
-          {
-            "statisticIdentifier": "inin.workgroup:LongestOutboundACDInteraction",
+            "statisticIdentifier": "inin.workgroup:InteractionsWaiting",
             "parameterValueItems":
             [
               {
@@ -334,70 +351,123 @@ angular.module('cicService', ['chromeStorage'])
             [
               {
                 "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
-                "value": "Marketing"
-              }
-            ]
-          },
-           {
-            "statisticIdentifier": "inin.workgroup:LongestOnHoldTime",
-            "parameterValueItems":
-            [
-              {
-                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
-                "value": "Marketing"
-              }
-            ]
-          },
-           {
-            "statisticIdentifier": "inin.workgroup:LongestWaitTime",
-            "parameterValueItems":
-            [
-              {
-                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
-                "value": "Marketing"
-              }
-            ]
-          },
-          {
-            "statisticIdentifier": "inin.workgroup:InteractionsOnHold",
-            "parameterValueItems":
-            [
-              {
-                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
-                "value": "Marketing"
-              }
-            ]
-          },
-          {
-            "statisticIdentifier": "inin.workgroup:InteractionsEntered",
-            "parameterValueItems":
-            [
-              {
-                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
-                "value": "Marketing"
-              },
-              {
-                "parameterTypeId": "ININ.Queue:Interval",
-                "value": "120"
-              }
-            ]
-          },
-          {
-            "statisticIdentifier": "inin.workgroup:InteractionsAbandoned",
-            "parameterValueItems":
-            [
-              {
-                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
-                "value": "Marketing"
-              },
-              {
-                "parameterTypeId": "ININ.Queue:Interval",
-                "value": "120"
+                "value": "GroupA"
               }
             ]
           }
+
+          //,
+          // {
+          //   "statisticIdentifier": "inin.workgroup:NotAvailable",
+          //   "parameterValueItems":
+          //   [
+          //     {
+          //       "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
+          //       "value": "Marketing"
+          //     }
+          //   ]
+          // },
+          // {
+          //   "statisticIdentifier": "inin.workgroup:LongestAvailable",
+          //   "parameterValueItems":
+          //   [
+          //     {
+          //       "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
+          //       "value": "Marketing"
+          //     }
+          //   ]
+          // },
+          // {
+          //   "statisticIdentifier": "inin.workgroup:OnInboundACDInteractions",
+          //   "parameterValueItems":
+          //   [
+          //     {
+          //       "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
+          //       "value": "Marketing"
+          //     }
+          //   ]
+          // },
+          // {
+          //   "statisticIdentifier": "inin.workgroup:LongestInboundACDInteraction",
+          //   "parameterValueItems":
+          //   [
+          //     {
+          //       "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
+          //       "value": "Marketing"
+          //     }
+          //   ]
+          // },
+          // {
+          //   "statisticIdentifier": "inin.workgroup:LongestOutboundACDInteraction",
+          //   "parameterValueItems":
+          //   [
+          //     {
+          //       "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
+          //       "value": "Marketing"
+          //     }
+          //   ]
+          // },
+          // 
+          // {
+          //   "statisticIdentifier": "inin.workgroup:LongestOnHoldTime",
+          //   "parameterValueItems":
+          //   [
+          //     {
+          //       "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
+          //       "value": "Marketing"
+          //     }
+          //   ]
+          // },
+          // {
+          //   "statisticIdentifier": "inin.workgroup:LongestWaitTime",
+          //   "parameterValueItems":
+          //   [
+          //     {
+          //       "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
+          //       "value": "Marketing"
+          //     }
+          //   ]
+          // },
+          // {
+          //   "statisticIdentifier": "inin.workgroup:InteractionsOnHold",
+          //   "parameterValueItems":
+          //   [
+          //     {
+          //       "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
+          //       "value": "Marketing"
+          //     }
+          //   ]
+          // },
+          // {
+          //   "statisticIdentifier": "inin.workgroup:InteractionsEntered",
+          //   "parameterValueItems":
+          //   [
+          //     {
+          //       "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
+          //       "value": "Marketing"
+          //     },
+          //     {
+          //       "parameterTypeId": "ININ.Queue:Interval",
+          //       "value": "CurrentPeriod"
+          //     }
+          //   ]
+          // },
+          // {
+          //   "statisticIdentifier": "inin.workgroup:InteractionsAbandoned",
+          //   "parameterValueItems":
+          //   [
+          //     {
+          //       "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
+          //       "value": "Marketing"
+          //     },
+          //     {
+          //       "parameterTypeId": "ININ.Queue:Interval",
+          //       "value": "CurrentPeriod"
+          //     }
+          //   ]
+          // }
         ]
-      }
+      };
 
 
       var deferred = $q.defer();

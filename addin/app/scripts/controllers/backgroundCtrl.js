@@ -27,11 +27,11 @@ angular.module('app', ['cicService', 'jsonTranslator'])
             CICTimer = $interval(function () {
                 cicService.GetMessage();
             }, 5000);
-        }
+        };
 
         $scope.StopTimer_CIC = function () {
             $interval.cancel(CICTimer);
-        }
+        };
 
 
     });
