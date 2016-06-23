@@ -215,6 +215,53 @@ angular.module('cicService', ['chromeStorage', 'jsonTranslator'])
       });
     };
 
+    function updateCache (input) {
+      for (var y = 0; y < input.data[0].statisticValueChanges.length; y++) {
+        var myObj = input.data[0].statisticValueChanges[y];
+        $log.debug('Begin: ----')
+        console.debug(myObj);
+
+        var sWorkgroupName = myObj.statisticKey.parameterValueItems[0].value;
+        var sStatName = myObj.statisticKey.statisticIdentifier;
+        var sNewValue;
+
+        if (myObj.statisticValue != null && myObj.statisticValue.value != null) {
+          $log.debug('Got a value');
+          sNewValue = myObj.statisticValue.value;
+
+          $log.debug(sWorkgroupName);
+          $log.debug(sStatName);
+          $log.debug(sNewValue);
+
+        } else {
+          $log.debug('NULL value');
+          sNewValue = null;
+        }
+
+
+        for (var i = 0; i < _StatisticsJSON.length; i++) {
+          if ((_StatisticsJSON[i].statisticKey.statisticIdentifier === sStatName) &&
+            (_StatisticsJSON[i].statisticKey.parameterValueItems[0].value === sWorkgroupName)) {
+
+            // If we've received NULL, update NULL in a Cache
+            if (sNewValue == null) {
+              // $log.debug('Updated NULL value in a Cache');
+              // _StatisticsJSON[i] = myObj;
+              continue;
+            }
+
+            if (_StatisticsJSON[i].statisticValue != null && _StatisticsJSON[i].statisticValue.value != null) {
+              _StatisticsJSON[i].statisticValue.value = myObj.statisticValue.value;
+              $log.debug('Stat updated');
+            } else {
+              $log.debug('Field not defined / replace it !!');
+              _StatisticsJSON[i] = myObj;
+            }
+          }
+        }
+        $log.debug('End:')
+      }
+    };
 
     this.GetMessage = function () {
 
@@ -222,7 +269,7 @@ angular.module('cicService', ['chromeStorage', 'jsonTranslator'])
       try {
 
         this.sendRestRequest('GetMessage', 'GET', '/messaging/messages').then(function success(response) {
-
+          $log.debug(response);
           if ((response.data.length != 0) && (_StatisticsJSON.length == 0)) {
             for (var i = 0; i < response.data.length; i++) {
               if (response.data[i].isDelta == false) {
@@ -233,36 +280,16 @@ angular.module('cicService', ['chromeStorage', 'jsonTranslator'])
                 $log.debug('JSON replaced');
                 _StatisticsJSON = response.data[i].statisticValueChanges;
               }
-
             }
-            //console.debug(_StatisticsJSON);
+            
           } else
             if ((response.data.length != 0) && (_StatisticsJSON.length > 0)) {
               // Update local stats
-              for (var y = 0; y < response.data.length; y++) {
-                var myObj = response.data[y].statisticValueChanges;
-                //console.debug(myObj);
-
-                var sWorkgroupName = myObj[y].statisticKey.parameterValueItems[0].value;
-                var sStatName = myObj[y].statisticKey.statisticIdentifier;
-                var sNewValue = myObj[y].statisticValue.value;
-
-
-                for (var i = 0; i < _StatisticsJSON.length; i++) {
-                  if ((_StatisticsJSON[i].statisticKey.statisticIdentifier === sStatName) &&
-                    (_StatisticsJSON[i].statisticKey.parameterValueItems[0].value === sWorkgroupName)) {
-                    _StatisticsJSON[i].statisticValue.value = sNewValue;
-                  }
-                }
-              }
+                updateCache(response);
             }
 
           $log.debug('Final JSON: ');
-          $log.debug(JSON.stringify(_StatisticsJSON));
-
-
-          jsonTranslator.translateCicStatSet(_StatisticsJSON);
-
+          $log.debug(jsonTranslator.translateCicStatSet(_StatisticsJSON));
 
           deferred.resolve();
         }, function error(response) {
@@ -356,116 +383,118 @@ angular.module('cicService', ['chromeStorage', 'jsonTranslator'])
             ]
           }
 
-          //,
-          // {
-          //   "statisticIdentifier": "inin.workgroup:NotAvailable",
-          //   "parameterValueItems":
-          //   [
-          //     {
-          //       "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
-          //       "value": "Marketing"
-          //     }
-          //   ]
-          // },
-          // {
-          //   "statisticIdentifier": "inin.workgroup:LongestAvailable",
-          //   "parameterValueItems":
-          //   [
-          //     {
-          //       "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
-          //       "value": "Marketing"
-          //     }
-          //   ]
-          // },
-          // {
-          //   "statisticIdentifier": "inin.workgroup:OnInboundACDInteractions",
-          //   "parameterValueItems":
-          //   [
-          //     {
-          //       "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
-          //       "value": "Marketing"
-          //     }
-          //   ]
-          // },
-          // {
-          //   "statisticIdentifier": "inin.workgroup:LongestInboundACDInteraction",
-          //   "parameterValueItems":
-          //   [
-          //     {
-          //       "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
-          //       "value": "Marketing"
-          //     }
-          //   ]
-          // },
-          // {
-          //   "statisticIdentifier": "inin.workgroup:LongestOutboundACDInteraction",
-          //   "parameterValueItems":
-          //   [
-          //     {
-          //       "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
-          //       "value": "Marketing"
-          //     }
-          //   ]
-          // },
-          // 
-          // {
-          //   "statisticIdentifier": "inin.workgroup:LongestOnHoldTime",
-          //   "parameterValueItems":
-          //   [
-          //     {
-          //       "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
-          //       "value": "Marketing"
-          //     }
-          //   ]
-          // },
-          // {
-          //   "statisticIdentifier": "inin.workgroup:LongestWaitTime",
-          //   "parameterValueItems":
-          //   [
-          //     {
-          //       "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
-          //       "value": "Marketing"
-          //     }
-          //   ]
-          // },
-          // {
-          //   "statisticIdentifier": "inin.workgroup:InteractionsOnHold",
-          //   "parameterValueItems":
-          //   [
-          //     {
-          //       "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
-          //       "value": "Marketing"
-          //     }
-          //   ]
-          // },
-          // {
-          //   "statisticIdentifier": "inin.workgroup:InteractionsEntered",
-          //   "parameterValueItems":
-          //   [
-          //     {
-          //       "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
-          //       "value": "Marketing"
-          //     },
-          //     {
-          //       "parameterTypeId": "ININ.Queue:Interval",
-          //       "value": "CurrentPeriod"
-          //     }
-          //   ]
-          // },
-          // {
-          //   "statisticIdentifier": "inin.workgroup:InteractionsAbandoned",
-          //   "parameterValueItems":
-          //   [
-          //     {
-          //       "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
-          //       "value": "Marketing"
-          //     },
-          //     {
-          //       "parameterTypeId": "ININ.Queue:Interval",
-          //       "value": "CurrentPeriod"
-          //     }
-          //   ]
-          // }
+          ,
+          {
+            "statisticIdentifier": "inin.workgroup:NotAvailable",
+            "parameterValueItems":
+            [
+              {
+                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
+                "value": "Marketing"
+              }
+            ]
+          },
+          {
+            "statisticIdentifier": "inin.workgroup:LongestAvailable",
+            "parameterValueItems":
+            [
+              {
+                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
+                "value": "Marketing"
+              }
+            ]
+          },
+          {
+            "statisticIdentifier": "inin.workgroup:OnInboundACDInteractions",
+            "parameterValueItems":
+            [
+              {
+                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
+                "value": "Marketing"
+              }
+            ]
+          },
+          {
+            "statisticIdentifier": "inin.workgroup:LongestInboundACDInteraction",
+            "parameterValueItems":
+            [
+              {
+                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
+                "value": "Marketing"
+              }
+            ]
+          },
+          {
+            "statisticIdentifier": "inin.workgroup:LongestOutboundACDInteraction",
+            "parameterValueItems":
+            [
+              {
+                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
+                "value": "Marketing"
+              }
+            ]
+          },
+
+          {
+            "statisticIdentifier": "inin.workgroup:LongestOnHoldTime",
+            "parameterValueItems":
+            [
+              {
+                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
+                "value": "Marketing"
+              }
+            ]
+          },
+          {
+            "statisticIdentifier": "inin.workgroup:LongestWaitTime",
+            "parameterValueItems":
+            [
+              {
+                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
+                "value": "Marketing"
+              }
+            ]
+          },
+          {
+            "statisticIdentifier": "inin.workgroup:InteractionsOnHold",
+            "parameterValueItems":
+            [
+              {
+                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
+                "value": "Marketing"
+              }
+            ]
+          }
+
+          ,
+          {
+            "statisticIdentifier": "inin.workgroup:InteractionsEntered",
+            "parameterValueItems":
+            [
+              {
+                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
+                "value": "Marketing"
+              },
+              {
+                "parameterTypeId": "ININ.Queue:Interval",
+                "value": "CurrentPeriod"
+              }
+            ]
+          },
+          {
+            "statisticIdentifier": "inin.workgroup:InteractionsAbandoned",
+            "parameterValueItems":
+            [
+              {
+                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
+                "value": "Marketing"
+              },
+              {
+                "parameterTypeId": "ININ.Queue:Interval",
+                "value": "CurrentPeriod"
+              }
+            ]
+          }
         ]
       };
 
