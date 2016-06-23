@@ -1,8 +1,8 @@
 'use strict';
 
 
-angular.module('cicService', ['chromeStorage', 'jsonTranslator'])
-  .service('cicService', function ($q, $http, $log, chromeStorage, jsonTranslator, jsonPath) {
+angular.module('cicService', ['chromeStorage', 'jsonTranslator', 'powerbiService'])
+  .service('cicService', function ($q, $http, $log, chromeStorage, jsonTranslator, jsonPath, powerbiService) {
 
     var _StatisticsJSON = [];
 
@@ -28,6 +28,18 @@ angular.module('cicService', ['chromeStorage', 'jsonTranslator'])
         _icPassword = icOptions.icPassword;
         _icUseSsl = icOptions.icUseSsl;
       });
+
+
+      // TEST AREA 51 ################
+
+      var sourcePc = JSON.parse('{"results": [{"group": {"queueId": "d7b99d1c-4833-4ad6-aa87-d1a23dba13d4"},"data": [{"metric": "oActiveUsers","stats": {"count": 5}},{"metric": "oMemberUsers","stats": {"count": 5}}]},{"group": {"mediaType": "voice","queueId": "d7b99d1c-4833-4ad6-aa87-d1a23dba13d4"},"data": [{"metric": "oInteracting","stats": {"count": 0}},{"metric": "oWaiting","stats": {"count": 0}}]},{"group": {"mediaType": "chat","queueId": "d7b99d1c-4833-4ad6-aa87-d1a23dba13d4"},"data": [{"metric": "oInteracting","stats": {"count": 0}},{"metric": "oWaiting","stats": {"count": 0}}]},{"group": {"mediaType": "email","queueId": "d7b99d1c-4833-4ad6-aa87-d1a23dba13d4"},"data": [{"metric": "oInteracting","stats": {"count": 0}},{"metric": "oWaiting","stats": {"count": 0}}]},{"group": {"mediaType": "callback","queueId": "d7b99d1c-4833-4ad6-aa87-d1a23dba13d4"},"data": [{"metric": "oInteracting","stats": {"count": 0}},{"metric": "oWaiting","stats": {"count": 0}}]}]}');
+
+      console.debug(jsonTranslator.translatePcStatSet(sourcePc));
+
+
+
+      // TEST AREA 51 ################
+
 
     }
 
@@ -245,7 +257,7 @@ angular.module('cicService', ['chromeStorage', 'jsonTranslator'])
 
             // If we've received NULL, update NULL in a Cache
             if (sNewValue == null) {
-               $log.debug('Updated NULL value in a Cache');
+              $log.debug('Updated NULL value in a Cache');
               _StatisticsJSON[i] = myObj;
               continue;
             }
@@ -262,7 +274,11 @@ angular.module('cicService', ['chromeStorage', 'jsonTranslator'])
         $log.debug('End:')
       }
       $log.debug('UpToDate Cached JSON Obj');
-      $log.debug(jsonTranslator.translateCicStatSet(_StatisticsJSON));
+      var outputStat = jsonTranslator.translateCicStatSet(_StatisticsJSON);
+      $log.debug(outputStat);
+      powerbiService.SendToPowerBI('CIC', 'Workgroup', outputStat);
+
+
     };
 
     this.GetMessage = function () {
@@ -284,6 +300,9 @@ angular.module('cicService', ['chromeStorage', 'jsonTranslator'])
             //   }
             // }
             _StatisticsJSON = response.data[0].statisticValueChanges;
+
+
+
           } else
             if ((response.data.length != 0) && (_StatisticsJSON.length > 0)) {
               // Update local stats
@@ -551,7 +570,7 @@ angular.module('cicService', ['chromeStorage', 'jsonTranslator'])
               }
             ]
           }
-          
+
         ]
       };
 

@@ -5,6 +5,10 @@
       "name": "Workgroup",
       "columns": [
         {
+          "name": "timeStamp",
+          "dataType": "Datetime"
+        },
+        {
           "name": "name",
           "dataType": "String"
         },

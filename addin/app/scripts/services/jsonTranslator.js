@@ -22,6 +22,7 @@ angular.module('jsonTranslator', ['ngJSONPath'])
                 var statName = jsonPath(statRoot[i], statNamePath)[0].replace('inin.workgroup:', '');
                 var value = jsonPath(statRoot[i], valuePath)[0];
                 var item = jsonPath(output, "$.data.[?(@.name==='" + workgroup + "')]");
+
                 if (item) {
                     // <updating the existing workgroup>                    
                     for (var j in output.data) {
@@ -33,13 +34,22 @@ angular.module('jsonTranslator', ['ngJSONPath'])
                 }
                 else {
                     // <creating a new workgroup>
+
                     var newItem = new Object();
                     newItem['name'] = workgroup;
                     newItem[statName] = adjustValueForCicOutput(value);
                     output.data.push(newItem);
                     // </creating a new workgroup>
                 }
+
             }
+
+            console.log(output);
+            for (var i = 0; i < output.data.length; i++) {
+                // Add TimeStamp
+                output.data[i]["timeStamp"] = adjustValueForCicOutput(new Date());
+            }
+
             return output;
         }
 
@@ -53,7 +63,7 @@ angular.module('jsonTranslator', ['ngJSONPath'])
 
             // getting an array with statistics
             var statRoot = input.results;
-            
+
             // creating an output object
             var output = { "data": [] };
 
@@ -67,7 +77,7 @@ angular.module('jsonTranslator', ['ngJSONPath'])
                     var value = jsonPath(queueStatRoot[j], valuePath)[0];
                     var item = jsonPath(output, "$.data.[?(@.name==='" + queue + "')]");
                     // adding media type to metric name                   
-                    if (mediaType){
+                    if (mediaType) {
                         metric = mediaType + '-' + metric;
                     }
                     if (item) {
@@ -86,7 +96,7 @@ angular.module('jsonTranslator', ['ngJSONPath'])
                         newItem[metric] = value;
                         output.data.push(newItem);
                         // </creating a new queue>
-                    }                    
+                    }
                 }
             }
             return output;
@@ -97,9 +107,9 @@ angular.module('jsonTranslator', ['ngJSONPath'])
 
             // <correct date format>
             var rex = /(\d{8})T(\d{6})Z/; // expression for 20160622T102319Z            
-            if (rex.test(oldVal)) {      
+            if (rex.test(oldVal)) {
                 // converting 20160622T102319Z to 2016-06-22T12:23:19+02:00       
-                newVal = moment(oldVal, "YYYYMMDDThhmmssZ").format();      
+                newVal = moment(oldVal, "YYYYMMDDThhmmssZ").format();
             }
             // </correct date format>
 
