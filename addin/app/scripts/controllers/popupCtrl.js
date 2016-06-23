@@ -41,6 +41,7 @@ angular.module('app', ['powerbiService'])
 
         function init() {
             var bgPage = chrome.extension.getBackgroundPage();
+            //console.log(bgPage);
             _BgController = bgPage.getController();
             if (_BgController.getCICService().getIsConnected()) {
                 // Check connection state
