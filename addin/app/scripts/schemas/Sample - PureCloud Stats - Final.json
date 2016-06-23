@@ -1,0 +1,9 @@
+{
+  "name": "Marketing",
+  "ActiveUsers": 5, 
+  "MemberUsers": 5,
+  "voice-interacting": 0,
+  "voice-waiting": 0,
+  "chat-interacting": 0
+  // etc...
+}

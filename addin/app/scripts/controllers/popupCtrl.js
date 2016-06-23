@@ -8,8 +8,8 @@
  * Controller of the app
 **/
 
-angular.module('app', [])
-    .controller('popupCtrl', function ($scope, $log) {
+angular.module('app', ['powerbiService'])
+    .controller('popupCtrl', function ($scope, $log, $window, powerbiService) {
 
         var _BgController;
 
@@ -43,7 +43,7 @@ angular.module('app', [])
             var bgPage = chrome.extension.getBackgroundPage();
             _BgController = bgPage.getController();
             if (_BgController.getCICService().getIsConnected()) {
-                // Check conenction state
+                // Check connection state
                 try {
                     _BgController.getCICService().ShouldReconnect().then(function success(response) {
                         if (response) {
@@ -63,6 +63,7 @@ angular.module('app', [])
                 $scope.isCICConnected = false;
             }
         }
+
         init();
 
         $scope.togglePCConnectionIndicator = function () {
@@ -102,11 +103,25 @@ angular.module('app', [])
 
         $scope.togglePowerBIConnectionIndicator = function () {
             if ($scope.isPowerBIConnected) {
-                $scope.isPowerBIConnected = false;
+                // Logoff
+                $scope.powerbiLoading = true;
+                console.log('Logging off of PowerBI');
+                powerbiService.Logoff(function() {
+                    $scope.powerbiLoading = false;
+                    $scope.isPowerBIConnected = false;
+                });
             }
             else {
-                $scope.isPowerBIConnected = true;
+                // Login
+                console.log('Logging in to PowerBI from angular');
+                var clientId = '4f824f48-924a-44e8-aa5a-1a9383ca4810'; //TODO Get this from options
+                $window.open('https://login.windows.net/common/oauth2/authorize?resource=https%3A%2F%2Fanalysis.windows.net%2Fpowerbi%2Fapi&client_id=' + clientId + '&response_type=code&redirect_uri=https://login.live.com/oauth20_desktop.srf&site_id=500453', 'name', 'height=700,width=550');
+                // Rest of the login process is performed by powerbilogin.js
             }
+        };
+
+        $scope.sendToPowerBI = function(dataset, table, rows) {
+          powerbiService.SendToPowerBI(dataset, table, rows);
         };
 
         $scope.openUrl = function (obj) {

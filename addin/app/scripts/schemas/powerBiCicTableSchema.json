@@ -1,0 +1,58 @@
+{
+  "name": "CIC",
+  "tables": [
+    {
+      "name": "Workgroup",
+      "columns": [
+        {
+          "name": "Name",
+          "dataType": "String"
+        },
+        {
+          "name": "TotalAgents",
+          "dataType": "Int64"
+        },
+        {
+          "name": "PercentAvailable",
+          "dataType": "Int64"
+        },
+        {
+          "name": "OnInboundACDInteractions",
+          "dataType": "Int64"
+        },
+        {
+          "name": "NumberAvailableForACDInteractions",
+          "dataType": "Int64"
+        },
+        {
+          "name": "NotAvailable",
+          "dataType": "Int64"
+        },
+        {
+          "name": "LongestAvailable",
+          "dataType": "Datetime"
+        },
+        {
+          "name": "InteractionsWaiting",
+          "dataType": "Int64"
+        },
+        {
+          "name": "InteractionsOnHold",
+          "dataType": "Int64"
+        },
+        {
+          "name": "InteractionsEntered",
+          "dataType": "Int64"
+        },
+        {
+          "name": "InteractionsAbandoned",
+          "dataType": "Int64"
+        },
+        {
+          "name": "AgentsLoggedIn",
+          "dataType": "Int64"
+        }
+      ]
+    }
+  ]
+}
