@@ -215,7 +215,7 @@ angular.module('cicService', ['chromeStorage', 'jsonTranslator'])
       });
     };
 
-    function updateCache (input) {
+    function updateCache(input) {
       for (var y = 0; y < input.data[0].statisticValueChanges.length; y++) {
         var myObj = input.data[0].statisticValueChanges[y];
         $log.debug('Begin: ----')
@@ -245,8 +245,8 @@ angular.module('cicService', ['chromeStorage', 'jsonTranslator'])
 
             // If we've received NULL, update NULL in a Cache
             if (sNewValue == null) {
-              // $log.debug('Updated NULL value in a Cache');
-              // _StatisticsJSON[i] = myObj;
+               $log.debug('Updated NULL value in a Cache');
+              _StatisticsJSON[i] = myObj;
               continue;
             }
 
@@ -261,6 +261,8 @@ angular.module('cicService', ['chromeStorage', 'jsonTranslator'])
         }
         $log.debug('End:')
       }
+      $log.debug('UpToDate Cached JSON Obj');
+      $log.debug(jsonTranslator.translateCicStatSet(_StatisticsJSON));
     };
 
     this.GetMessage = function () {
@@ -271,26 +273,22 @@ angular.module('cicService', ['chromeStorage', 'jsonTranslator'])
         this.sendRestRequest('GetMessage', 'GET', '/messaging/messages').then(function success(response) {
           $log.debug(response);
           if ((response.data.length != 0) && (_StatisticsJSON.length == 0)) {
-            for (var i = 0; i < response.data.length; i++) {
-              if (response.data[i].isDelta == false) {
-                $log.debug('JSON Created');
-                _StatisticsJSON = response.data[i].statisticValueChanges;
-              }
-              if ((_StatisticsJSON.length > 0) && (response.data[i].isDelta == true)) {
-                $log.debug('JSON replaced');
-                _StatisticsJSON = response.data[i].statisticValueChanges;
-              }
-            }
-            
+            // for (var i = 0; i < response.data.length; i++) {
+            //   if (response.data[i].isDelta == false) {
+            //     $log.debug('JSON Created');
+            //     _StatisticsJSON = response.data[i].statisticValueChanges;
+            //   }
+            //   if ((_StatisticsJSON.length > 0) && (response.data[i].isDelta == true)) {
+            //     $log.debug('JSON replaced');
+            //     _StatisticsJSON = response.data[i].statisticValueChanges;
+            //   }
+            // }
+            _StatisticsJSON = response.data[0].statisticValueChanges;
           } else
             if ((response.data.length != 0) && (_StatisticsJSON.length > 0)) {
               // Update local stats
-                updateCache(response);
+              updateCache(response);
             }
-
-          $log.debug('Final JSON: ');
-          $log.debug(jsonTranslator.translateCicStatSet(_StatisticsJSON));
-
           deferred.resolve();
         }, function error(response) {
           $log.debug(response);
@@ -464,11 +462,23 @@ angular.module('cicService', ['chromeStorage', 'jsonTranslator'])
                 "value": "Marketing"
               }
             ]
-          }
-
-          ,
+          },
           {
             "statisticIdentifier": "inin.workgroup:InteractionsEntered",
+            "parameterValueItems":
+            [
+              {
+                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
+                "value": "Marketing"
+              },
+              {
+                "parameterTypeId": "ININ.Queue:Interval",
+                "value": "CurrentPeriod"
+              }
+            ]
+          },
+          {
+            "statisticIdentifier": "inin.workgroup:InteractionsAnswered",
             "parameterValueItems":
             [
               {
@@ -494,7 +504,54 @@ angular.module('cicService', ['chromeStorage', 'jsonTranslator'])
                 "value": "CurrentPeriod"
               }
             ]
+          },
+          {
+            "statisticIdentifier": "inin.workgroup:TotalTalkTime",
+            "parameterValueItems":
+            [
+              {
+                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
+                "value": "Marketing"
+              },
+              {
+                "parameterTypeId": "ININ.Queue:Interval",
+                "value": "CurrentPeriod"
+              }
+            ]
+          },
+          {
+            "statisticIdentifier": "inin.workgroup:AverageWaitTime",
+            "parameterValueItems":
+            [
+              {
+                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
+                "value": "Marketing"
+              },
+              {
+                "parameterTypeId": "ININ.Queue:Interval",
+                "value": "CurrentPeriod"
+              }
+            ]
+          },
+          {
+            "statisticIdentifier": "inin.workgroup:ServiceLevelTarget",
+            "parameterValueItems":
+            [
+              {
+                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
+                "value": "Marketing"
+              },
+              {
+                "parameterTypeId": "ININ.Queue:Interval",
+                "value": "CurrentPeriod"
+              },
+              {
+                "parameterTypeId": "ININ.Queue:InteractionType",
+                "value": "Calls"
+              }
+            ]
           }
+          
         ]
       };
 
