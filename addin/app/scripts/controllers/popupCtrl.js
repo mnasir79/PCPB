@@ -8,8 +8,8 @@
  * Controller of the app
 **/
 
-angular.module('app', ['powerbiService'])
-    .controller('popupCtrl', function ($scope, $log, $window, powerbiService) {
+angular.module('app', ['powerbiService', 'pureCloudService', 'oAuthProvider'])
+    .controller('popupCtrl', function ($scope, $log, $window, powerbiService, pureCloudService) {
 
         var _BgController;
 
@@ -68,11 +68,14 @@ angular.module('app', ['powerbiService'])
         init();
 
         $scope.togglePCConnectionIndicator = function () {
+
             if ($scope.isPCConnected) {
                 $scope.isPCConnected = false;
             }
             else {
                 $scope.isPCConnected = true;
+                console.log("purecloud");
+                pureCloudService.init();
             }
         };
 
