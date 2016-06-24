@@ -81,8 +81,6 @@ angular.module('app', ['powerbiService', 'pureCloudService', 'oAuthProvider'])
                     clientSecret: 'ohflyjhOwlG38tD0hiMJxgKKGlUY8KeCQrJlQgwIWfE' 
                 });
 
-
-                //pureCloudService.init();
             }
         };
 
