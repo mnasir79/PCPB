@@ -10,11 +10,12 @@ angular.module('powerbiService', ['chromeStorage'])
     // This watches for the access token in the local storage
     // The current module used (chromeStorage (https://github.com/infomofo/angular-chrome-storage)) does not have that functionality
     // This can be resource-intensive so we might need to find a better way of doing this
+    // The same code is also in popupCtrl.js as there was an issue when logging off and logging back in that cause the isPowerBIConnected var to not update ng-class to turn the button green
     $rootScope.$watch(function() {
       chromeStorage.get('powerbi_access_token').then(function(retrievedAccessToken) {
-        //console.log('retrieved token:', retrievedAccessToken);
         accessToken = retrievedAccessToken;
         $rootScope.isPowerBIConnected = retrievedAccessToken !== undefined;
+        //console.log('retrieved token:', retrievedAccessToken !== undefined);
       });
     }, null);
 

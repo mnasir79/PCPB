@@ -8,8 +8,8 @@
  * Controller of the app
 **/
 
-angular.module('app', ['powerbiService'])
-    .controller('popupCtrl', function ($scope, $log, $window, powerbiService) {
+angular.module('app', ['powerbiService', 'chromeStorage'])
+    .controller('popupCtrl', function ($scope, $log, $window, powerbiService, chromeStorage) {
 
         var _BgController;
 
@@ -102,6 +102,13 @@ angular.module('app', ['powerbiService'])
             }
         };
 
+        $scope.$watch(function() {
+        chromeStorage.get('powerbi_access_token').then(function(retrievedAccessToken) {
+            $scope.isPowerBIConnected = retrievedAccessToken !== undefined;
+            //console.log('retrieved token:', retrievedAccessToken !== undefined);
+        });
+        }, null);
+
         $scope.togglePowerBIConnectionIndicator = function () {
             if ($scope.isPowerBIConnected) {
                 // Logoff
@@ -118,6 +125,7 @@ angular.module('app', ['powerbiService'])
                 var clientId = '4f824f48-924a-44e8-aa5a-1a9383ca4810'; //TODO Get this from options
                 $window.open('https://login.windows.net/common/oauth2/authorize?resource=https%3A%2F%2Fanalysis.windows.net%2Fpowerbi%2Fapi&client_id=' + clientId + '&response_type=code&redirect_uri=https://login.live.com/oauth20_desktop.srf&site_id=500453', 'name', 'height=700,width=550');
                 // Rest of the login process is performed by powerbilogin.js
+                // isPowerBIConnected 
             }
         };
 
