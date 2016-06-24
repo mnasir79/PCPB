@@ -2,7 +2,7 @@
 
 
 angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslator'])
-  .service('pureCloudService', function ($http, $log, oAuth, $httpParamSerializerJQLike, $q, $window, $rootScope, base64,  powerbiService, jsonTranslator, jsonPath) {
+  .service('pureCloudService', function ($http, $log, $httpParamSerializerJQLike, $q, $window, $rootScope, base64, powerbiService, jsonTranslator, jsonPath) {
     
     var _sourcePureCloud = 'PURECLOUD';
     var _accessToken;
@@ -190,7 +190,7 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 					// send data to powerbi
 					var outputStat = jsonTranslator.translatePcStatSet(wgData);
 					console.log(wgData);
-					/*powerbiService.SendToPowerBI('PureCloud', 'Queue', wgData);*/
+					powerbiService.SendToPowerBI('PureCloud', 'Queue', wgData);
 
 					deferred.resolve();
 		    	}, 
