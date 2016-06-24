@@ -32,9 +32,9 @@ angular.module('cicService', ['chromeStorage', 'jsonTranslator', 'powerbiService
 
       // TEST AREA 51 ################
 
-      var sourcePc = JSON.parse('{"results": [{"group": {"queueId": "d7b99d1c-4833-4ad6-aa87-d1a23dba13d4"},"data": [{"metric": "oActiveUsers","stats": {"count": 5}},{"metric": "oMemberUsers","stats": {"count": 5}}]},{"group": {"mediaType": "voice","queueId": "d7b99d1c-4833-4ad6-aa87-d1a23dba13d4"},"data": [{"metric": "oInteracting","stats": {"count": 0}},{"metric": "oWaiting","stats": {"count": 0}}]},{"group": {"mediaType": "chat","queueId": "d7b99d1c-4833-4ad6-aa87-d1a23dba13d4"},"data": [{"metric": "oInteracting","stats": {"count": 0}},{"metric": "oWaiting","stats": {"count": 0}}]},{"group": {"mediaType": "email","queueId": "d7b99d1c-4833-4ad6-aa87-d1a23dba13d4"},"data": [{"metric": "oInteracting","stats": {"count": 0}},{"metric": "oWaiting","stats": {"count": 0}}]},{"group": {"mediaType": "callback","queueId": "d7b99d1c-4833-4ad6-aa87-d1a23dba13d4"},"data": [{"metric": "oInteracting","stats": {"count": 0}},{"metric": "oWaiting","stats": {"count": 0}}]}]}');
+      // var sourcePc = JSON.parse('{"results": [{"group": {"queueId": "d7b99d1c-4833-4ad6-aa87-d1a23dba13d4"},"data": [{"metric": "oActiveUsers","stats": {"count": 5}},{"metric": "oMemberUsers","stats": {"count": 5}}]},{"group": {"mediaType": "voice","queueId": "d7b99d1c-4833-4ad6-aa87-d1a23dba13d4"},"data": [{"metric": "oInteracting","stats": {"count": 0}},{"metric": "oWaiting","stats": {"count": 0}}]},{"group": {"mediaType": "chat","queueId": "d7b99d1c-4833-4ad6-aa87-d1a23dba13d4"},"data": [{"metric": "oInteracting","stats": {"count": 0}},{"metric": "oWaiting","stats": {"count": 0}}]},{"group": {"mediaType": "email","queueId": "d7b99d1c-4833-4ad6-aa87-d1a23dba13d4"},"data": [{"metric": "oInteracting","stats": {"count": 0}},{"metric": "oWaiting","stats": {"count": 0}}]},{"group": {"mediaType": "callback","queueId": "d7b99d1c-4833-4ad6-aa87-d1a23dba13d4"},"data": [{"metric": "oInteracting","stats": {"count": 0}},{"metric": "oWaiting","stats": {"count": 0}}]}]}');
 
-      console.debug(jsonTranslator.translatePcStatSet(sourcePc));
+      // console.debug(jsonTranslator.translatePcStatSet(sourcePc));
       
 
       // TEST AREA 51 ################
