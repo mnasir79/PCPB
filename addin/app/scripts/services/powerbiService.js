@@ -43,15 +43,19 @@ angular.module('powerbiService', ['chromeStorage'])
         DataSetExists(dataset, function (dataSetId) {
           if (dataSetId) {
             console.log(dataset, 'dataset found!:', dataSetId);
+            // Add rows
+            console.log('Dataset:', dataset, '. Table:', table, '. Adding rows:', rows);
+            AddRows(dataSetId, table, rows);
           } else {
             console.log(dataset, 'dataset NOT found!');
-            dataSetId = CreateDataSet(); // TODO Differentiate datasets for PC and CIC
-            console.log('New Dataset Id:', dataSetId);
+            CreateDataSet(dataset, function(responseText) {
+              var dataSetId = responseText.id;
+              console.log('New Dataset Id:', dataSetId);
+              // Add rows
+              console.log('Dataset:', dataset, '. Table:', table, '. Adding rows:', rows);
+              AddRows(dataSetId, table, rows);
+            });
           }
-
-          // Add rows
-          console.log('Dataset:', dataset, '. Table:', table, '. Adding rows:', rows);
-          AddRows(dataSetId, table, rows);
         });
       } else {
         console.error('Please sign in to PowerBI first.');
@@ -75,21 +79,27 @@ angular.module('powerbiService', ['chromeStorage'])
     }
 
     // Create a PowerBI dataset
-    function CreateDataSet() {
+    function CreateDataSet(name, callback) {
       //We have to hardcode the tables and it sucks since we can't add tables to an existing dataset
       //Feature requests: 
       //  https://ideas.powerbi.com/forums/268152-developer-apis/suggestions/7111791-alter-datasets-by-adding-removing-individual-table
       //  https://ideas.powerbi.com/forums/268152-developer-apis/suggestions/10445529-add-rest-api-call-to-add-new-table-to-existing-dat 
       
-      // PureCloud Schema
-      $.getJSON('scripts/schemas/powerBiPureCloudTableSchema.json', function(json) {
-        return PBIPost('https://api.powerbi.com/v1.0/myorg/datasets?defaultRetentionPolicy=None', json);
-      });
-
-      // CIC Schema
-      $.getJSON('scripts/schemas/powerBiCicTableSchema.json', function(json) {
-        return PBIPost('https://api.powerbi.com/v1.0/myorg/datasets?defaultRetentionPolicy=None', json);
-      });
+      switch(name) 
+      {
+        case 'CIC':
+          $.getJSON('scripts/schemas/powerBiCicTableSchema.json', function(json) {
+            return PBIPost('https://api.powerbi.com/v1.0/myorg/datasets?defaultRetentionPolicy=None', json, callback);
+          });
+          break;
+        case 'PureCloud':
+          $.getJSON('scripts/schemas/powerBiPureCloudTableSchema.json', function(json) {
+            return PBIPost('https://api.powerbi.com/v1.0/myorg/datasets?defaultRetentionPolicy=None', json, callback);
+          });
+          break;
+        default:
+          console.error('Unknown dataset name:', name, '. Valid values: CIC or PureCloud');
+      }
     }
 
     // Add rows to a dataset table
@@ -141,10 +151,10 @@ angular.module('powerbiService', ['chromeStorage'])
         if (this.readyState === 4) {
           console.log('Status:', this.status);
           //console.log('Headers:', this.getAllResponseHeaders());
-          //console.log('Body:', this.responseText);
-          if (this.status === 200) {
+          console.log('Body:', this.responseText);
+          if (this.status === 200 || this.status === 201) {
             if (callback) {
-              callback();
+              callback(JSON.parse(this.responseText));
             }
           }
         }
