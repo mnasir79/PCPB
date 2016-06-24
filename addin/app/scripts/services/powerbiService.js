@@ -44,6 +44,9 @@ angular.module('powerbiService', ['chromeStorage'])
         DataSetExists(dataset, function (dataSetId) {
           if (dataSetId) {
             console.log(dataset, 'dataset found!:', dataSetId);
+            // Remove rows
+            console.log('Delete Rows');
+            console.log(DeleteRows(dataSetId, table));
             // Add rows
             console.log('Dataset:', dataset, '. Table:', table, '. Adding rows:', rows);
             AddRows(dataSetId, table, rows);
@@ -108,6 +111,13 @@ angular.module('powerbiService', ['chromeStorage'])
       return PBIPost('https://api.powerbi.com/v1.0/myorg/datasets/' + dataSetId + '/tables/' + tableName + '/rows', data);
     }
 
+    // Delete rows to a dataset table
+    function DeleteRows(dataSetId, tableName) {
+      console.log(dataSetId);
+      return PBIDelete('https://api.powerbi.com/v1.0/myorg/datasets/' + dataSetId + '/tables/' + tableName + '/rows');
+    }
+
+
     // PowerBI GET
     function PBIGet(url, callback) {
       var request = new XMLHttpRequest();
@@ -169,6 +179,34 @@ angular.module('powerbiService', ['chromeStorage'])
       console.log('Sending data:', JSON.stringify(data));
       request.send(JSON.stringify(data));
     }
+
+    // PowerBI DELETE
+    function PBIDelete(url, data, callback) {
+      // Create new HTTP POST request
+      var request = new XMLHttpRequest();
+
+      request.onreadystatechange = function () {
+        if (this.readyState === 4) {
+          console.log('Status:', this.status);
+          //console.log('Headers:', this.getAllResponseHeaders());
+          console.log('Body:', this.responseText);
+          if (this.status === 200 || this.status === 201) {
+            if (callback) {
+              callback(JSON.parse(this.responseText));
+            }
+          }
+        }
+      };
+      
+      request.open('DELETE', url, true);
+
+      request.setRequestHeader('Content-Type', 'application/json'); 
+      request.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+      // Send the request
+      console.log('Sending data:', JSON.stringify(data));
+      request.send(JSON.stringify(data));
+    }
+
 
     //return an array of objects according to key, value, or key and value matching
     function getObjects(obj, key, val) {
