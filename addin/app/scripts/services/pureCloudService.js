@@ -10,11 +10,11 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
     var _host;
     var _authUrl;
     var _lsTokenKeyName = 'ININ.ECCEMEA.PureCloudToolbar.authtoken';
-	var _queueName = {};
+	var _queueId = [];
+	var _queueName = [];
 	var _allQueue = [];
 	var _clientId = "149b2e49-7933-4f5a-af9f-4f65d8578e3e";
 	var _clientSecret = "ohflyjhOwlG38tD0hiMJxgKKGlUY8KeCQrJlQgwIWfE";
-	var _key;
 	var _authorization;
 
     /**
@@ -102,74 +102,6 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 
 
 
-
-	function init(){
-
-	  var _key = base64.encode(_clientId + ':' + _clientSecret);
-	  console.log(key);
-
-      var config = {
-		method: 'POST',
-        url: 'https://login.ininsca.com/oauth/token',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Authorization': 'Basic ' + key },
-		data: 'grant_type=client_credentials'
-      };
-
-
-	  var requestName = "/oauth/token";
-
-
-      console.log('Begin Request: ' + requestName);
-      //var request = $http(config);
-      $http(config)
-	    .then(function success(response) {
-          console.log('End Request: ' + requestName + ' (' + JSON.stringify(response.data) + ')');
-
-			requestName = "/api/v2/authorization/roles";
-			var options = {
-				url: 'https://api.ininsca.com/api/v2/authorization/roles',
-				headers: {
-					'Authorization': response.data.token_type + " " + response.data.access_token
-				}
-			};
-
-			var request2 = $http(options);
-			request2.then(function success(response) {
-		        console.log('End Request: ' + requestName + ' (' + JSON.stringify(response.data) + ')');
-
-
-
-			}, function error(response) {
-				if (response.status === 400 && response.data) {
-				console.log('Request: ' + requestName + ': ' + response.data.code + ': ' + response.data.message + ' (' + JSON.stringify(response.data) + ')');
-				}
-				else {
-				console.log('Request: ' + requestName + ': HTTP ' + response.status + ' (' + response.statusText + ')');
-				}
-				console.log('End Request: ' + requestName);
-			});
-
-
-      }, function error(response) {
-        if (response.status === 400 && response.data) {
-          console.log('Request: ' + requestName + ': ' + response.data.code + ': ' + response.data.message + ' (' + JSON.stringify(response.data) + ')');
-        }
-        else {
-          console.log('Request: ' + requestName + ': HTTP ' + response.status + ' (' + response.statusText + ')');
-        }
-        console.log('End Request: ' + requestName);
-      });
-
-
-
-	}
-	this.init = init;
-
-
-
 	
     function sendRestRequest(requestName, method, path, body) {
       if (!_authorization) {
@@ -225,27 +157,27 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 	function sendData() {
 		var deferred = $q.defer();
 
-		for (var i = 0; i < Object.keys(_allQueue).length; i+=2) {
+		for (var i = 0; i < Object.keys(_allQueue).length; i++) {
 			// _queueName[i] and _queueName[i+1] contain the list of queues id, name
 
 			var dateRequest = "2016-06-15T00:00:00.000Z/2016-06-21T00:00:00.000Z";
 
 			var body = {
-				//"interval": dateRequest,
-				"interval": "2016-06-15T00:00:00.000Z/2016-06-21T00:00:00.000Z",
+				"interval": dateRequest,
+				//"interval": "2016-06-15T00:00:00.000Z/2016-06-21T00:00:00.000Z",
 				"filter": {
 					"type": "or",
 					"predicates": [
 						{
 						"dimension": "queueId",
-						"value": _queueName[i]
+						"value": _queueId[i]
 						}
 					]
 				},
 				"metrics": [ ]
 			};
 
-			console.log("sendData: " + i + "   " + _queueName[i]);
+			console.log("sendData: " + i + "   " + _queueName[i] + "   " + _queueId[i]);
 
 			analyticsApi.postQueuesObservationsQuery(body)
 				.then(function success(response) {
@@ -253,12 +185,12 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 
 					// add queue name
 
-					//console.log("sendData " + wgData);
+					console.log("sendData " + wgData);
 
 					// send data to powerbi
 					var outputStat = jsonTranslator.translatePcStatSet(wgData);
 					console.log(wgData);
-					powerbiService.SendToPowerBI('PureCloud', 'Queue', wgData);
+					/*powerbiService.SendToPowerBI('PureCloud', 'Queue', wgData);*/
 
 					deferred.resolve();
 		    	}, 
@@ -278,11 +210,12 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 		routingApi.getQueues()
 			.then(function success(response) {
 				_allQueue = response.data.entities;
-				_queueName = [];
+
 				for (var i = 0; i < Object.keys(_allQueue).length; i++) {
 					var queueId = _allQueue[i].id;
 					var queueName = _allQueue[i].name;
-					_queueName.push(queueId, queueName);
+					_queueId.push(queueId);
+					_queueName.push(queueName);
 
 			  		console.log("queueId: " + queueId);
 			  		console.log("queueName: " + queueName);
@@ -989,3 +922,4 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 	this.analytics = analyticsApi;
 
 });
+
