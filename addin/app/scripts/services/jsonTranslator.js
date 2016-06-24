@@ -111,7 +111,7 @@ angular.module('jsonTranslator', ['ngJSONPath'])
             var newVal = oldVal;
             // <correct date format>
             //var rex = /(\d{8})T(\d{6})Z/; // expression for 20160622T102319Z
-            var rex = /(\d{8})T(\d{6})\.\d{3}Z/;            
+            var rex = /(\d{8})T(\d{6})/;            
             if (rex.test(oldVal)) {
                 
                 // converting 20160622T102319Z to 2016-06-22T12:23:19+02:00  
