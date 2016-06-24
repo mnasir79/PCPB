@@ -1,8 +1,8 @@
 'use strict';
 
 
-angular.module('pureCloudService', ['ab-base64'])
-  .service('pureCloudService', function ($http, $log, oAuth, $httpParamSerializerJQLike, $q, $window, $rootScope, base64) {
+angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslator'])
+  .service('pureCloudService', function ($http, $log, oAuth, $httpParamSerializerJQLike, $q, $window, $rootScope, base64,  powerbiService, jsonTranslator, jsonPath) {
     
     var _sourcePureCloud = 'PURECLOUD';
     var _accessToken;
@@ -12,6 +12,10 @@ angular.module('pureCloudService', ['ab-base64'])
     var _lsTokenKeyName = 'ININ.ECCEMEA.PureCloudToolbar.authtoken';
 	var _queueName = {};
 	var _allQueue = [];
+	var _clientId = "149b2e49-7933-4f5a-af9f-4f65d8578e3e";
+	var _clientSecret = "ohflyjhOwlG38tD0hiMJxgKKGlUY8KeCQrJlQgwIWfE";
+	var _key;
+	var _authorization;
 
     /**
     * Gets or Sets environment that this is run in.  If set should be mypurecloud.com, mypurecloud.ie, mypurecloud.com.au, etc.
@@ -22,6 +26,8 @@ angular.module('pureCloudService', ['ab-base64'])
     * }  
     */
     function setEnvironment(environment) {
+		var deferred = $q.defer();
+
       if (!environment) {
         throw new Error('Missing required parameter: environment');
       }
@@ -35,129 +41,63 @@ angular.module('pureCloudService', ['ab-base64'])
       _host = 'api.' + _environment;
       _authUrl = 'https://login.' + _environment;
 
-      var baseUrl = 'http://localhost:9000/';
 
-      oAuth.extendConfig({
-        clientId: environment.clientId,
-        redirectUri: baseUrl,
-        authorizationEndpoint: _authUrl + '/authorize',
-        scopes: [],
-        verifyFunc: {}
+	  var key = base64.encode(environment.clientId + ':' + environment.clientSecret);
+	  console.log(key);
+
+      var config = {
+		method: 'POST',
+        url: _authUrl + '/oauth/token',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': 'Basic ' + key },
+		data: 'grant_type=client_credentials'
+      };
+
+
+	  var requestName = "/oauth/token";
+
+
+      console.log('Begin Request: ' + requestName);
+      $http(config)
+	    .then(function success(response) {
+          console.log('End Request: ' + requestName + ' (' + JSON.stringify(response.data) + ')');
+		  
+		  _authorization = response.data;
+
+		  loadStartupData().then(function success() {
+			deferred.resolve();
+
+            }, function error() {
+              
+              deferred.reject();
+            });
+
+
+
+      }, function error(response) {
+        if (response.status === 400 && response.data) {
+          console.log('Request: ' + requestName + ': ' + response.data.code + ': ' + response.data.message + ' (' + JSON.stringify(response.data) + ')');
+        }
+        else {
+          console.log('Request: ' + requestName + ': HTTP ' + response.status + ' (' + response.statusText + ')');
+        }
+        console.log('End Request: ' + requestName);
       });
+
+
+		return deferred.promise;
     }
     this.setEnvironment = setEnvironment;
 
-    this.authenticate = function() {
-      var deferred = $q.defer();
-
-      try {
-
-        var existingToken = null;
-
-        if ($window && $window.localStorage) {
-          existingToken = $window.localStorage.getItem(_lsTokenKeyName);
-        }
-
-        if (existingToken && existingToken !== '') {
-          _accessToken = existingToken;
-
-          $log.info('PureCloud Access token: ' + _accessToken);
-		  console.log('PureCloud Access token: ' + _accessToken);
-          deferred.resolve({ 'access_token': _accessToken });
-
-        }
-        else {
-          authPopup()
-            .then(function sucess(params) {
-				
-              deferred.resolve({ 'access_token': params.access_token });
-            }, function error() {
-		  console.log('reject: ');
-              deferred.reject();
-            });
-        }
-
-      }
-      catch (e) {
-		  console.log('reject: ');
-        deferred.reject();
-      }
-
-      return deferred.promise;
-    };
-
-    function authPopup() {
-      var deferred = $q.defer();
-      oAuth.getTokenByPopup()
-        .then(function(params) {
-          // Success getting token from popup.
-          _accessToken = params.access_token;
-          $log.info('PureCloud Access token: ' + _accessToken);
-
-          if ($window && $window.localStorage) {
-            $window.localStorage.setItem(_lsTokenKeyName, _accessToken);
-          }
-
-          loadStartupData()
-            .then(function success() {
-              deferred.resolve({ 'access_token': _accessToken });
-            }, function error() {
-              logout();
-              deferred.reject();
-            });
-        }, function error() {
-          // Failure getting token from popup.
-          $log.fatal('Failed to get token from PureCloud');
-          logout();
-          deferred.reject();
-        });
-      return deferred.promise;
-    }
 
     function loadStartupData() {
       return $q.all([
-        loadQueue(),
-		sendData()
+        loadQueue()
+		
       ]);
     }
-
-
-
-	function handleTokenCallback(body){
-		var options = {
-			url: 'https://api.mypurecloud.com/api/v2/authorization/roles',
-			headers: {
-				'Authorization': body.token_type + " " + body.access_token
-			}
-		};
-
-		sendRestRequest("", "GET", "/api/v2/authorization/roles", "");
-
-		request(options, function (error, response, body) {
-			if (!error && response.statusCode == 200) {
-				console.log(JSON.stringify(JSON.parse(body), null, 2));
-			}else{
-				console.log(error)
-			}
-		});
-	}
-
-
-	function init2() {
-
-	  var clientId = "2f411242-e967-4fdb-bf22-40a205241d5f";
-	  var clientSecret = "7HpUIctY1TC_Q1BwVcCFfYnnFUu8NeewrmYLXUFgk74";
-
-		var pureCloudSession = new pureCloud.PureCloudSession();
-		pureCloudSession.authorizeWithClientCredentialsGrant(clientId, clientSecret).done(function(){
-			var authApi = new pureCloud.AuthorizationApi(pureCloudSession);
-			authApi.getRoles().done(function(roles){
-				//do something with the roles
-			});
-		});
-
-	}
-	this.init2 = init2;
 
 
 
@@ -165,12 +105,7 @@ angular.module('pureCloudService', ['ab-base64'])
 
 	function init(){
 
-
-	  var clientId = "149b2e49-7933-4f5a-af9f-4f65d8578e3e";
-	  var clientSecret = "ohflyjhOwlG38tD0hiMJxgKKGlUY8KeCQrJlQgwIWfE";
-
-
-	  var key = base64.encode(clientId + ':' + clientSecret);
+	  var _key = base64.encode(_clientId + ':' + _clientSecret);
 	  console.log(key);
 
       var config = {
@@ -193,7 +128,7 @@ angular.module('pureCloudService', ['ab-base64'])
 	    .then(function success(response) {
           console.log('End Request: ' + requestName + ' (' + JSON.stringify(response.data) + ')');
 
-			/*requestName = "/api/v2/authorization/roles";
+			requestName = "/api/v2/authorization/roles";
 			var options = {
 				url: 'https://api.ininsca.com/api/v2/authorization/roles',
 				headers: {
@@ -204,6 +139,9 @@ angular.module('pureCloudService', ['ab-base64'])
 			var request2 = $http(options);
 			request2.then(function success(response) {
 		        console.log('End Request: ' + requestName + ' (' + JSON.stringify(response.data) + ')');
+
+
+
 			}, function error(response) {
 				if (response.status === 400 && response.data) {
 				console.log('Request: ' + requestName + ': ' + response.data.code + ': ' + response.data.message + ' (' + JSON.stringify(response.data) + ')');
@@ -212,7 +150,7 @@ angular.module('pureCloudService', ['ab-base64'])
 				console.log('Request: ' + requestName + ': HTTP ' + response.status + ' (' + response.statusText + ')');
 				}
 				console.log('End Request: ' + requestName);
-			});*/
+			});
 
 
       }, function error(response) {
@@ -230,9 +168,11 @@ angular.module('pureCloudService', ['ab-base64'])
 	}
 	this.init = init;
 
+
+
 	
     function sendRestRequest(requestName, method, path, body) {
-      if (!_accessToken) {
+      if (!_authorization) {
         throw new Error('Authentication required!');
       }
       if (!_host) {
@@ -248,39 +188,32 @@ angular.module('pureCloudService', ['ab-base64'])
         throw new Error('Missing required parameter: path');
       }
 
-	  var clientId = "2f411242-e967-4fdb-bf22-40a205241d5f";
-	  var clientSecret = "7HpUIctY1TC_Q1BwVcCFfYnnFUu8NeewrmYLXUFgk74";
+		var options = {
+			method: method,
+			url: 'https://' + _host + path,
+			headers: {
+				'Authorization': _authorization.token_type + " " + _authorization.access_token
+			},
+			data: body
+		};
 
-      var config = {
-        method: method,
-        url: 'https://' + _host + path,
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': 'Basic ' + Base64.encode(clientId + ':' + clientSecret)
-        },
-      };
+		var request = $http(options);
+		request.then(function success(response) {
+			console.log('End Request: ' + requestName + ' (' + JSON.stringify(response.data) + ')');
 
-//'Authorization': 'bearer ' + _accessToken
-	  //$http.defaults.headers.common['Authorization'] = 'Basic ' + Base64.encode('admin' + ':' + 'abc12345');
+		}, function error(response) {
+			if (response.status === 400 && response.data) {
+			console.log('Request: ' + requestName + ': ' + response.data.code + ': ' + response.data.message + ' (' + JSON.stringify(response.data) + ')');
+			}
+			else {
+			console.log('Request: ' + requestName + ': HTTP ' + response.status + ' (' + response.statusText + ')');
+			}
+			console.log('End Request: ' + requestName);
+		});
 
-      if (body) {
-        config.data = JSON.stringify(body);
-      }
 
-      $log.trace('Begin Request: ' + requestName);
-      var request = $http(config);
-      request.then(function success(response) {
-        $log.trace('End Request: ' + requestName + ' (' + JSON.stringify(response.data) + ')');
-      }, function error(response) {
-        if (response.status === 400 && response.data) {
-          $log.error('Request: ' + requestName + ': ' + response.data.code + ': ' + response.data.message + ' (' + JSON.stringify(response.data) + ')');
-        }
-        else {
-          $log.error('Request: ' + requestName + ': HTTP ' + response.status + ' (' + response.statusText + ')');
-        }
-        $log.trace('End Request: ' + requestName);
-      });
+
+
 
       return request;
     }
@@ -298,7 +231,8 @@ angular.module('pureCloudService', ['ab-base64'])
 			var dateRequest = "2016-06-15T00:00:00.000Z/2016-06-21T00:00:00.000Z";
 
 			var body = {
-				"interval": dateRequest,
+				//"interval": dateRequest,
+				"interval": "2016-06-15T00:00:00.000Z/2016-06-21T00:00:00.000Z",
 				"filter": {
 					"type": "or",
 					"predicates": [
@@ -311,15 +245,20 @@ angular.module('pureCloudService', ['ab-base64'])
 				"metrics": [ ]
 			};
 
+			console.log("sendData: " + i + "   " + _queueName[i]);
+
 			analyticsApi.postQueuesObservationsQuery(body)
 				.then(function success(response) {
 					var wgData = response.data;
 
 					// add queue name
 
+					//console.log("sendData " + wgData);
 
 					// send data to powerbi
-
+					var outputStat = jsonTranslator.translatePcStatSet(wgData);
+					console.log(wgData);
+					powerbiService.SendToPowerBI('PureCloud', 'Queue', wgData);
 
 					deferred.resolve();
 		    	}, 
@@ -339,16 +278,23 @@ angular.module('pureCloudService', ['ab-base64'])
 		routingApi.getQueues()
 			.then(function success(response) {
 				_allQueue = response.data.entities;
-				_queueName = {};
+				_queueName = [];
 				for (var i = 0; i < Object.keys(_allQueue).length; i++) {
 					var queueId = _allQueue[i].id;
 					var queueName = _allQueue[i].name;
 					_queueName.push(queueId, queueName);
 
+			  		console.log("queueId: " + queueId);
+			  		console.log("queueName: " + queueName);
+					
+
 				}
+				sendData();
 				deferred.resolve();
 		    }, 
             deferred.reject());
+
+      return deferred.promise;			
 	}
 	
 
