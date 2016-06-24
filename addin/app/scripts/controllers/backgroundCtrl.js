@@ -12,6 +12,7 @@ angular.module('app', ['cicService'])
     .controller('backgroundCtrl', function ($scope, $log, $interval, cicService) {
 
         var CICTimer;
+   
 
         $scope.getCICService = function () {
             return cicService;

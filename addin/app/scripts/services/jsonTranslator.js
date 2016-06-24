@@ -5,7 +5,12 @@ angular.module('jsonTranslator', ['ngJSONPath'])
     .service('jsonTranslator', function (jsonPath) {
 
         this.translateCicStatSet = function (input) {
-            // initializing json paths            
+            // initializing json paths  
+
+
+            console.debug(adjustValueForCicOutput('20160624T073813.198Z'));
+
+
             var statNamePath = 'statisticKey.statisticIdentifier'; //relative
             var workgroupPath = 'statisticKey.parameterValueItems[0].value'; //relative           
             var valuePath = 'statisticValue.value'; //relative
@@ -104,11 +109,13 @@ angular.module('jsonTranslator', ['ngJSONPath'])
 
         function adjustValueForCicOutput(oldVal) {
             var newVal = oldVal;
-
             // <correct date format>
-            var rex = /(\d{8})T(\d{6})Z/; // expression for 20160622T102319Z            
+            //var rex = /(\d{8})T(\d{6})Z/; // expression for 20160622T102319Z
+            var rex = /(\d{8})T(\d{6})\.\d{3}Z/;            
             if (rex.test(oldVal)) {
-                // converting 20160622T102319Z to 2016-06-22T12:23:19+02:00       
+                
+                // converting 20160622T102319Z to 2016-06-22T12:23:19+02:00  
+                //moment('01/01/2016 some text', 'MM/DD/YYYY', true).format()     
                 newVal = moment(oldVal, "YYYYMMDDThhmmssZ").format();
             }
             // </correct date format>
