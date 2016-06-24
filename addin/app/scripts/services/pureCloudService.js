@@ -180,7 +180,7 @@ angular.module('pureCloudService', ['ab-base64'])
           'Accept': 'application/json',
           'Content-Type': 'application/x-www-form-urlencoded',
           'Authorization': 'Basic ' + key },
-		data: { grant_type: 'client_credentials' }
+		data: 'grant_type=client_credentials'
       };
 
 
