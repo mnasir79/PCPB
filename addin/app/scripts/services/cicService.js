@@ -258,6 +258,8 @@ angular.module('cicService', ['chromeStorage', 'jsonTranslator', 'powerbiService
             if (sNewValue == null) {
               $log.debug('Updated NULL value in a Cache');
               _StatisticsJSON[i] = myObj;
+              //_StatisticsJSON[i].statisticValue = '{"__type":"urn:inin.com:statistics:statisticIntValue","value":0,"statisticValueType":0}';
+
               continue;
             }
 

@@ -45,8 +45,8 @@ angular.module('powerbiService', ['chromeStorage'])
           if (dataSetId) {
             console.log(dataset, 'dataset found!:', dataSetId);
             // Remove rows
-            console.log('Delete Rows');
-            console.log(DeleteRows(dataSetId, table));
+            // console.log('Delete Rows');
+            // console.log(DeleteRows(dataSetId, table));
             // Add rows
             console.log('Dataset:', dataset, '. Table:', table, '. Adding rows:', rows);
             AddRows(dataSetId, table, rows);

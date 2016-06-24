@@ -38,7 +38,7 @@
         },
         {
           "name": "TotalTalkTime",
-          "dataType": "Datetime"
+          "dataType": "Int64"
         },
         {
           "name": "ServiceLevelTarget",
