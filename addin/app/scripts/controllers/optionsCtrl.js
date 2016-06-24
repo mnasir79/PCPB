@@ -15,8 +15,8 @@ angular.module('app', ['chromeStorage'])
         $scope.pcOptionsChanged = function(){                                
             try {
                 var pcOptions = {}; 
-                pcOptions.pcAuthUrl = $scope.pcAuthUrl;                
-                pcOptions.pcAccessTokenUrl = $scope.pcAccessTokenUrl;
+                pcOptions.pcEnv = $scope.pcEnv;                
+                pcOptions.pcTimer = $scope.pcTimer;
                 pcOptions.pcClientId = $scope.pcClientId;
                 pcOptions.pcClientSecret = $scope.pcClientSecret;            
                 var storageItem = {};
@@ -31,8 +31,8 @@ angular.module('app', ['chromeStorage'])
         function getPcOptions() {
             try {                       
                 chromeStorage.get('pcOptions').then(function(pcOptions) {
-                    $scope.pcAuthUrl = pcOptions.pcAuthUrl;
-                    $scope.pcAccessTokenUrl = pcOptions.pcAccessTokenUrl;
+                    $scope.pcEnv = pcOptions.pcEnv;
+                    $scope.pcTimer = pcOptions.pcTimer;
                     $scope.pcClientId = pcOptions.pcClientId;
                     $scope.pcClientSecret = pcOptions.pcClientSecret;
                 });

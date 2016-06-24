@@ -71,15 +71,12 @@ angular.module('app', ['powerbiService', 'chromeStorage', 'pureCloudService'])
 
             if ($scope.isPCConnected) {
                 $scope.isPCConnected = false;
+                pureCloudService.stopSendDataToPowerBi();
             }
             else {
                 $scope.isPCConnected = true;
                 console.log("purecloud");
-                pureCloudService.setEnvironment( { 
-                    environment: 'ininsca.com', 
-                    clientId: '149b2e49-7933-4f5a-af9f-4f65d8578e3e', 
-                    clientSecret: 'ohflyjhOwlG38tD0hiMJxgKKGlUY8KeCQrJlQgwIWfE' 
-                });
+                pureCloudService.setEnvironment();
 
             }
         };

@@ -34,12 +34,8 @@
                         </div>
                         <div class="options-panel-right">
                             <div class="input-group">
-                                <div class="input-group-addon">Auth URL</div>
-                                <input type="text" class="form-control" id="pcAuthUrl" ng-model="pcAuthUrl" ng-bind="pcAuthUrl" ng-change="pcOptionsChanged()">
-                            </div>
-                            <div class="input-group">
-                                <div class="input-group-addon">Access Token URL</div>
-                                <input type="text" class="form-control" id="pcAccessTokenUrl" ng-model="pcAccessTokenUrl" ng-bind="pcAccessTokenUrl" ng-change="pcOptionsChanged()">
+                                <div class="input-group-addon">Environnement</div>
+                                <input type="text" class="form-control" id="pcEnv" ng-model="pcEnv" ng-bind="pcEnv" ng-change="pcOptionsChanged()">
                             </div>
                             <div class="input-group">
                                 <div class="input-group-addon">Client ID</div>
@@ -48,6 +44,10 @@
                             <div class="input-group">
                                 <div class="input-group-addon">Client Secret</div>
                                 <input type="text" class="form-control" id="pcClientSecret" ng-model="pcClientSecret" ng-bind="pcClientSecret" ng-change="pcOptionsChanged()">
+                            </div>
+                            <div class="input-group">
+                                <div class="input-group-addon">Timer</div>
+                                <input type="text" class="form-control" id="pcTimer" ng-model="pcTimer" ng-bind="pcTimer" ng-change="pcOptionsChanged()">
                             </div>
                         </div>
                     </div>

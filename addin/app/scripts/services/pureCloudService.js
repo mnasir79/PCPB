@@ -1,8 +1,8 @@
 'use strict';
 
 
-angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslator'])
-  .service('pureCloudService', function ($http, $log, $httpParamSerializerJQLike, $q, $window, $rootScope, base64, powerbiService, jsonTranslator, jsonPath) {
+angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslator', 'chromeStorage'])
+  .service('pureCloudService', function ($http, $log, $httpParamSerializerJQLike, $q, base64, powerbiService, jsonTranslator, jsonPath, chromeStorage) {
     
     var _sourcePureCloud = 'PURECLOUD';
     var _accessToken;
@@ -13,9 +13,32 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 	var _queueId = [];
 	var _queueName = [];
 	var _allQueue = [];
-	var _clientId = "149b2e49-7933-4f5a-af9f-4f65d8578e3e";
-	var _clientSecret = "ohflyjhOwlG38tD0hiMJxgKKGlUY8KeCQrJlQgwIWfE";
+	//var _clientId = "149b2e49-7933-4f5a-af9f-4f65d8578e3e";
+	//var _clientSecret = "ohflyjhOwlG38tD0hiMJxgKKGlUY8KeCQrJlQgwIWfE";
+	var _clientId;
+	var _clientSecret;
 	var _authorization;
+	var _sendDataToPowerBi;
+	var _timer;
+
+
+    function GetOptions() {
+		var deferred = $q.defer();
+      // Load Enviroment Options from ChromeLocalStorage
+      chromeStorage.get('pcOptions').then(function (pcOptions) {
+        _clientId = pcOptions.pcClientId;
+        _clientSecret = pcOptions.pcClientSecret;
+		_environment = pcOptions.pcEnv;
+		_timer = pcOptions.pcTimer;
+
+		deferred.resolve();
+      }, function error() {
+	      console.log("unable to read the local storage");
+		  deferred.reject();
+      });
+	  return deferred.promise;
+    }
+	this.GetOptions = GetOptions;
 
     /**
     * Gets or Sets environment that this is run in.  If set should be mypurecloud.com, mypurecloud.ie, mypurecloud.com.au, etc.
@@ -25,67 +48,64 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
     *   clienId : 0c731aeb-d7e6-4fe5-8f24-1fb3055f997e 
     * }  
     */
-    function setEnvironment(environment) {
+    function setEnvironment() {
 		var deferred = $q.defer();
+		
+		this.GetOptions().then(function () {
 
-      if (!environment) {
-        throw new Error('Missing required parameter: environment');
-      }
-      if (!environment.environment) {
-        throw new Error('Missing required parameter: environment.environment');
-      }
-      if (!environment.clientId) {
-        throw new Error('Missing required parameter: environment.clientId');
-      }
-      _environment = environment.environment;
-      _host = 'api.' + _environment;
-      _authUrl = 'https://login.' + _environment;
+		console.log("clientid: " + _clientId);
+
+		//_environment = environment.environment;
+		_host = 'api.' + _environment;
+		_authUrl = 'https://login.' + _environment;
 
 
-	  var key = base64.encode(environment.clientId + ':' + environment.clientSecret);
-	  console.log(key);
+		var key = base64.encode(_clientId + ':' + _clientSecret);
+		//console.log(key);
 
-      var config = {
-		method: 'POST',
-        url: _authUrl + '/oauth/token',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Authorization': 'Basic ' + key },
-		data: 'grant_type=client_credentials'
-      };
-
-
-	  var requestName = "/oauth/token";
+		var config = {
+			method: 'POST',
+			url: _authUrl + '/oauth/token',
+			headers: {
+			'Accept': 'application/json',
+			'Content-Type': 'application/x-www-form-urlencoded',
+			'Authorization': 'Basic ' + key },
+			data: 'grant_type=client_credentials'
+		};
 
 
-      console.log('Begin Request: ' + requestName);
-      $http(config)
-	    .then(function success(response) {
-          console.log('End Request: ' + requestName + ' (' + JSON.stringify(response.data) + ')');
-		  
-		  _authorization = response.data;
+		var requestName = "/oauth/token";
 
-		  loadStartupData().then(function success() {
-			deferred.resolve();
 
-            }, function error() {
-              
-              deferred.reject();
-            });
+		console.log('Begin Request: ' + requestName);
+		$http(config)
+			.then(function success(response) {
+			console.log('End Request: ' + requestName + ' (' + JSON.stringify(response.data) + ')');
+			
+			_authorization = response.data;
+
+			loadStartupData().then(function success() {
+				deferred.resolve();
+
+				}, function error() {
+				
+				deferred.reject();
+				});
 
 
 
-      }, function error(response) {
-        if (response.status === 400 && response.data) {
-          console.log('Request: ' + requestName + ': ' + response.data.code + ': ' + response.data.message + ' (' + JSON.stringify(response.data) + ')');
-        }
-        else {
-          console.log('Request: ' + requestName + ': HTTP ' + response.status + ' (' + response.statusText + ')');
-        }
-        console.log('End Request: ' + requestName);
-      });
-
+		}, function error(response) {
+			if (response.status === 400 && response.data) {
+			console.log('Request: ' + requestName + ': ' + response.data.code + ': ' + response.data.message + ' (' + JSON.stringify(response.data) + ')');
+			}
+			else {
+			console.log('Request: ' + requestName + ': HTTP ' + response.status + ' (' + response.statusText + ')');
+			}
+			console.log('End Request: ' + requestName);
+		});
+	  }, function error() {
+	      console.log("error");
+      }); 
 
 		return deferred.promise;
     }
@@ -143,10 +163,6 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 			console.log('End Request: ' + requestName);
 		});
 
-
-
-
-
       return request;
     }
 
@@ -184,8 +200,13 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 					var wgData = response.data;
 
 					// add queue name
+					var queuePath = 'group'; //relative
+					var statRoot = wgData.results;
 
-					console.log("sendData " + wgData);
+					for (var i in statRoot) {
+						var queue = jsonPath(statRoot[i], queuePath)[0];
+						queue['queueName'] = _queueName[i];
+					}
 
 					// send data to powerbi
 					var outputStat = jsonTranslator.translatePcStatSet(wgData);
@@ -220,15 +241,27 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 			  		console.log("queueId: " + queueId);
 			  		console.log("queueName: " + queueName);
 					
-
 				}
-				sendData();
+
+				_sendDataToPowerBi = setInterval(sendData, _timer);
+
+				//sendData();
 				deferred.resolve();
 		    }, 
             deferred.reject());
 
       return deferred.promise;			
 	}
+
+
+
+
+	function stopSendDataToPowerBi()
+	{
+		//_sendDataToPowerBi = null;
+		clearTimeout(_sendDataToPowerBi)
+	}
+	this.stopSendDataToPowerBi = stopSendDataToPowerBi;
 	
 
 
