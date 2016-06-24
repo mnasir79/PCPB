@@ -8,8 +8,8 @@
  * Controller of the app
 **/
 
-angular.module('app', ['powerbiService', 'chromeStorage'])
-    .controller('popupCtrl', function ($scope, $log, $window, powerbiService, chromeStorage) {
+angular.module('app', ['powerbiService', 'chromeStorage', 'pureCloudService'])
+    .controller('popupCtrl', function ($scope, $log, $window, powerbiService, chromeStorage, pureCloudService) {
 
         var _BgController;
 
@@ -68,11 +68,19 @@ angular.module('app', ['powerbiService', 'chromeStorage'])
         init();
 
         $scope.togglePCConnectionIndicator = function () {
+
             if ($scope.isPCConnected) {
                 $scope.isPCConnected = false;
             }
             else {
                 $scope.isPCConnected = true;
+                console.log("purecloud");
+                pureCloudService.setEnvironment( { 
+                    environment: 'ininsca.com', 
+                    clientId: '149b2e49-7933-4f5a-af9f-4f65d8578e3e', 
+                    clientSecret: 'ohflyjhOwlG38tD0hiMJxgKKGlUY8KeCQrJlQgwIWfE' 
+                });
+
             }
         };
 
