@@ -162,7 +162,7 @@ angular.module('powerbiService', ['chromeStorage'])
         if (this.readyState === 4) {
           console.log('Status:', this.status);
           //console.log('Headers:', this.getAllResponseHeaders());
-          console.log('Body:', this.responseText);
+          //console.log('Body:', this.responseText);
           if (this.status === 200 || this.status === 201) {
             if (callback) {
               callback(JSON.parse(this.responseText));
