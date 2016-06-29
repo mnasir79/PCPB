@@ -32,6 +32,7 @@ angular.module('app', ['powerbiService', 'chromeStorage', 'pureCloudService'])
                     $scope.cicLoading = false;
                     $scope.isCICConnected = false;
                     $scope.$apply();
+                   _BgController.ShowMessage('Cannot login to the CIC server !\nGo to the Options page?');
                 });
             } catch (Err) {
                 $log.error(Err);
@@ -107,11 +108,11 @@ angular.module('app', ['powerbiService', 'chromeStorage', 'pureCloudService'])
             }
         };
 
-        $scope.$watch(function() {
-        chromeStorage.get('powerbi_access_token').then(function(retrievedAccessToken) {
-            $scope.isPowerBIConnected = retrievedAccessToken !== undefined;
-            //console.log('retrieved token:', retrievedAccessToken !== undefined);
-        });
+        $scope.$watch(function () {
+            chromeStorage.get('powerbi_access_token').then(function (retrievedAccessToken) {
+                $scope.isPowerBIConnected = retrievedAccessToken !== undefined;
+                //console.log('retrieved token:', retrievedAccessToken !== undefined);
+            });
         }, null);
 
         $scope.togglePowerBIConnectionIndicator = function () {
@@ -119,7 +120,7 @@ angular.module('app', ['powerbiService', 'chromeStorage', 'pureCloudService'])
                 // Logoff
                 $scope.powerbiLoading = true;
                 console.log('Logging off of PowerBI');
-                powerbiService.Logoff(function() {
+                powerbiService.Logoff(function () {
                     $scope.powerbiLoading = false;
                     $scope.isPowerBIConnected = false;
                 });
@@ -134,8 +135,8 @@ angular.module('app', ['powerbiService', 'chromeStorage', 'pureCloudService'])
             }
         };
 
-        $scope.sendToPowerBI = function(dataset, table, rows) {
-          powerbiService.SendToPowerBI(dataset, table, rows);
+        $scope.sendToPowerBI = function (dataset, table, rows) {
+            powerbiService.SendToPowerBI(dataset, table, rows);
         };
 
         $scope.openUrl = function (obj) {
