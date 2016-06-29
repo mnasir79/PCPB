@@ -123,7 +123,7 @@ angular.module('powerbiService', ['chromeStorage'])
       var request = new XMLHttpRequest();
 
       // Create new HTTP GET request
-      request.open('GET', 'https://api.powerbi.com/v1.0/myorg/datasets');
+      request.open('GET', url);
       request.setRequestHeader('Content-Type', 'application/json'); 
       request.setRequestHeader('Authorization', 'Bearer ' + accessToken);
 
