@@ -104,6 +104,10 @@ angular.module('jsonTranslator', ['ngJSONPath'])
                     }
                 }
             }
+            for (var i = 0; i < output.data.length; i++) {
+                // Add TimeStamp
+                output.data[i]["timeStamp"] = adjustValueForCicOutput(new Date());
+            }
             return output;
         }
 
