@@ -43,12 +43,12 @@ angular.module('powerbiService', ['chromeStorage'])
         // Creates the dataset it if it doesn't exist yet
         DataSetExists(dataset, function (dataSetId) {
           if (dataSetId) {
-            console.log(dataset, 'dataset found!:', dataSetId);
-            // Remove rows
-            // console.log('Delete Rows');
-            // console.log(DeleteRows(dataSetId, table));
+            //console.log(dataset, 'dataset found!:', dataSetId);
+            // Remove rows?
+            //console.log('Delete Rows');
+            //DeleteRows(dataSetId, table);
             // Add rows
-            console.log('Dataset:', dataset, '. Table:', table, '. Adding rows:', rows);
+            //console.log('Dataset:', dataset, '. Table:', table, '. Adding rows:', rows);
             AddRows(dataSetId, table, rows);
           } else {
             console.log(dataset, 'dataset NOT found!');
@@ -113,7 +113,7 @@ angular.module('powerbiService', ['chromeStorage'])
 
     // Delete rows to a dataset table
     function DeleteRows(dataSetId, tableName) {
-      console.log(dataSetId);
+      //console.log(dataSetId);
       return PBIDelete('https://api.powerbi.com/v1.0/myorg/datasets/' + dataSetId + '/tables/' + tableName + '/rows');
     }
 
@@ -160,7 +160,7 @@ angular.module('powerbiService', ['chromeStorage'])
 
       request.onreadystatechange = function () {
         if (this.readyState === 4) {
-          console.log('Status:', this.status);
+          console.log('POST Status:', this.status);
           //console.log('Headers:', this.getAllResponseHeaders());
           //console.log('Body:', this.responseText);
           if (this.status === 200 || this.status === 201) {
@@ -176,7 +176,7 @@ angular.module('powerbiService', ['chromeStorage'])
       request.setRequestHeader('Content-Type', 'application/json'); 
       request.setRequestHeader('Authorization', 'Bearer ' + accessToken);
       // Send the request
-      console.log('Sending data:', JSON.stringify(data));
+      console.log('Sending data:', data);
       request.send(JSON.stringify(data));
     }
 
@@ -187,9 +187,9 @@ angular.module('powerbiService', ['chromeStorage'])
 
       request.onreadystatechange = function () {
         if (this.readyState === 4) {
-          console.log('Status:', this.status);
+          console.log('DELETE Status:', this.status);
           //console.log('Headers:', this.getAllResponseHeaders());
-          console.log('Body:', this.responseText);
+          //console.log('Body:', this.responseText);
           if (this.status === 200 || this.status === 201) {
             if (callback) {
               callback(JSON.parse(this.responseText));
@@ -199,12 +199,11 @@ angular.module('powerbiService', ['chromeStorage'])
       };
       
       request.open('DELETE', url, true);
-
       request.setRequestHeader('Content-Type', 'application/json'); 
       request.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+      
       // Send the request
-      console.log('Sending data:', JSON.stringify(data));
-      request.send(JSON.stringify(data));
+      request.send();
     }
 
 
