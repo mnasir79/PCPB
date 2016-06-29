@@ -76,7 +76,7 @@ angular.module('app', ['powerbiService', 'chromeStorage', 'pureCloudService'])
             }
             else {
                 $scope.isPCConnected = true;
-                console.log("purecloud");
+                //console.log("purecloud");
                 pureCloudService.setEnvironment();
 
             }

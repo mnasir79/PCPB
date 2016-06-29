@@ -3,7 +3,7 @@
 angular.module('powerbiService', ['chromeStorage'])
 
   .service('powerbiService', function($rootScope, $window, $http, $log, chromeStorage) {
-    console.debug('PowerBI Service started');
+    //console.debug('PowerBI Service started');
 
     var accessToken;
 

@@ -51,7 +51,7 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 			
 			this.GetOptions().then(function () {
 
-			console.log("clientid: " + _clientId);
+			//console.log("clientid: " + _clientId);
 
 			//_environment = environment.environment;
 			_host = 'api.' + _environment;
@@ -73,7 +73,7 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 
 			var requestName = "/oauth/token";
 
-			console.log('Begin Request: ' + requestName);
+			//console.log('Begin Request: ' + requestName);
 			$http(config)
 				.then(function success(response) {
 					//console.log('End Request: ' + requestName + ' (' + JSON.stringify(response.data) + ')');
