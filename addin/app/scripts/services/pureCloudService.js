@@ -182,7 +182,7 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 
 				dateRequest = mm+'/'+dd+'/'+yyyy;
 				dateRequest = yyyy+'-'+mm+'-'+dd_from+'/'+yyyy+'-'+mm+'-'+dd;
-				console.log(dateRequest);
+				//console.log(dateRequest);
 
 				// _queueName[i] and _queueName[i+1] contain the list of queues id, name
 				var body = {
@@ -242,14 +242,12 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 						var queueName = _allQueue[i].name;
 						_queueId.push(queueId);
 						_queueName.push(queueName);
-
 						//console.log("queueId: " + queueId);
 						//console.log("queueName: " + queueName);
 					}
 
-					console.debug('Waiting for timer to start (' + _timer + ' ms)...');
+					sendData(); // Call it once when PureCloud is connected
 					_sendDataToPowerBi = setInterval(sendData, _timer);
-
 					deferred.resolve();
 					}, 
 				deferred.reject());
