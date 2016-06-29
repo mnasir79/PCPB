@@ -176,7 +176,28 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 		for (var i = 0; i < Object.keys(_allQueue).length; i++) {
 			// _queueName[i] and _queueName[i+1] contain the list of queues id, name
 
-			var dateRequest = "2016-06-15T00:00:00.000Z/2016-06-21T00:00:00.000Z";
+			//var dateRequest = "2016-06-15T00:00:00.000Z/2016-06-21T00:00:00.000Z";
+			//var dateRequest = "2016-06-22/2016-06-29";
+			var dateRequest = new Date();
+
+			//var today = new Date();
+			var dd = dateRequest.getDate();
+			var dd_from = dateRequest.getDate()-1;
+			var mm = dateRequest.getMonth()+1; //January is 0!
+			var yyyy = dateRequest.getFullYear();
+
+			if(dd<10) { dd='0'+dd; } 
+
+			if(dd_from<10) { dd_from='0'+dd_from; } 
+
+			if(mm<10) {
+				mm='0'+mm
+			} 
+
+			dateRequest = mm+'/'+dd+'/'+yyyy;
+			dateRequest = yyyy+'-'+mm+'-'+dd_from+'/'+yyyy+'-'+mm+'-'+dd;
+			console.log(dateRequest);
+
 
 			var body = {
 				"interval": dateRequest,
