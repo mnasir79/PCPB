@@ -231,8 +231,9 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 
 					// send data to powerbi
 					var outputStat = jsonTranslator.translatePcStatSet(wgData);
-					console.log(wgData);
-					powerbiService.SendToPowerBI('PureCloud', 'Queue', wgData);
+					//console.log(wgData);
+					//console.log(outputStat);
+					powerbiService.SendToPowerBI('PureCloud', 'Workgroup', outputStat);
 
 					deferred.resolve();
 		    	}, 

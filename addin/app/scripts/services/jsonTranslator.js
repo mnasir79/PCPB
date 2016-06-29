@@ -60,7 +60,7 @@ angular.module('jsonTranslator', ['ngJSONPath'])
 
         this.translatePcStatSet = function (input) {
             // initializing json paths            
-            var queuePath = 'group.queueId'; //relative
+            var queuePath = 'group.queueName'; //relative
             var mediaTypePath = 'group.mediaType'; //relative 
             var queueStatRootPath = 'data'; //relative              
             var metricPath = 'metric'; //relative         
