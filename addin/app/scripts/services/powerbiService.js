@@ -34,7 +34,7 @@ angular.module('powerbiService', ['chromeStorage'])
         // Creates the dataset it if it doesn't exist yet
         DataSetExists(dataset, function (dataSetId) {
           if (dataSetId.length > 0) {
-            console.log(dataset, 'dataset found!:', dataSetId);
+            //console.log(dataset, 'dataset found!:', dataSetId);
             // Remove rows?
             //console.log('Delete Rows');
             //DeleteRows(dataSetId, table);
