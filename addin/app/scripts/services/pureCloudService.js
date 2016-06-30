@@ -39,14 +39,14 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 		this.GetOptions = GetOptions;
 
 		/*
-			* Gets or Sets environment that this is run in.  If set should be mypurecloud.com, mypurecloud.ie, mypurecloud.com.au, etc.
-			* @memberof pureCloudService#
-			* @param environment
-			* { environment : 'purecloud.com' {string} environment PureCloud environment (mypurecloud.com, mypurecloud.ie, mypurecloud.au, etc)
-			*   clienId : 0c731aeb-d7e6-4fe5-8f24-1fb3055f997e 
-			* }  
-			*/
-			function setEnvironment() {
+		 * Gets or Sets environment that this is run in.  If set should be mypurecloud.com, mypurecloud.ie, mypurecloud.com.au, etc.
+		 * @memberof pureCloudService#
+		 * @param environment
+		 * { environment : 'purecloud.com' {string} environment PureCloud environment (mypurecloud.com, mypurecloud.ie, mypurecloud.au, etc)
+		 *   clienId : 0c731aeb-d7e6-4fe5-8f24-1fb3055f997e 
+		 * }  
+		 */
+		function setEnvironment() {
 			var deferred = $q.defer();
 			
 			this.GetOptions().then(function () {
@@ -97,37 +97,31 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 				}); 
 
 			return deferred.promise;
+		}
+		this.setEnvironment = setEnvironment;
+
+		function loadStartupData() {
+			return $q.all([
+				loadQueue()
+			]);
+		}
+
+		function sendRestRequest(requestName, method, path, body) {
+			if (!_authorization) {
+				throw new Error('Authentication required!');
 			}
-			this.setEnvironment = setEnvironment;
-
-
-			function loadStartupData() {
-				return $q.all([
-					loadQueue()
-			
-				]);
+			if (!_host) {
+				throw new Error('setEnvironment first!');
 			}
-
-
-
-
-		
-			function sendRestRequest(requestName, method, path, body) {
-				if (!_authorization) {
-					throw new Error('Authentication required!');
-				}
-				if (!_host) {
-					throw new Error('setEnvironment first!');
-				}
-				if (!requestName) {
-					throw new Error('Missing required parameter: requestName');
-				}
-				if (!method) {
-					throw new Error('Missing required parameter: method');
-				}
-				if (!path) {
-					throw new Error('Missing required parameter: path');
-				}
+			if (!requestName) {
+				throw new Error('Missing required parameter: requestName');
+			}
+			if (!method) {
+				throw new Error('Missing required parameter: method');
+			}
+			if (!path) {
+				throw new Error('Missing required parameter: path');
+			}
 
 			var options = {
 				method: method,
@@ -141,7 +135,6 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 			var request = $http(options);
 			request.then(function success(response) {
 				//console.log('End Request: ' + requestName + ' (' + JSON.stringify(response.data) + ')');
-
 			}, function error(response) {
 				if (response.status === 400 && response.data) {
 				console.error('Request: ' + requestName + ': ' + response.data.code + ': ' + response.data.message + ' (' + JSON.stringify(response.data) + ')');
@@ -152,13 +145,12 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 				console.error('End Request: ' + requestName);
 			});
 
-				return request;
-			}
+			return request;
+		}
 
-
-			/**
-			* @summary send data to stat application
-			*/
+	  /**
+		 * @summary send data to stat application
+		 */
 		function sendData() {
 			var deferred = $q.defer();
 			for (var i = 0; i < Object.keys(_allQueue).length; i++) {
@@ -200,32 +192,32 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 					"metrics": [ ]
 				};
 
-				//console.log("sendData: " + i + "   " + _queueName[i] + "   " + _queueId[i]);
+			//console.log("sendData: " + i + "   " + _queueName[i] + "   " + _queueId[i]);
 
-				analyticsApi.postQueuesObservationsQuery(body)
-					.then(function success(response) {
-						var wgData = response.data;
+			analyticsApi.postQueuesObservationsQuery(body)
+				.then(function success(response) {
+					var wgData = response.data;
 
-						// add queue name
-						var queuePath = 'group'; //relative
-						var statRoot = wgData.results;
+					// add queue name
+					var queuePath = 'group'; //relative
+					var statRoot = wgData.results;
 
-						for (var i in statRoot) {
-							var queue = jsonPath(statRoot[i], queuePath)[0];
-							queue['queueName'] = _queueName[i];
-						}
+					for (var i in statRoot) {
+						var queue = jsonPath(statRoot[i], queuePath)[0];
+						queue['queueName'] = _queueName[i];
+					}
 
-						// send data to powerbi
-						var outputStat = jsonTranslator.translatePcStatSet(wgData);
-						//console.log(wgData);
-						//console.log(outputStat);
-						powerbiService.SendToPowerBI('PureCloud', 'Workgroup', outputStat);
+					// send data to powerbi
+					var outputStat = jsonTranslator.translatePcStatSet(wgData);
+					//console.log(wgData);
+					//console.log(outputStat);
+					powerbiService.SendToPowerBI('PureCloud', 'Workgroup', outputStat);
 
-						deferred.resolve();
-						}, 
-					deferred.reject());
-			}
+					deferred.resolve();
+					}, 
+				deferred.reject());
 		}
+	}
 
 		/*
 		 * @summary Load the list of queue name and queueid in a table _queueName
@@ -246,10 +238,10 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 						//console.log("queueName: " + queueName);
 					}
 
-					sendData(); // Call it once when PureCloud is connected
+					sendData(); // Call it once (interval only starts when the timer expires)
 					_sendDataToPowerBi = setInterval(sendData, _timer);
 					deferred.resolve();
-					}, 
+				}, 
 				deferred.reject());
 				return deferred.promise;
 		}
