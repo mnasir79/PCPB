@@ -67,7 +67,10 @@ angular.module('jsonTranslator', ['ngJSONPath'])
             var valuePath = 'stats.count'; //relative
 
             // getting an array with statistics
+            
             var statRoot = input.results;
+            
+            
 
             // creating an output object
             var output = { "data": [] };

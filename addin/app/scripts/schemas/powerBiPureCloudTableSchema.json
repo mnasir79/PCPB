@@ -9,27 +9,27 @@
           "dataType": "Datetime"
         },
         {
-          "name": "callback-oInteracting",
+          "name": "callback_oInteracting",
           "dataType": "Int64"
         },
         {
-          "name": "callback-oWaiting",
+          "name": "callback_oWaiting",
           "dataType": "Int64"
         },
         {
-          "name": "chat-oInteracting",
+          "name": "chat_oInteracting",
           "dataType": "Int64"
         },
         {
-          "name": "chat-oWaiting",
+          "name": "chat_oWaiting",
           "dataType": "Int64"
         },
         {
-          "name": "email-oInteracting",
+          "name": "email_oInteracting",
           "dataType": "Int64"
         },
         {
-          "name": "email-oWaiting",
+          "name": "email_oWaiting",
           "dataType": "Int64"
         },
         {
@@ -49,11 +49,11 @@
           "dataType": "Int64"
         },
         {
-          "name": "voice-oInteracting",
+          "name": "voice_oInteracting",
           "dataType": "Int64"
         },
         {
-          "name": "voice-oWaiting",
+          "name": "voice_oWaiting",
           "dataType": "Int64"
         }
       ]

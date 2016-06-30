@@ -32,7 +32,7 @@ angular.module('cicService', ['chromeStorage', 'jsonTranslator', 'powerbiService
 
       // TEST AREA 51 ################
 
-      // var sourcePc = JSON.parse('{"results": [{"group": {"queueId": "d7b99d1c-4833-4ad6-aa87-d1a23dba13d4"},"data": [{"metric": "oActiveUsers","stats": {"count": 5}},{"metric": "oMemberUsers","stats": {"count": 5}}]},{"group": {"mediaType": "voice","queueId": "d7b99d1c-4833-4ad6-aa87-d1a23dba13d4"},"data": [{"metric": "oInteracting","stats": {"count": 0}},{"metric": "oWaiting","stats": {"count": 0}}]},{"group": {"mediaType": "chat","queueId": "d7b99d1c-4833-4ad6-aa87-d1a23dba13d4"},"data": [{"metric": "oInteracting","stats": {"count": 0}},{"metric": "oWaiting","stats": {"count": 0}}]},{"group": {"mediaType": "email","queueId": "d7b99d1c-4833-4ad6-aa87-d1a23dba13d4"},"data": [{"metric": "oInteracting","stats": {"count": 0}},{"metric": "oWaiting","stats": {"count": 0}}]},{"group": {"mediaType": "callback","queueId": "d7b99d1c-4833-4ad6-aa87-d1a23dba13d4"},"data": [{"metric": "oInteracting","stats": {"count": 0}},{"metric": "oWaiting","stats": {"count": 0}}]}]}');
+      // var sourcePc = JSON.parse('{'results': [{'group': {'queueId': 'd7b99d1c-4833-4ad6-aa87-d1a23dba13d4'},'data': [{'metric': 'oActiveUsers','stats': {'count': 5}},{'metric': 'oMemberUsers','stats': {'count': 5}}]},{'group': {'mediaType': 'voice','queueId': 'd7b99d1c-4833-4ad6-aa87-d1a23dba13d4'},'data': [{'metric': 'oInteracting','stats': {'count': 0}},{'metric': 'oWaiting','stats': {'count': 0}}]},{'group': {'mediaType': 'chat','queueId': 'd7b99d1c-4833-4ad6-aa87-d1a23dba13d4'},'data': [{'metric': 'oInteracting','stats': {'count': 0}},{'metric': 'oWaiting','stats': {'count': 0}}]},{'group': {'mediaType': 'email','queueId': 'd7b99d1c-4833-4ad6-aa87-d1a23dba13d4'},'data': [{'metric': 'oInteracting','stats': {'count': 0}},{'metric': 'oWaiting','stats': {'count': 0}}]},{'group': {'mediaType': 'callback','queueId': 'd7b99d1c-4833-4ad6-aa87-d1a23dba13d4'},'data': [{'metric': 'oInteracting','stats': {'count': 0}},{'metric': 'oWaiting','stats': {'count': 0}}]}]}');
 
       // console.debug(jsonTranslator.translatePcStatSet(sourcePc));
       
@@ -258,7 +258,7 @@ angular.module('cicService', ['chromeStorage', 'jsonTranslator', 'powerbiService
             if (sNewValue == null) {
               $log.debug('Updated NULL value in a Cache');
               _StatisticsJSON[i] = myObj;
-              //_StatisticsJSON[i].statisticValue = '{"__type":"urn:inin.com:statistics:statisticIntValue","value":0,"statisticValueType":0}';
+              //_StatisticsJSON[i].statisticValue = '{'__type':'urn:inin.com:statistics:statisticIntValue','value':0,'statisticValueType':0}';
 
               continue;
             }
@@ -331,243 +331,243 @@ angular.module('cicService', ['chromeStorage', 'jsonTranslator', 'powerbiService
         'statisticKeys':
         [
           {
-            "statisticIdentifier": "inin.workgroup:AgentsLoggedIn",
-            "parameterValueItems":
+            'statisticIdentifier': 'inin.workgroup:AgentsLoggedIn',
+            'parameterValueItems':
             [
               {
-                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
-                "value": "Marketing"
+                'parameterTypeId': 'ININ.People.WorkgroupStats:Workgroup',
+                'value': 'Marketing'
               }
             ]
           },
           {
-            "statisticIdentifier": "inin.workgroup:TotalAgents",
-            "parameterValueItems":
+            'statisticIdentifier': 'inin.workgroup:TotalAgents',
+            'parameterValueItems':
             [
               {
-                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
-                "value": "Marketing"
+                'parameterTypeId': 'ININ.People.WorkgroupStats:Workgroup',
+                'value': 'Marketing'
               }
             ]
           },
           {
-            "statisticIdentifier": "inin.workgroup:TotalAgents",
-            "parameterValueItems":
+            'statisticIdentifier': 'inin.workgroup:TotalAgents',
+            'parameterValueItems':
             [
               {
-                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
-                "value": "GroupA"
+                'parameterTypeId': 'ININ.People.WorkgroupStats:Workgroup',
+                'value': 'GroupA'
               }
             ]
           },
           {
-            "statisticIdentifier": "inin.workgroup:PercentAvailable",
-            "parameterValueItems":
+            'statisticIdentifier': 'inin.workgroup:PercentAvailable',
+            'parameterValueItems':
             [
               {
-                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
-                "value": "Marketing"
+                'parameterTypeId': 'ININ.People.WorkgroupStats:Workgroup',
+                'value': 'Marketing'
               }
             ]
           },
           {
-            "statisticIdentifier": "inin.workgroup:NumberAvailableForACDInteractions",
-            "parameterValueItems":
+            'statisticIdentifier': 'inin.workgroup:NumberAvailableForACDInteractions',
+            'parameterValueItems':
             [
               {
-                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
-                "value": "Marketing"
+                'parameterTypeId': 'ININ.People.WorkgroupStats:Workgroup',
+                'value': 'Marketing'
               }
             ]
           },
           {
-            "statisticIdentifier": "inin.workgroup:InteractionsWaiting",
-            "parameterValueItems":
+            'statisticIdentifier': 'inin.workgroup:InteractionsWaiting',
+            'parameterValueItems':
             [
               {
-                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
-                "value": "Marketing"
+                'parameterTypeId': 'ININ.People.WorkgroupStats:Workgroup',
+                'value': 'Marketing'
               }
             ]
           },
           {
-            "statisticIdentifier": "inin.workgroup:InteractionsWaiting",
-            "parameterValueItems":
+            'statisticIdentifier': 'inin.workgroup:InteractionsWaiting',
+            'parameterValueItems':
             [
               {
-                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
-                "value": "GroupA"
+                'parameterTypeId': 'ININ.People.WorkgroupStats:Workgroup',
+                'value': 'GroupA'
               }
             ]
           }
 
           ,
           {
-            "statisticIdentifier": "inin.workgroup:NotAvailable",
-            "parameterValueItems":
+            'statisticIdentifier': 'inin.workgroup:NotAvailable',
+            'parameterValueItems':
             [
               {
-                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
-                "value": "Marketing"
+                'parameterTypeId': 'ININ.People.WorkgroupStats:Workgroup',
+                'value': 'Marketing'
               }
             ]
           },
           {
-            "statisticIdentifier": "inin.workgroup:LongestAvailable",
-            "parameterValueItems":
+            'statisticIdentifier': 'inin.workgroup:LongestAvailable',
+            'parameterValueItems':
             [
               {
-                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
-                "value": "Marketing"
+                'parameterTypeId': 'ININ.People.WorkgroupStats:Workgroup',
+                'value': 'Marketing'
               }
             ]
           },
           {
-            "statisticIdentifier": "inin.workgroup:OnInboundACDInteractions",
-            "parameterValueItems":
+            'statisticIdentifier': 'inin.workgroup:OnInboundACDInteractions',
+            'parameterValueItems':
             [
               {
-                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
-                "value": "Marketing"
+                'parameterTypeId': 'ININ.People.WorkgroupStats:Workgroup',
+                'value': 'Marketing'
               }
             ]
           },
           {
-            "statisticIdentifier": "inin.workgroup:LongestInboundACDInteraction",
-            "parameterValueItems":
+            'statisticIdentifier': 'inin.workgroup:LongestInboundACDInteraction',
+            'parameterValueItems':
             [
               {
-                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
-                "value": "Marketing"
+                'parameterTypeId': 'ININ.People.WorkgroupStats:Workgroup',
+                'value': 'Marketing'
               }
             ]
           },
           {
-            "statisticIdentifier": "inin.workgroup:LongestOutboundACDInteraction",
-            "parameterValueItems":
+            'statisticIdentifier': 'inin.workgroup:LongestOutboundACDInteraction',
+            'parameterValueItems':
             [
               {
-                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
-                "value": "Marketing"
+                'parameterTypeId': 'ININ.People.WorkgroupStats:Workgroup',
+                'value': 'Marketing'
               }
             ]
           },
 
           {
-            "statisticIdentifier": "inin.workgroup:LongestOnHoldTime",
-            "parameterValueItems":
+            'statisticIdentifier': 'inin.workgroup:LongestOnHoldTime',
+            'parameterValueItems':
             [
               {
-                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
-                "value": "Marketing"
+                'parameterTypeId': 'ININ.People.WorkgroupStats:Workgroup',
+                'value': 'Marketing'
               }
             ]
           },
           {
-            "statisticIdentifier": "inin.workgroup:LongestWaitTime",
-            "parameterValueItems":
+            'statisticIdentifier': 'inin.workgroup:LongestWaitTime',
+            'parameterValueItems':
             [
               {
-                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
-                "value": "Marketing"
+                'parameterTypeId': 'ININ.People.WorkgroupStats:Workgroup',
+                'value': 'Marketing'
               }
             ]
           },
           {
-            "statisticIdentifier": "inin.workgroup:InteractionsOnHold",
-            "parameterValueItems":
+            'statisticIdentifier': 'inin.workgroup:InteractionsOnHold',
+            'parameterValueItems':
             [
               {
-                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
-                "value": "Marketing"
+                'parameterTypeId': 'ININ.People.WorkgroupStats:Workgroup',
+                'value': 'Marketing'
               }
             ]
           },
           {
-            "statisticIdentifier": "inin.workgroup:InteractionsEntered",
-            "parameterValueItems":
+            'statisticIdentifier': 'inin.workgroup:InteractionsEntered',
+            'parameterValueItems':
             [
               {
-                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
-                "value": "Marketing"
+                'parameterTypeId': 'ININ.People.WorkgroupStats:Workgroup',
+                'value': 'Marketing'
               },
               {
-                "parameterTypeId": "ININ.Queue:Interval",
-                "value": "CurrentPeriod"
+                'parameterTypeId': 'ININ.Queue:Interval',
+                'value': 'CurrentPeriod'
               }
             ]
           },
           {
-            "statisticIdentifier": "inin.workgroup:InteractionsAnswered",
-            "parameterValueItems":
+            'statisticIdentifier': 'inin.workgroup:InteractionsAnswered',
+            'parameterValueItems':
             [
               {
-                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
-                "value": "Marketing"
+                'parameterTypeId': 'ININ.People.WorkgroupStats:Workgroup',
+                'value': 'Marketing'
               },
               {
-                "parameterTypeId": "ININ.Queue:Interval",
-                "value": "CurrentPeriod"
+                'parameterTypeId': 'ININ.Queue:Interval',
+                'value': 'CurrentPeriod'
               }
             ]
           },
           {
-            "statisticIdentifier": "inin.workgroup:InteractionsAbandoned",
-            "parameterValueItems":
+            'statisticIdentifier': 'inin.workgroup:InteractionsAbandoned',
+            'parameterValueItems':
             [
               {
-                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
-                "value": "Marketing"
+                'parameterTypeId': 'ININ.People.WorkgroupStats:Workgroup',
+                'value': 'Marketing'
               },
               {
-                "parameterTypeId": "ININ.Queue:Interval",
-                "value": "CurrentPeriod"
+                'parameterTypeId': 'ININ.Queue:Interval',
+                'value': 'CurrentPeriod'
               }
             ]
           },
           {
-            "statisticIdentifier": "inin.workgroup:TotalTalkTime",
-            "parameterValueItems":
+            'statisticIdentifier': 'inin.workgroup:TotalTalkTime',
+            'parameterValueItems':
             [
               {
-                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
-                "value": "Marketing"
+                'parameterTypeId': 'ININ.People.WorkgroupStats:Workgroup',
+                'value': 'Marketing'
               },
               {
-                "parameterTypeId": "ININ.Queue:Interval",
-                "value": "CurrentPeriod"
+                'parameterTypeId': 'ININ.Queue:Interval',
+                'value': 'CurrentPeriod'
               }
             ]
           },
           {
-            "statisticIdentifier": "inin.workgroup:AverageWaitTime",
-            "parameterValueItems":
+            'statisticIdentifier': 'inin.workgroup:AverageWaitTime',
+            'parameterValueItems':
             [
               {
-                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
-                "value": "Marketing"
+                'parameterTypeId': 'ININ.People.WorkgroupStats:Workgroup',
+                'value': 'Marketing'
               },
               {
-                "parameterTypeId": "ININ.Queue:Interval",
-                "value": "CurrentPeriod"
+                'parameterTypeId': 'ININ.Queue:Interval',
+                'value': 'CurrentPeriod'
               }
             ]
           },
           {
-            "statisticIdentifier": "inin.workgroup:ServiceLevelTarget",
-            "parameterValueItems":
+            'statisticIdentifier': 'inin.workgroup:ServiceLevelTarget',
+            'parameterValueItems':
             [
               {
-                "parameterTypeId": "ININ.People.WorkgroupStats:Workgroup",
-                "value": "Marketing"
+                'parameterTypeId': 'ININ.People.WorkgroupStats:Workgroup',
+                'value': 'Marketing'
               },
               {
-                "parameterTypeId": "ININ.Queue:Interval",
-                "value": "CurrentPeriod"
+                'parameterTypeId': 'ININ.Queue:Interval',
+                'value': 'CurrentPeriod'
               },
               {
-                "parameterTypeId": "ININ.Queue:InteractionType",
-                "value": "Calls"
+                'parameterTypeId': 'ININ.Queue:InteractionType',
+                'value': 'Calls'
               }
             ]
           }
