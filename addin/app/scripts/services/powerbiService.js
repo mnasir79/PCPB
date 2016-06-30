@@ -6,6 +6,7 @@ angular.module('powerbiService', ['chromeStorage'])
     //console.debug('PowerBI Service started');
 
     var accessToken;
+    var creatingDataset = false;
 
     // This watches for the access token in the local storage
     // The current module used (chromeStorage (https://github.com/infomofo/angular-chrome-storage)) does not have that functionality
@@ -19,16 +20,6 @@ angular.module('powerbiService', ['chromeStorage'])
       });
     }, null);
 
-    // Load Enviroment Options from ChromeLocalStorage
-    // ===============
-    // chromeStorage.get('icOptions').then(function (icOptions) {
-    //   _host = icOptions.icIcServer;
-    //   _port = icOptions.icPort;
-    //   _icUsername = icOptions.icUsername;
-    //   _icPassword = icOptions.icPassword;
-    //   _icUseSsl = icOptions.icUseSsl;
-    // });
-    
     this.Logoff = function(callback) {
       console.log('Clearing PowerBI token');
       chromeStorage.drop('powerbi_access_token');
@@ -42,7 +33,7 @@ angular.module('powerbiService', ['chromeStorage'])
       if ($rootScope.isPowerBIConnected) {
         // Creates the dataset it if it doesn't exist yet
         DataSetExists(dataset, function (dataSetId) {
-          if (dataSetId) {
+          if (dataSetId.length > 0) {
             console.log(dataset, 'dataset found!:', dataSetId);
             // Remove rows?
             //console.log('Delete Rows');
@@ -52,12 +43,46 @@ angular.module('powerbiService', ['chromeStorage'])
             AddRows(dataSetId, table, rows);
           } else {
             console.log(dataset, 'dataset NOT found!');
+            if (creatingDataset) {
+              return; // We could wait but then the data might be outdated?
+            }
+            creatingDataset = true;
             CreateDataSet(dataset, function(responseText) {
-              var dataSetId = responseText.id;
-              console.log('New Dataset Id:', dataSetId);
+              var datasetId = responseText.id;
+              if (datasetId) {
+                console.log('New Dataset Id:', datasetId);
+                creatingDataset = false;
+              }
               // Add rows
-              console.log('Dataset:', dataset, '. Table:', table, '. Adding rows:', rows);
-              AddRows(dataSetId, table, rows);
+              //console.log('Dataset:', dataset, '. Table:', table, '. Adding rows:', rows);
+              AddRows(datasetId, table, rows);
+            });
+          }
+        });
+      } else {
+        console.error('Please sign in to PowerBI first.');
+      }
+    };
+
+    this.DeleteDatasets = function() {
+      if ($rootScope.isPowerBIConnected) {
+        DeleteDataset('CIC');
+        DeleteDataset('PureCloud');
+      } else {
+        console.error('Please sign in to PowerBI first.');
+      }
+    };
+
+    function DeleteDataset(dataset) {
+      if ($rootScope.isPowerBIConnected) {
+        DataSetExists(dataset, function (datasetId) {
+          if (datasetId.length > 0) {
+            // Delete it
+            console.log('DELETE', datasetId);
+            PBIDelete('https://api.powerbi.com/v1.0/myorg/datasets/' + datasetId, function(response) {
+              if (response) {
+                console.log('DELETE Response:', response);
+              }
             });
           }
         });
@@ -69,14 +94,14 @@ angular.module('powerbiService', ['chromeStorage'])
     // Check if a PowerBI dataset exists
     function DataSetExists(name, callback) {
       PBIGet('https://api.powerbi.com/v1.0/myorg/datasets', function(data) {
-        var pureCloudDataSets = getObjects(data, 'name', name);
-        if (pureCloudDataSets.length > 0) {
+        var pureCloudDatasets = getObjects(data, 'name', name);
+        if (pureCloudDatasets.length > 0) {
           if (callback) { 
-            callback(pureCloudDataSets[0].id); 
+            callback(pureCloudDatasets[0].id); 
           }
         } else {
           if (callback) {
-            callback(undefined);
+            callback(pureCloudDatasets);
           }
         }
       });
@@ -93,12 +118,12 @@ angular.module('powerbiService', ['chromeStorage'])
       {
         case 'CIC':
           $.getJSON('scripts/schemas/powerBiCicTableSchema.json', function(json) {
-            return PBIPost('https://api.powerbi.com/v1.0/myorg/datasets?defaultRetentionPolicy=None', json, callback);
+            return PBIPost('https://api.powerbi.com/v1.0/myorg/datasets?defaultRetentionPolicy=basicFIFO', json, callback);
           });
           break;
         case 'PureCloud':
           $.getJSON('scripts/schemas/powerBiPureCloudTableSchema.json', function(json) {
-            return PBIPost('https://api.powerbi.com/v1.0/myorg/datasets?defaultRetentionPolicy=None', json, callback);
+            return PBIPost('https://api.powerbi.com/v1.0/myorg/datasets?defaultRetentionPolicy=basicFIFO', json, callback);
           });
           break;
         default:
@@ -117,7 +142,6 @@ angular.module('powerbiService', ['chromeStorage'])
       return PBIDelete('https://api.powerbi.com/v1.0/myorg/datasets/' + dataSetId + '/tables/' + tableName + '/rows');
     }
 
-
     // PowerBI GET
     function PBIGet(url, callback) {
       var request = new XMLHttpRequest();
@@ -130,7 +154,6 @@ angular.module('powerbiService', ['chromeStorage'])
       request.onreadystatechange = function () {
         if (this.readyState === 4) {
           var response = JSON.parse(this.response);
-          console.log('GET Response:', response);
           switch(this.status) {
             case 200: // OK
               var data = JSON.parse(this.responseText).value;
@@ -164,7 +187,9 @@ angular.module('powerbiService', ['chromeStorage'])
         if (this.readyState === 4) {
           console.log('POST Status:', this.status);
           //console.log('Headers:', this.getAllResponseHeaders());
-          console.log('Body:', this.responseText);
+          if (this.responseText) {
+            console.log('Body:', this.responseText);
+          }
           if (this.status === 200 || this.status === 201) {
             if (callback) {
               callback(JSON.parse(this.responseText));
@@ -183,7 +208,7 @@ angular.module('powerbiService', ['chromeStorage'])
     }
 
     // PowerBI DELETE
-    function PBIDelete(url, data, callback) {
+    function PBIDelete(url, callback) {
       // Create new HTTP POST request
       var request = new XMLHttpRequest();
 
@@ -191,10 +216,17 @@ angular.module('powerbiService', ['chromeStorage'])
         if (this.readyState === 4) {
           console.log('DELETE Status:', this.status);
           //console.log('Headers:', this.getAllResponseHeaders());
-          //console.log('Body:', this.responseText);
+          if (this.responseText) {
+            console.log('DELETE Body:', this.responseText);
+          }
           if (this.status === 200 || this.status === 201) {
             if (callback) {
-              callback(JSON.parse(this.responseText));
+              if (this.responseText) {
+                callback(JSON.parse(this.responseText));
+              }
+              else {
+                callback();
+              }
             }
           }
         }
@@ -208,7 +240,6 @@ angular.module('powerbiService', ['chromeStorage'])
       request.send();
     }
 
-
     //return an array of objects according to key, value, or key and value matching
     function getObjects(obj, key, val) {
       var objects = [];
@@ -220,11 +251,11 @@ angular.module('powerbiService', ['chromeStorage'])
           objects = objects.concat(getObjects(obj[i], key, val));    
         } else 
         //if key matches and value matches or if key matches and value is not passed (eliminating the case where key matches but passed value does not)
-        if (i === key && obj[i] === val || i === key && val === '') { //
+        if (i == key && obj[i] == val || i == key && val == '') { //
           objects.push(obj);
-        } else if (obj[i] === val && key === ''){
+        } else if (obj[i] == val && key == ''){
           //only add if the object is not already in the array
-          if (objects.lastIndexOf(obj) === -1){
+          if (objects.lastIndexOf(obj) == -1){
               objects.push(obj);
           }
         }
