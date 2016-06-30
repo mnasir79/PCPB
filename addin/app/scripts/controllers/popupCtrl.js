@@ -139,6 +139,10 @@ angular.module('app', ['powerbiService', 'chromeStorage', 'pureCloudService'])
             powerbiService.SendToPowerBI(dataset, table, rows);
         };
 
+        $scope.deleteDatasets = function (dataset, table, rows) {
+            powerbiService.DeleteDatasets();
+        };
+
         $scope.openUrl = function (obj) {
             var url = obj.target.attributes.href.value;
             chrome.tabs.create({ url: url });
