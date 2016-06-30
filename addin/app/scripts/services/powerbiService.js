@@ -43,7 +43,7 @@ angular.module('powerbiService', ['chromeStorage'])
         // Creates the dataset it if it doesn't exist yet
         DataSetExists(dataset, function (dataSetId) {
           if (dataSetId) {
-            //console.log(dataset, 'dataset found!:', dataSetId);
+            console.log(dataset, 'dataset found!:', dataSetId);
             // Remove rows?
             //console.log('Delete Rows');
             //DeleteRows(dataSetId, table);
@@ -130,6 +130,7 @@ angular.module('powerbiService', ['chromeStorage'])
       request.onreadystatechange = function () {
         if (this.readyState === 4) {
           var response = JSON.parse(this.response);
+          console.log('GET Response:', response);
           switch(this.status) {
             case 200: // OK
               var data = JSON.parse(this.responseText).value;
@@ -150,6 +151,7 @@ angular.module('powerbiService', ['chromeStorage'])
           }
         }
       };
+      console.log('GET', url);
       request.send();
     }
 
@@ -162,7 +164,7 @@ angular.module('powerbiService', ['chromeStorage'])
         if (this.readyState === 4) {
           console.log('POST Status:', this.status);
           //console.log('Headers:', this.getAllResponseHeaders());
-          //console.log('Body:', this.responseText);
+          console.log('Body:', this.responseText);
           if (this.status === 200 || this.status === 201) {
             if (callback) {
               callback(JSON.parse(this.responseText));

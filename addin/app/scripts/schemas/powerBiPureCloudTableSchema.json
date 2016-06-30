@@ -12,23 +12,23 @@
           "name": "callback-oInteracting",
           "dataType": "Int64"
         },
-         {
+        {
           "name": "callback-oWaiting",
           "dataType": "Int64"
         },
-         {
+        {
           "name": "chat-oInteracting",
           "dataType": "Int64"
         },
-         {
+        {
           "name": "chat-oWaiting",
           "dataType": "Int64"
         },
-         {
+        {
           "name": "email-oInteracting",
           "dataType": "Int64"
         },
-         {
+        {
           "name": "email-oWaiting",
           "dataType": "Int64"
         },
@@ -36,11 +36,15 @@
           "name": "name",
           "dataType": "String"
         },
-         {
+        {
           "name": "oActiveUsers",
           "dataType": "Int64"
         },
-         {
+        {
+          "name": "oOffQueueUsers",
+          "dataType": "Int64"
+        },
+        {
           "name": "oMemberUsers",
           "dataType": "Int64"
         },
