@@ -199,7 +199,6 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 					.then(function success(response) {
 						var wgData = response.data;
 
-
 						// @Daniel Szlaski / Fix for formating
 						var wgData_parsed = { "results": [] };
 						var in_mediaType = '';
@@ -225,14 +224,17 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 
 						for (var i in statRoot) {
 							var queue = jsonPath(statRoot[i], queuePath)[0];
-							console.log(_queueName[i]);
-							console.log(queue['queueName']);
-
-							queue['queueName'] = _queueName[i];
+							for (x in _queueName) {
+								if (queue['queueId'] == _queueId[x]) {
+									//console.log('Replace ' + queue['queueId'] + ' into ' + _queueName[x])
+									queue['queueName'] = _queueName[x];
+									continue;
+								}
+							}
 						}
 
 						// send data to powerbi
-						
+
 						var outputStat = jsonTranslator.translatePcStatSet(wgData_parsed);
 						console.log(outputStat);
 						powerbiService.SendToPowerBI('PureCloud', 'Workgroup', outputStat);
@@ -241,7 +243,7 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 					},
 					deferred.reject());
 			}
-		}
+		};
 
 		/*
 		 * @summary Load the list of queue name and queueid in a table _queueName
@@ -258,8 +260,8 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 						var queueName = _allQueue[i].name;
 						_queueId.push(queueId);
 						_queueName.push(queueName);
-						//console.log("queueId: " + queueId);
-						//console.log("queueName: " + queueName);
+						// console.log("queueId: " + queueId);
+						// console.log("queueName: " + queueName);
 					}
 
 					sendData(); // Call it once (interval only starts when the timer expires)
@@ -510,418 +512,418 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 
 				return sendRestRequest('analytics.postQueuesObservationsQuery', 'POST', apipath + '?' + $httpParamSerializerJQLike(queryParameters), requestBody);
 			}
-				,
+			,
 
-				/**
-				 * @summary Get list of reporting metadata.
-				 * @memberOf AnalyticsApi#
-				 * @param {integer} pageNumber - Page number
-				 * @param {integer} pageSize - Page size
-				 * @param {string} locale - Locale
-				 */
-				getReportingMetadata: function(pageNumber, pageSize, locale){
-					var apipath = '/api/v2/analytics/reporting/metadata';
-					var requestBody;
-					var queryParameters = {};
-					var headers = {};
-					var form = {};
+			/**
+			 * @summary Get list of reporting metadata.
+			 * @memberOf AnalyticsApi#
+			 * @param {integer} pageNumber - Page number
+			 * @param {integer} pageSize - Page size
+			 * @param {string} locale - Locale
+			 */
+			getReportingMetadata: function (pageNumber, pageSize, locale) {
+				var apipath = '/api/v2/analytics/reporting/metadata';
+				var requestBody;
+				var queryParameters = {};
+				var headers = {};
+				var form = {};
 
-					if (pageNumber){
-						queryParameters.pageNumber = pageNumber;
-					}
+				if (pageNumber) {
+					queryParameters.pageNumber = pageNumber;
+				}
 
-					if (pageSize){
-						queryParameters.pageSize = pageSize;
-					}
+				if (pageSize) {
+					queryParameters.pageSize = pageSize;
+				}
 
-					if (locale){
-						queryParameters.locale = locale;
-					}
+				if (locale) {
+					queryParameters.locale = locale;
+				}
 
-					return sendRestRequest('analytics.getReportingMetadata', 'GET', apipath + '?' + $httpParamSerializerJQLike(queryParameters), requestBody);
-				},
+				return sendRestRequest('analytics.getReportingMetadata', 'GET', apipath + '?' + $httpParamSerializerJQLike(queryParameters), requestBody);
+			},
 
-				/**
-				 * @summary Get a list of report formats
-				 * @description Get a list of report formats.
-				 * @memberOf AnalyticsApi#
-				*/
-				getReportingReportformats: function(){
-					var apipath = '/api/v2/analytics/reporting/reportformats';
-					var requestBody;
-					var queryParameters = {};
-					var headers = {};
-					var form = {};
+			/**
+			 * @summary Get a list of report formats
+			 * @description Get a list of report formats.
+			 * @memberOf AnalyticsApi#
+			*/
+			getReportingReportformats: function () {
+				var apipath = '/api/v2/analytics/reporting/reportformats';
+				var requestBody;
+				var queryParameters = {};
+				var headers = {};
+				var form = {};
 
-					return sendRestRequest('analytics.getReportingReportformats', 'GET', apipath + '?' + $httpParamSerializerJQLike(queryParameters), requestBody);
-				},
+				return sendRestRequest('analytics.getReportingReportformats', 'GET', apipath + '?' + $httpParamSerializerJQLike(queryParameters), requestBody);
+			},
 
-				/**
-				 * @summary Get a list of scheduled report jobs
-				 * @description Get a list of scheduled report jobs.
-				 * @memberOf AnalyticsApi#
-				 * @param {integer} pageNumber - Page number
-				 * @param {integer} pageSize - Page size
-				 */
-				getReportingSchedules: function(pageNumber, pageSize){
-					var apipath = '/api/v2/analytics/reporting/schedules';
-					var requestBody;
-					var queryParameters = {};
-					var headers = {};
-					var form = {};
+			/**
+			 * @summary Get a list of scheduled report jobs
+			 * @description Get a list of scheduled report jobs.
+			 * @memberOf AnalyticsApi#
+			 * @param {integer} pageNumber - Page number
+			 * @param {integer} pageSize - Page size
+			 */
+			getReportingSchedules: function (pageNumber, pageSize) {
+				var apipath = '/api/v2/analytics/reporting/schedules';
+				var requestBody;
+				var queryParameters = {};
+				var headers = {};
+				var form = {};
 
-					if(pageNumber){
-						queryParameters.pageNumber = pageNumber;
-					}
+				if (pageNumber) {
+					queryParameters.pageNumber = pageNumber;
+				}
 
-					if(pageSize){
-						queryParameters.pageSize = pageSize;
-					}
+				if (pageSize) {
+					queryParameters.pageSize = pageSize;
+				}
 
-					return sendRestRequest('analytics.getReportingSchedules', 'GET', apipath + '?' + $httpParamSerializerJQLike(queryParameters), requestBody);
-				},
+				return sendRestRequest('analytics.getReportingSchedules', 'GET', apipath + '?' + $httpParamSerializerJQLike(queryParameters), requestBody);
+			},
 
-				/**
-				 * @summary Create a scheduled report job
-				 * @description Create a scheduled report job.
-				 * @memberOf AnalyticsApi#
-				 * @param {} body - ReportSchedule
-				 * @example
-				 * Body Example:
-				 * {
-						 "name": "",
-						"quartzCronExpression": "",
-						"nextFireTime": "",
-						"dateCreated": "",
-						"dateModified": "",
-						"description": "",
-						"timeZone": "",
-						"timePeriod": "",
-						"interval": "",
-						"reportFormat": "",
-						"locale": "",
-						"enabled": true,
+			/**
+			 * @summary Create a scheduled report job
+			 * @description Create a scheduled report job.
+			 * @memberOf AnalyticsApi#
+			 * @param {} body - ReportSchedule
+			 * @example
+			 * Body Example:
+			 * {
+					 "name": "",
+					"quartzCronExpression": "",
+					"nextFireTime": "",
+					"dateCreated": "",
+					"dateModified": "",
+					"description": "",
+					"timeZone": "",
+					"timePeriod": "",
+					"interval": "",
+					"reportFormat": "",
+					"locale": "",
+					"enabled": true,
+					"reportId": "",
+					"parameters": {},
+					"lastRun": {
+						"name": "",
 						"reportId": "",
-						"parameters": {},
-						"lastRun": {
-							"name": "",
-							"reportId": "",
-							"runTime": "",
-							"runStatus": "",
-							"errorMessage": "",
-							"runDurationMsec": 0,
-							"reportUrl": "",
-							"reportFormat": "",
-							"scheduleUri": ""
-						}
-					}
-				*/
-				postReportingSchedules: function(body){
-					var apipath = '/api/v2/analytics/reporting/schedules';
-					var requestBody;
-					var queryParameters = {};
-					var headers = {};
-					var form = {};
-
-					if(body){
-						requestBody = body;
-					}
-
-					return sendRestRequest('analytics.postReportingSchedules', 'POST', apipath + '?' + $httpParamSerializerJQLike(queryParameters), requestBody);
-				},
-
-				/**
-				 * @summary Get a scheduled report job.
-				 * @memberOf AnalyticsApi#
-				 * @param {string} scheduleId - Schedule ID
-				 */
-				getReportingSchedulesScheduleId: function(scheduleId){
-					var apipath = '/api/v2/analytics/reporting/schedules/{scheduleId}';
-					var requestBody;
-					var queryParameters = {};
-					var headers = {};
-					var form = {};
-
-					if(!scheduleId){
-						throw new Error('Missing required  parameter: scheduleId');
-					}
-					apipath = apipath.replace('{scheduleId}', scheduleId);
-
-
-					return sendRestRequest('analytics.getReportingSchedulesScheduleId', 'GET', apipath + '?' + $httpParamSerializerJQLike(queryParameters), requestBody);
-				},
-
-				/**
-				 * @summary Update a scheduled report job.
-				 * @memberOf AnalyticsApi#
-				 * @param {string} scheduleId - Schedule ID
-				 * @param {} body - ReportSchedule
-				 * @example
-				 * Body Example:
-				 * {
-						 "name": "",
-						"quartzCronExpression": "",
-						"nextFireTime": "",
-						"dateCreated": "",
-						"dateModified": "",
-						"description": "",
-						"timeZone": "",
-						"timePeriod": "",
-						"interval": "",
+						"runTime": "",
+						"runStatus": "",
+						"errorMessage": "",
+						"runDurationMsec": 0,
+						"reportUrl": "",
 						"reportFormat": "",
-						"locale": "",
-						"enabled": true,
+						"scheduleUri": ""
+					}
+				}
+			*/
+			postReportingSchedules: function (body) {
+				var apipath = '/api/v2/analytics/reporting/schedules';
+				var requestBody;
+				var queryParameters = {};
+				var headers = {};
+				var form = {};
+
+				if (body) {
+					requestBody = body;
+				}
+
+				return sendRestRequest('analytics.postReportingSchedules', 'POST', apipath + '?' + $httpParamSerializerJQLike(queryParameters), requestBody);
+			},
+
+			/**
+			 * @summary Get a scheduled report job.
+			 * @memberOf AnalyticsApi#
+			 * @param {string} scheduleId - Schedule ID
+			 */
+			getReportingSchedulesScheduleId: function (scheduleId) {
+				var apipath = '/api/v2/analytics/reporting/schedules/{scheduleId}';
+				var requestBody;
+				var queryParameters = {};
+				var headers = {};
+				var form = {};
+
+				if (!scheduleId) {
+					throw new Error('Missing required  parameter: scheduleId');
+				}
+				apipath = apipath.replace('{scheduleId}', scheduleId);
+
+
+				return sendRestRequest('analytics.getReportingSchedulesScheduleId', 'GET', apipath + '?' + $httpParamSerializerJQLike(queryParameters), requestBody);
+			},
+
+			/**
+			 * @summary Update a scheduled report job.
+			 * @memberOf AnalyticsApi#
+			 * @param {string} scheduleId - Schedule ID
+			 * @param {} body - ReportSchedule
+			 * @example
+			 * Body Example:
+			 * {
+					 "name": "",
+					"quartzCronExpression": "",
+					"nextFireTime": "",
+					"dateCreated": "",
+					"dateModified": "",
+					"description": "",
+					"timeZone": "",
+					"timePeriod": "",
+					"interval": "",
+					"reportFormat": "",
+					"locale": "",
+					"enabled": true,
+					"reportId": "",
+					"parameters": {},
+					"lastRun": {
+						"name": "",
 						"reportId": "",
-						"parameters": {},
-						"lastRun": {
-							"name": "",
-							"reportId": "",
-							"runTime": "",
-							"runStatus": "",
-							"errorMessage": "",
-							"runDurationMsec": 0,
-							"reportUrl": "",
-							"reportFormat": "",
-							"scheduleUri": ""
-						}
+						"runTime": "",
+						"runStatus": "",
+						"errorMessage": "",
+						"runDurationMsec": 0,
+						"reportUrl": "",
+						"reportFormat": "",
+						"scheduleUri": ""
 					}
-				*/
-				putReportingSchedulesScheduleId: function(scheduleId, body){
-					var apipath = '/api/v2/analytics/reporting/schedules/{scheduleId}';
-					var requestBody;
-					var queryParameters = {};
-					var headers = {};
-					var form = {};
+				}
+			*/
+			putReportingSchedulesScheduleId: function (scheduleId, body) {
+				var apipath = '/api/v2/analytics/reporting/schedules/{scheduleId}';
+				var requestBody;
+				var queryParameters = {};
+				var headers = {};
+				var form = {};
 
-					if(!scheduleId){
-						throw new Error('Missing required  parameter: scheduleId');
-					}
-					apipath = apipath.replace('{scheduleId}', scheduleId);
+				if (!scheduleId) {
+					throw new Error('Missing required  parameter: scheduleId');
+				}
+				apipath = apipath.replace('{scheduleId}', scheduleId);
 
-					if(body){
-						requestBody = body;
-					}
+				if (body) {
+					requestBody = body;
+				}
 
-					return sendRestRequest('analytics.getReportingSchedulesScheduleId', 'PUT', apipath + '?' + $httpParamSerializerJQLike(queryParameters), requestBody);
-				},
+				return sendRestRequest('analytics.getReportingSchedulesScheduleId', 'PUT', apipath + '?' + $httpParamSerializerJQLike(queryParameters), requestBody);
+			},
 
-				/**
-				 * @summary Delete a scheduled report job.
-				 * @memberOf AnalyticsApi#
-				 * @param {string} scheduleId - Schedule ID
-				 */
-				deleteReportingSchedulesScheduleId: function(scheduleId){
-					var apipath = '/api/v2/analytics/reporting/schedules/{scheduleId}';
-					var requestBody;
-					var queryParameters = {};
-					var headers = {};
-					var form = {};
+			/**
+			 * @summary Delete a scheduled report job.
+			 * @memberOf AnalyticsApi#
+			 * @param {string} scheduleId - Schedule ID
+			 */
+			deleteReportingSchedulesScheduleId: function (scheduleId) {
+				var apipath = '/api/v2/analytics/reporting/schedules/{scheduleId}';
+				var requestBody;
+				var queryParameters = {};
+				var headers = {};
+				var form = {};
 
-					if(!scheduleId){
-						throw new Error('Missing required  parameter: scheduleId');
-					}
-					apipath = apipath.replace('{scheduleId}', scheduleId);
+				if (!scheduleId) {
+					throw new Error('Missing required  parameter: scheduleId');
+				}
+				apipath = apipath.replace('{scheduleId}', scheduleId);
 
-					return sendRestRequest('analytics.deleteReportingSchedulesScheduleId', 'DELETE', apipath + '?' + $httpParamSerializerJQLike(queryParameters), requestBody);
-				},
+				return sendRestRequest('analytics.deleteReportingSchedulesScheduleId', 'DELETE', apipath + '?' + $httpParamSerializerJQLike(queryParameters), requestBody);
+			},
 
-				/**
-				 * @summary Get list of completed scheduled report jobs.
-				 * @memberOf AnalyticsApi#
-				 * @param {string} scheduleId - Schedule ID
-				 * @param {integer} pageNumber - 
-				 * @param {integer} pageSize - 
-				 */
-				getReportingSchedulesScheduleIdHistory: function(scheduleId, pageNumber, pageSize){
-					var apipath = '/api/v2/analytics/reporting/schedules/{scheduleId}/history';
-					var requestBody;
-					var queryParameters = {};
-					var headers = {};
-					var form = {};
+			/**
+			 * @summary Get list of completed scheduled report jobs.
+			 * @memberOf AnalyticsApi#
+			 * @param {string} scheduleId - Schedule ID
+			 * @param {integer} pageNumber - 
+			 * @param {integer} pageSize - 
+			 */
+			getReportingSchedulesScheduleIdHistory: function (scheduleId, pageNumber, pageSize) {
+				var apipath = '/api/v2/analytics/reporting/schedules/{scheduleId}/history';
+				var requestBody;
+				var queryParameters = {};
+				var headers = {};
+				var form = {};
 
-					if(!scheduleId){
-						throw new Error('Missing required  parameter: scheduleId');
-					}
-					apipath = apipath.replace('{scheduleId}', scheduleId);
+				if (!scheduleId) {
+					throw new Error('Missing required  parameter: scheduleId');
+				}
+				apipath = apipath.replace('{scheduleId}', scheduleId);
 
-					if(pageNumber){
-						queryParameters.pageNumber = pageNumber;
-					}
+				if (pageNumber) {
+					queryParameters.pageNumber = pageNumber;
+				}
 
-					if(pageSize){
-						queryParameters.pageSize = pageSize;
-					}
+				if (pageSize) {
+					queryParameters.pageSize = pageSize;
+				}
 
-					return sendRestRequest('analytics.getReportingSchedulesScheduleIdHistory', 'GET', apipath + '?' + $httpParamSerializerJQLike(queryParameters), requestBody);
-				},
+				return sendRestRequest('analytics.getReportingSchedulesScheduleIdHistory', 'GET', apipath + '?' + $httpParamSerializerJQLike(queryParameters), requestBody);
+			},
 
-				/**
-				 * @summary Get most recently completed scheduled report job.
-				 * @memberOf AnalyticsApi#
-				 * @param {string} scheduleId - Schedule ID
-				 */
-				getReportingSchedulesScheduleIdHistoryLatest: function(scheduleId){
-					var apipath = '/api/v2/analytics/reporting/schedules/{scheduleId}/history/latest';
-					var requestBody;
-					var queryParameters = {};
-					var headers = {};
-					var form = {};
+			/**
+			 * @summary Get most recently completed scheduled report job.
+			 * @memberOf AnalyticsApi#
+			 * @param {string} scheduleId - Schedule ID
+			 */
+			getReportingSchedulesScheduleIdHistoryLatest: function (scheduleId) {
+				var apipath = '/api/v2/analytics/reporting/schedules/{scheduleId}/history/latest';
+				var requestBody;
+				var queryParameters = {};
+				var headers = {};
+				var form = {};
 
-					if(!scheduleId){
-						throw new Error('Missing required  parameter: scheduleId');
-					}
-					apipath = apipath.replace('{scheduleId}', scheduleId);
+				if (!scheduleId) {
+					throw new Error('Missing required  parameter: scheduleId');
+				}
+				apipath = apipath.replace('{scheduleId}', scheduleId);
 
-					return sendRestRequest('analytics.getReportingSchedulesScheduleIdHistoryLatest', 'GET', apipath + '?' + $httpParamSerializerJQLike(queryParameters), requestBody);
-				},
+				return sendRestRequest('analytics.getReportingSchedulesScheduleIdHistoryLatest', 'GET', apipath + '?' + $httpParamSerializerJQLike(queryParameters), requestBody);
+			},
 
-				/**
-				 * @summary A completed scheduled report job
-				 * @description A completed scheduled report job.
-				 * @memberOf AnalyticsApi#
-				 * @param {string} runId - Run ID
-				 * @param {string} scheduleId - Schedule ID
-				 */
-				getReportingSchedulesScheduleIdHistoryRunId: function(runId, scheduleId){
-					var apipath = '/api/v2/analytics/reporting/schedules/{scheduleId}/history/{runId}';
-					var requestBody;
-					var queryParameters = {};
-					var headers = {};
-					var form = {};
+			/**
+			 * @summary A completed scheduled report job
+			 * @description A completed scheduled report job.
+			 * @memberOf AnalyticsApi#
+			 * @param {string} runId - Run ID
+			 * @param {string} scheduleId - Schedule ID
+			 */
+			getReportingSchedulesScheduleIdHistoryRunId: function (runId, scheduleId) {
+				var apipath = '/api/v2/analytics/reporting/schedules/{scheduleId}/history/{runId}';
+				var requestBody;
+				var queryParameters = {};
+				var headers = {};
+				var form = {};
 
-					if(!runId){
-						throw new Error('Missing required  parameter: runId');
-					}
-					apipath = apipath.replace('{runId}', runId);
+				if (!runId) {
+					throw new Error('Missing required  parameter: runId');
+				}
+				apipath = apipath.replace('{runId}', runId);
 
-					if(!scheduleId){
-						throw new Error('Missing required  parameter: scheduleId');
-					}
-					apipath = apipath.replace('{scheduleId}', scheduleId);
+				if (!scheduleId) {
+					throw new Error('Missing required  parameter: scheduleId');
+				}
+				apipath = apipath.replace('{scheduleId}', scheduleId);
 
-					return sendRestRequest('analytics.getReportingSchedulesScheduleIdHistoryRunId', 'GET', apipath + '?' + $httpParamSerializerJQLike(queryParameters), requestBody);
-				},
+				return sendRestRequest('analytics.getReportingSchedulesScheduleIdHistoryRunId', 'GET', apipath + '?' + $httpParamSerializerJQLike(queryParameters), requestBody);
+			},
 
-				/**
-				 * @summary Place a scheduled report immediately into the reporting queue
-				 * @memberOf AnalyticsApi#
-				 * @param {string} scheduleId - Schedule ID
-				 */
-				postReportingSchedulesScheduleIdRunreport: function(scheduleId){
-					var apipath = '/api/v2/analytics/reporting/schedules/{scheduleId}/runreport';
-					var requestBody;
-					var queryParameters = {};
-					var headers = {};
-					var form = {};
+			/**
+			 * @summary Place a scheduled report immediately into the reporting queue
+			 * @memberOf AnalyticsApi#
+			 * @param {string} scheduleId - Schedule ID
+			 */
+			postReportingSchedulesScheduleIdRunreport: function (scheduleId) {
+				var apipath = '/api/v2/analytics/reporting/schedules/{scheduleId}/runreport';
+				var requestBody;
+				var queryParameters = {};
+				var headers = {};
+				var form = {};
 
-					if(!scheduleId){
-						throw new Error('Missing required  parameter: scheduleId');
-					}
-					apipath = apipath.replace('{scheduleId}', scheduleId);
+				if (!scheduleId) {
+					throw new Error('Missing required  parameter: scheduleId');
+				}
+				apipath = apipath.replace('{scheduleId}', scheduleId);
 
-					return sendRestRequest('analytics.postReportingSchedulesScheduleIdRunreport', 'POST', apipath + '?' + $httpParamSerializerJQLike(queryParameters), requestBody);
-				},
+				return sendRestRequest('analytics.postReportingSchedulesScheduleIdRunreport', 'POST', apipath + '?' + $httpParamSerializerJQLike(queryParameters), requestBody);
+			},
 
-				/**
-				 * @summary Get a list of report time periods.
-				 * @memberOf AnalyticsApi#
-				 */
-				getReportingTimeperiods: function(){
-					var apipath = '/api/v2/analytics/reporting/timeperiods';
-					var requestBody;
-					var queryParameters = {};
-					var headers = {};
-					var form = {};
+			/**
+			 * @summary Get a list of report time periods.
+			 * @memberOf AnalyticsApi#
+			 */
+			getReportingTimeperiods: function () {
+				var apipath = '/api/v2/analytics/reporting/timeperiods';
+				var requestBody;
+				var queryParameters = {};
+				var headers = {};
+				var form = {};
 
-					return sendRestRequest('analytics.getReportingTimeperiods', 'GET', apipath + '?' + $httpParamSerializerJQLike(queryParameters), requestBody);
-				},
+				return sendRestRequest('analytics.getReportingTimeperiods', 'GET', apipath + '?' + $httpParamSerializerJQLike(queryParameters), requestBody);
+			},
 
-				/**
-				 * @summary Get a reporting metadata.
-				 * @memberOf AnalyticsApi#
-				 * @param {string} reportId - Report ID
-				 * @param {string} locale - Locale
-				 */
-				getReportingReportIdMetadata: function(reportId, locale){
-					var apipath = '/api/v2/analytics/reporting/{reportId}/metadata';
-					var requestBody;
-					var queryParameters = {};
-					var headers = {};
-					var form = {};
+			/**
+			 * @summary Get a reporting metadata.
+			 * @memberOf AnalyticsApi#
+			 * @param {string} reportId - Report ID
+			 * @param {string} locale - Locale
+			 */
+			getReportingReportIdMetadata: function (reportId, locale) {
+				var apipath = '/api/v2/analytics/reporting/{reportId}/metadata';
+				var requestBody;
+				var queryParameters = {};
+				var headers = {};
+				var form = {};
 
-					if(!reportId){
-						throw new Error('Missing required  parameter: reportId');
-					}
-					apipath = apipath.replace('{reportId}', reportId);
+				if (!reportId) {
+					throw new Error('Missing required  parameter: reportId');
+				}
+				apipath = apipath.replace('{reportId}', reportId);
 
-					if(locale){
-						queryParameters.locale = locale;
-					}
+				if (locale) {
+					queryParameters.locale = locale;
+				}
 
-					return sendRestRequest('analytics.getReportingReportIdMetadata', 'GET', apipath + '?' + $httpParamSerializerJQLike(queryParameters), requestBody);
-				},
+				return sendRestRequest('analytics.getReportingReportIdMetadata', 'GET', apipath + '?' + $httpParamSerializerJQLike(queryParameters), requestBody);
+			},
 
-				/**
-				 * @summary Query for user aggregates
-				 * @memberOf AnalyticsApi#
-				 * @param {} body - query
-				 * @example
-				 * Body Example:
-				 * {
-						 "interval": "",
-						"granularity": "",
-						"groupBy": [],
-						"filter": {
-							"type": "",
-							"clauses": [],
-							"predicates": []
-						},
-						"metrics": [],
-						"flattenMultivaluedDimensions": true
-					}
-				*/
-				postUsersAggregatesQuery: function(body){
-					var apipath = '/api/v2/analytics/users/aggregates/query';
-					var requestBody;
-					var queryParameters = {};
-					var headers = {};
-					var form = {};
+			/**
+			 * @summary Query for user aggregates
+			 * @memberOf AnalyticsApi#
+			 * @param {} body - query
+			 * @example
+			 * Body Example:
+			 * {
+					 "interval": "",
+					"granularity": "",
+					"groupBy": [],
+					"filter": {
+						"type": "",
+						"clauses": [],
+						"predicates": []
+					},
+					"metrics": [],
+					"flattenMultivaluedDimensions": true
+				}
+			*/
+			postUsersAggregatesQuery: function (body) {
+				var apipath = '/api/v2/analytics/users/aggregates/query';
+				var requestBody;
+				var queryParameters = {};
+				var headers = {};
+				var form = {};
 
-					if(body){
-						requestBody = body;
-					}
+				if (body) {
+					requestBody = body;
+				}
 
-					return sendRestRequest('analytics.postUsersAggregatesQuery', 'POST', apipath + '?' + $httpParamSerializerJQLike(queryParameters), requestBody);
-				},
+				return sendRestRequest('analytics.postUsersAggregatesQuery', 'POST', apipath + '?' + $httpParamSerializerJQLike(queryParameters), requestBody);
+			},
 
-				/**
-				 * @summary Query for user observations
-				 * @memberOf AnalyticsApi#
-				 * @param {} body - query
-				 * @example
-				 * Body Example:
-				 * {
-						 "filter": {
-							"type": "",
-							"clauses": [],
-							"predicates": []
-						},
-						"metrics": []
-					}
-				*/
-				postUsersObservationsQuery: function(body){
-					var apipath = '/api/v2/analytics/users/observations/query';
-					var requestBody;
-					var queryParameters = {};
-					var headers = {};
-					var form = {};
+			/**
+			 * @summary Query for user observations
+			 * @memberOf AnalyticsApi#
+			 * @param {} body - query
+			 * @example
+			 * Body Example:
+			 * {
+					 "filter": {
+						"type": "",
+						"clauses": [],
+						"predicates": []
+					},
+					"metrics": []
+				}
+			*/
+			postUsersObservationsQuery: function (body) {
+				var apipath = '/api/v2/analytics/users/observations/query';
+				var requestBody;
+				var queryParameters = {};
+				var headers = {};
+				var form = {};
 
-					if(body){
-						requestBody = body;
-					}
+				if (body) {
+					requestBody = body;
+				}
 
-					return sendRestRequest('analytics.postUsersObservationsQuery', 'POST', apipath + '?' + $httpParamSerializerJQLike(queryParameters), requestBody);
-				},
+				return sendRestRequest('analytics.postUsersObservationsQuery', 'POST', apipath + '?' + $httpParamSerializerJQLike(queryParameters), requestBody);
+			},
 		};
 
 		this.analytics = analyticsApi;
