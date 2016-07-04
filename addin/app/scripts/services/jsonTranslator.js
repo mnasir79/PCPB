@@ -7,10 +7,6 @@ angular.module('jsonTranslator', ['ngJSONPath'])
         this.translateCicStatSet = function (input) {
             // initializing json paths  
 
-
-            console.debug(adjustValueForCicOutput('20160624T073813.198Z'));
-
-
             var statNamePath = 'statisticKey.statisticIdentifier'; //relative
             var workgroupPath = 'statisticKey.parameterValueItems[0].value'; //relative           
             var valuePath = 'statisticValue.value'; //relative
@@ -48,8 +44,7 @@ angular.module('jsonTranslator', ['ngJSONPath'])
                 }
 
             }
-
-            console.log(output);
+            
             for (var i = 0; i < output.data.length; i++) {
                 // Add TimeStamp
                 output.data[i]["timeStamp"] = adjustValueForCicOutput(new Date());
