@@ -22,7 +22,7 @@ angular.module('app', ['cicService'])
             $interval.cancel(CICTimer);
             CICTimer = $interval(function () {
                 cicService.GetMessage();
-            }, 5000);
+            }, cicService.GetTimer());
         };
 
         $scope.StopTimer_CIC = function () {

@@ -46,7 +46,7 @@
                                 <input type="text" class="form-control" id="pcClientSecret" ng-model="pcClientSecret" ng-bind="pcClientSecret" ng-change="pcOptionsChanged()">
                             </div>
                             <div class="input-group">
-                                <div class="input-group-addon">Timer</div>
+                                <div class="input-group-addon">Timer (ms)</div>
                                 <input type="text" class="form-control" id="pcTimer" ng-model="pcTimer" ng-bind="pcTimer" ng-change="pcOptionsChanged()">
                             </div>
                         </div>
@@ -82,6 +82,10 @@
                                 <div class="form-control checkbox-inline">
                                     <input type="checkbox" class="form-control-checkbox" id="icUseSsl" ng-model="icUseSsl" ng-bind="icUseSsl" ng-change="icOptionsChanged()">
                                 </div>
+                            </div>
+                            <div class="input-group">
+                                <div class="input-group-addon">Timer (ms)</div>
+                                <input type="text" class="form-control" id="icTimer" ng-model="icTimer" ng-bind="icTimer" ng-change="icOptionsChanged()">
                             </div>
                         </div>
                     </div>

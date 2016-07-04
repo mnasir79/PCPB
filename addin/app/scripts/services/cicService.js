@@ -16,6 +16,7 @@ angular.module('cicService', ['chromeStorage', 'jsonTranslator', 'powerbiService
     var _icUsername;
     var _icPassword;
     var _icUseSsl;
+    var _icTimer;
 
     var _isConnected = false;
 
@@ -27,15 +28,25 @@ angular.module('cicService', ['chromeStorage', 'jsonTranslator', 'powerbiService
         _icUsername = icOptions.icUsername;
         _icPassword = icOptions.icPassword;
         _icUseSsl = icOptions.icUseSsl;
+        _icTimer = icOptions.icTimer;
+        if (_icTimer === null) {
+          _icTimer = '5000';
+        };
+
+
+        $log.debug(_icTimer);
       });
+    };
 
-
-    }
+    this.GetTimer = function() {
+      return _icTimer;
+    };
 
     this.getIsConnected = function () {
       GetOptions();
       return _isConnected;
     };
+
 
 
 
