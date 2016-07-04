@@ -17,6 +17,7 @@ angular.module('cicService', ['chromeStorage', 'jsonTranslator', 'powerbiService
     var _icPassword;
     var _icUseSsl;
     var _icTimer;
+    var _icLimitOutput;
 
     var _isConnected = false;
 
@@ -29,16 +30,14 @@ angular.module('cicService', ['chromeStorage', 'jsonTranslator', 'powerbiService
         _icPassword = icOptions.icPassword;
         _icUseSsl = icOptions.icUseSsl;
         _icTimer = icOptions.icTimer;
+        _icLimitOutput = icOptions.icLimitOutput;
         if (_icTimer === null) {
           _icTimer = '5000';
         };
-
-
-        $log.debug(_icTimer);
       });
     };
 
-    this.GetTimer = function() {
+    this.GetTimer = function () {
       return _icTimer;
     };
 
@@ -46,8 +45,6 @@ angular.module('cicService', ['chromeStorage', 'jsonTranslator', 'powerbiService
       GetOptions();
       return _isConnected;
     };
-
-
 
 
 
@@ -298,10 +295,13 @@ angular.module('cicService', ['chromeStorage', 'jsonTranslator', 'powerbiService
               // Update local stats
               updateCache(response);
             } else {
-              $log.debug('Nothing new, repeat data to pBi');
-              var outputStat = jsonTranslator.translateCicStatSet(_StatisticsJSON);
-              //$log.debug(outputStat);
-              powerbiService.SendToPowerBI('CIC', 'Workgroup', outputStat);
+              if (!_icLimitOutput) {
+                $log.debug('Nothing new, repeat data to pBi');
+                var outputStat = jsonTranslator.translateCicStatSet(_StatisticsJSON);
+                //$log.debug(outputStat);
+                powerbiService.SendToPowerBI('CIC', 'Workgroup', outputStat);
+              }
+
             }
           deferred.resolve();
         }, function error(response) {

@@ -22,7 +22,7 @@
                 <li class="active"><a href="#purecloud" data-toggle="tab">PureCloud</a></li>
                 <li><a href="#cic" data-toggle="tab">CIC</a></li>
                 <li><a href="#powerbi" data-toggle="tab">Power BI</a></li>
-                <li><a href="#general" data-toggle="tab">General</a></li>                
+                <li><a href="#general" data-toggle="tab">General</a></li>
             </ul>
             <div id="my-tab-content" class="tab-content">
 
@@ -87,6 +87,12 @@
                                 <div class="input-group-addon">Timer (ms)</div>
                                 <input type="text" class="form-control" id="icTimer" ng-model="icTimer" ng-bind="icTimer" ng-change="icOptionsChanged()">
                             </div>
+                            <div class="input-group">
+                                <div class="input-group-addon">Optimize output</div>
+                                <div class="form-control checkbox-inline">
+                                    <input type="checkbox" class="form-control-checkbox" id="icLimitOutput" ng-model="icLimitOutput" ng-bind="icLimitOutput" ng-change="icOptionsChanged()">
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -98,7 +104,7 @@
                         <div class="options-panel-left">
                             <img src="images\logo-powerbi.png">
                         </div>
-                        <div class="options-panel-right">                                                
+                        <div class="options-panel-right">
                             <div class="input-group">
                                 <div class="input-group-addon">Client Id</div>
                                 <input type="text" class="form-control" id="pbiClientId" ng-model="pbiClientId" ng-bind="pbiClientId" ng-change="pbiOptionsChanged()">
@@ -107,7 +113,7 @@
                                 <div class="input-group-addon">Redirect URI</div>
                                 <input type="text" class="form-control" id="pbiRedirectUri" ng-model="pbiRedirectUri" ng-bind="pbiRedirectUri" ng-change="pbiOptionsChanged()">
                             </div>
- 
+
                         </div>
                     </div>
                 </div>
@@ -134,14 +140,15 @@
                 <!-- </General tab> -->
             </div>
         </div>
-    </div> <!-- container -->    
-    
+    </div>
+    <!-- container -->
+
     <script type="text/javascript" src="lib/jquery/dist/jquery.min.js"></script>
     <script type="text/javascript" src="styles/bootstrap/dist/js/bootstrap.js"></script>
-    <script type="text/javascript" src="scripts/app.js"></script>        
+    <script type="text/javascript" src="scripts/app.js"></script>
     <script type="text/javascript" src="scripts/controllers/optionsCtrl.js"></script>
-    <script type="text/javascript" src="scripts/providers/loggerProvider.js"></script>    
-    
+    <script type="text/javascript" src="scripts/providers/loggerProvider.js"></script>
+
     </div>
     <!-- container -->
 

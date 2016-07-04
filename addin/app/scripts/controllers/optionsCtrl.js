@@ -52,7 +52,8 @@ angular.module('app', ['chromeStorage'])
                 icOptions.icUsername = $scope.icUsername;
                 icOptions.icPassword = $scope.icPassword;  
                 icOptions.icUseSsl = $scope.icUseSsl;     
-                icOptions.icTimer = $scope.icTimer;     
+                icOptions.icTimer = $scope.icTimer;   
+                icOptions.icLimitOutput = $scope.icLimitOutput;  
                 var storageItem = {};
                 storageItem.icOptions = icOptions;                 
                 chrome.storage.local.set(storageItem);
@@ -71,6 +72,7 @@ angular.module('app', ['chromeStorage'])
                     $scope.icPassword = icOptions.icPassword;
                     $scope.icUseSsl = icOptions.icUseSsl;
                     $scope.icTimer = icOptions.icTimer;
+                    $scope.icLimitOutput = icOptions.icLimitOutput;
                 });
             }  
             catch (err) {
