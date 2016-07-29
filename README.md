@@ -4,7 +4,7 @@ An easy to deploy and configure hub between PureCloud, CIC and dashboard applica
 
 ## Install
 
-Install from the Google Chrome Store: 
+Install from the Google Chrome Store: https://chrome.google.com/webstore/detail/inin-analytics-hub/ojgodpdmapceodglkfkbkmddkeibibmd
 
 ## Dev setup
 
