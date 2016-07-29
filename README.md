@@ -2,12 +2,75 @@
 
 An easy to deploy and configure hub between PureCloud, CIC and dashboard applications and allow you to create dashboards without any development knowledge
 
-## Install
+## How to Install
 
-Install from the Google Chrome Store: https://chrome.google.com/webstore/detail/inin-analytics-hub/ojgodpdmapceodglkfkbkmddkeibibmd
+* Before installing the chrome extension ([available here](https://chrome.google.com/webstore/detail/inin-analytics-hub/ojgodpdmapceodglkfkbkmddkeibibmd)), you need to configure a few things:
+    * PowerBI
+        * [Learn what PowerBI is and how it works](https://powerbi.microsoft.com/en-us/tour/)
+        * [Get your own free account](https://app.powerbi.com/signupredirect?pbi_source=web)
+            * Make sure you have an Azure Directory tenant. If you do not have one, you can create one following [these instructions](https://powerbi.microsoft.com/en-us/documentation/powerbi-developer-create-an-azure-active-directory-tenant/)
+            * Click to [Register an app with PowerBI](https://powerbi.microsoft.com/en-us/documentation/powerbi-developer-walkthrough-push-data-register-app-with-azure-ad/)
+                * Name: Any name will do (i.e. `Analytics-Hub`)
+                * App Type: `Native app`
+                * Redirect URL: `https://login.live.com/oauth20_desktop.srf`
+                * APIs to access: Under `Dataset APIs`, select `Read and Write All Datasets`
+                * Click on the `Register App` button and note the Client ID (i.e. `ae2f1672-6b4e-432b-9d0b-e23c98cdc27d`)
+        * Go to [Azure Portal](https://manage.windowsazure.com/) and create a new Azure Active Directory (if you do not have one)
+        * In your Active Directory, go to the `Applications` tab and click on `Add` (bottom of the page)
+            * Name: Any name will do
+            * Type: `Native Client Application`
+            * Redirect URI: `https://login.live.com/oauth20_desktop.srf`
+        * Once the application is created, click on `Configure`
+            * The first [GUID](https://en.wikipedia.org/wiki/Globally_unique_identifier) in the URL is your `tenant`
+            * Note the `Client Id` (i.e. `21aa8147-6298-4f01-a9aa-4fc5ab74cab1`), you will need it later on
+            * Click on the `Add Application` button and select the `Power BI Service` permission then click on OK
+            * Under the `Power BI Service` permission area, click on the `Delegated Permissions` dropdown list and select all permissions
+            * Click on the `Save` button at the bottom of the page
+            * Download the manifest by click on the `Manage Manifest` button at the bottom of the page and select the `Download Manifest` option
+            * Open the downloaded file and make sure `oauth2AllowImplicitFlow` is set to `true` then save the file
+            * Upload the modified manifest file back to Azure using the Manage Manifest/Upload Manifest option at the bottom of the page
+    * CIC (optional, only if you want to gather stats about CIC workgroups in PowerBI)
+        * Create a dedicated admin user on your CIC server that will be used to query workgroup statistics
+        * An ICWS license is required (same as IceLib)
+    * PureCloud (optional, only if you want to gather stats about PureCloud queues in PowerBI)
+        * Get your own PureCloud org [here](http://mypurecloud.com/)
+        * Create a custom OAuth application in the PureCloud admin module and assign proper user rights to the user account which you are going to use with the Analytics Hub. [Learn more](https://developer.mypurecloud.com/api/rest/authorization/create-oauth-client-id.html). Make sure you add the "Developer" role to your user otherwise you will not see any OAuth option under Admin\Integrations.
 
-## Dev setup
+* Now, you are ready to install the extension
+    * Go to the app page: https://chrome.google.com/webstore/detail/inin-analytics-hub/ojgodpdmapceodglkfkbkmddkeibibmd
+    * Click on "Add To Chrome"
+    * Once installed, click on the app icon on the top right and select "Options"
+        * PureCloud
+            * Environment: either mypurecloud.com (US & Canada), mypurecloud.ie (EMEA), mypurecloud.jp (Japan), mypurecloud.com.au (Australia) or ininsca.com (development - internal to ININ only)
+            * Client Id: Your oAuth client id
+            * Client Secret: Your oAuth client secret
+            * Timer: used to indicate the duration between 2 polls. Depending on the number of groups you have in PureCloud, having a value of less than 5000 (5 seconds) can cause high-CPU usage. A value of 10000 (10 seconds) is recommended.
+        * CIC
+            * IC Server: well, duh! Use the server name or IP address to reach the CIC server from your machine
+            * Port: ICWS port, usually 8018 (HTTP) or 8019 (HTTPS)
+            * Username: CIC user you created earlier
+            * Password: Oh no, not 1234 again!
+            * Use SSL: Check this if you use HTTPS over port 8019
+        * PowerBI
+            * Client Id: you got it earlier on (see the PowerBI section above). Similar to `21aa8147-6298-4f01-a9aa-4fc5ab74cab1`
+            * Redirect URI: set to `https://login.live.com/oauth20_desktop.srf`
 
+You should now be ready to go.
+
+## How to use
+* Click on the Analytics Hub icon
+* Click on PureCloud or CIC (or both) to connect to your systems
+* Click on PowerBI to connect to... PowerBI
+* Open your PowerBI dashboard. You should see new Datasets (PureCloud and/or CIC)
+* Drag fields (on the right-side) and drop them onto your PowerBI dashboard
+* Pin the widgets onto your dashboards
+* Open the dashboard and voilà!
+
+Note that widgets will only refresh after you pin them to a dashboard
+
+## For developers only
+
+To participate (or simply get a local copy of the extension), do the following:
 * Install [node.js](https://nodejs.org/en/) stable version
 * Clone this repository
 * Run `cd analytics-hub`
