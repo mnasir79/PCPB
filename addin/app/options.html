@@ -21,8 +21,6 @@
             <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
                 <li class="active"><a href="#purecloud" data-toggle="tab">PureCloud</a></li>
                 <li><a href="#cic" data-toggle="tab">CIC</a></li>
-                <li><a href="#powerbi" data-toggle="tab">Power BI</a></li>
-                <li><a href="#general" data-toggle="tab">General</a></li>
             </ul>
             <div id="my-tab-content" class="tab-content">
 
@@ -34,7 +32,7 @@
                         </div>
                         <div class="options-panel-right">
                             <div class="input-group">
-                                <div class="input-group-addon">Environnement</div>
+                                <div class="input-group-addon">Environment</div>
                                 <input type="text" class="form-control" id="pcEnv" ng-model="pcEnv" ng-bind="pcEnv" ng-change="pcOptionsChanged()">
                             </div>
                             <div class="input-group">
@@ -98,46 +96,6 @@
                 </div>
                 <!-- </CIC tab> -->
 
-                <!-- <Power BI tab> -->
-                <div class="tab-pane" id="powerbi">
-                    <div class="options-panel-box">
-                        <div class="options-panel-left">
-                            <img src="images\logo-powerbi.png">
-                        </div>
-                        <div class="options-panel-right">
-                            <div class="input-group">
-                                <div class="input-group-addon">Client Id</div>
-                                <input type="text" class="form-control" id="pbiClientId" ng-model="pbiClientId" ng-bind="pbiClientId" ng-change="pbiOptionsChanged()">
-                            </div>
-                            <div class="input-group">
-                                <div class="input-group-addon">Redirect URI</div>
-                                <input type="text" class="form-control" id="pbiRedirectUri" ng-model="pbiRedirectUri" ng-bind="pbiRedirectUri" ng-change="pbiOptionsChanged()">
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-                <!-- </Power BI tab> -->
-
-                <!-- <General tab> -->
-                <div class="tab-pane" id="general">
-                    <div class="options-panel-box">
-                        <div class="options-panel-left">
-                            <img src="images\logo-general.png">
-                        </div>
-                        <div class="options-panel-right">
-                            <div class="form-group">
-                                <label for="x">Checkbox:</label>
-                                <input type="checkbox" class="form-control" id="x">
-                            </div>
-                            <div class="form-group">
-                                <label for="pwd">Password field:</label>
-                                <input type="password" class="form-control" id="pwd">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- </General tab> -->
             </div>
         </div>
     </div>
