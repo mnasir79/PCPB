@@ -16,7 +16,7 @@ How to Install
     * If you want to show PureCloud stats, you will need your own [PureCloud org](https://mypurecloud.com)
     * If you want to show CIC stats, a recent version (4.0 SU6+) of CIC
 
-* Before installing the chrome extension ([available here](https://chrome.google.com/webstore/detail/inin-analytics-hub/ojgodpdmapceodglkfkbkmddkeibibmd)), you need to configure a few things:
+* Before installing the chrome extension, you need to configure a few things:
     * PowerBI
         * [Learn what PowerBI is and how it works](https://powerbi.microsoft.com/en-us/tour/)
         * [Get your own free account](https://app.powerbi.com/signupredirect?pbi_source=web)
@@ -34,7 +34,7 @@ How to Install
             * Redirect URI: `https://login.live.com/oauth20_desktop.srf`
         * Once the application is created, click on `Configure`
             * The first [GUID](https://en.wikipedia.org/wiki/Globally_unique_identifier) in the URL is your `tenant`
-            * Note the `Client Id` (i.e. `21aa8147-6298-4f01-a9aa-4fc5ab74cab1`), you will need it later on
+            * Note the `Client Id` (i.e. `21aa8147-6298-4f01-a9aa-4fc5ab74cab1`), you will need it later on ![Clipboard01.jpg](https://bitbucket.org/repo/6pxRex/images/2259997203-Clipboard01.jpg)
             * Click on the `Add Application` button and select the `Power BI Service` permission then click on OK
             * Under the `Power BI Service` permission area, click on the `Delegated Permissions` dropdown list and select all permissions
             * Click on the `Save` button at the bottom of the page
