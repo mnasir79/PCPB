@@ -41,6 +41,10 @@
           "dataType": "Int64"
         },
         {
+          "name": "oOnQueueUsers",
+          "dataType": "Int64"
+        },
+        {
           "name": "oOffQueueUsers",
           "dataType": "Int64"
         },
