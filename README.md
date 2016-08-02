@@ -1,7 +1,11 @@
 Analytics Hub
 =============
 
->An easy to deploy and configure hub between PureCloud, CIC and dashboard applications and allow you to create dashboards without any development knowledge
+* * *
+**Warning: Beta release. See open issues [here](https://bitbucket.org/eccemea/analytics-hub/issues?status=new&status=open)**
+* * *
+
+An easy to deploy and configure hub between PureCloud, CIC and dashboard applications and allow you to create dashboards without any development knowledge
 
 ![Clipboard01.jpg](https://bitbucket.org/repo/6pxRex/images/2536503936-Clipboard01.jpg)
 
