@@ -23,9 +23,9 @@ angular.module('app', ['powerbiService', 'chromeStorage', 'pureCloudService'])
                     $scope.$apply();
 
                     // Subscribe for messages & start Timer
-                    _BgController.getCICService().Subscribe().then(function success(params) {
+                    _BgController.getCICService().Subscribe().then(function success() {
                         _BgController.StartTimer_CIC();
-                    }, function error(params) {
+                    }, function error() {
                         $log.error('Cannot subscribe for notifications');
                     });
                 }, function error() {
@@ -139,7 +139,7 @@ angular.module('app', ['powerbiService', 'chromeStorage', 'pureCloudService'])
             powerbiService.SendToPowerBI(dataset, table, rows);
         };
 
-        $scope.deleteDatasets = function (dataset, table, rows) {
+        $scope.deleteDatasets = function () {
             powerbiService.DeleteDatasets();
         };
 

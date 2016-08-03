@@ -28,119 +28,6 @@ angular.module('powerbiService', ['chromeStorage'])
         callback();
       }
     };
-    
-    this.SendToPowerBI = function(dataset, table, rows) {
-      if ($rootScope.isPowerBIConnected) {
-        // Creates the dataset it if it doesn't exist yet
-        DataSetExists(dataset, function (dataSetId) {
-          if (dataSetId.length > 0) {
-            //console.log(dataset, 'dataset found!:', dataSetId);
-            // Remove rows?
-            //console.log('Delete Rows');
-            //DeleteRows(dataSetId, table);
-            // Add rows
-            //console.log('Dataset:', dataset, '. Table:', table, '. Adding rows:', rows);
-            AddRows(dataSetId, table, rows);
-          } else {
-            console.log(dataset, 'dataset NOT found!');
-            if (creatingDataset) {
-              return; // We could wait but then the data might be outdated?
-            }
-            creatingDataset = true;
-            CreateDataSet(dataset, function(responseText) {
-              var datasetId = responseText.id;
-              if (datasetId) {
-                console.log('New Dataset Id:', datasetId);
-                creatingDataset = false;
-              }
-              // Add rows
-              //console.log('Dataset:', dataset, '. Table:', table, '. Adding rows:', rows);
-              AddRows(datasetId, table, rows);
-            });
-          }
-        });
-      } else {
-        console.error('Please sign in to PowerBI first.');
-      }
-    };
-
-    this.DeleteDatasets = function() {
-      if ($rootScope.isPowerBIConnected) {
-        DeleteDataset('CIC');
-        DeleteDataset('PureCloud');
-      } else {
-        console.error('Please sign in to PowerBI first.');
-      }
-    };
-
-    function DeleteDataset(dataset) {
-      if ($rootScope.isPowerBIConnected) {
-        DataSetExists(dataset, function (datasetId) {
-          if (datasetId.length > 0) {
-            // Delete it
-            console.log('DELETE', datasetId);
-            PBIDelete('https://api.powerbi.com/v1.0/myorg/datasets/' + datasetId, function(response) {
-              if (response) {
-                console.log('DELETE Response:', response);
-              }
-            });
-          }
-        });
-      } else {
-        console.error('Please sign in to PowerBI first.');
-      }
-    };
-    
-    // Check if a PowerBI dataset exists
-    function DataSetExists(name, callback) {
-      PBIGet('https://api.powerbi.com/v1.0/myorg/datasets', function(data) {
-        var pureCloudDatasets = getObjects(data, 'name', name);
-        if (pureCloudDatasets.length > 0) {
-          if (callback) { 
-            callback(pureCloudDatasets[0].id); 
-          }
-        } else {
-          if (callback) {
-            callback(pureCloudDatasets);
-          }
-        }
-      });
-    }
-
-    // Create a PowerBI dataset
-    function CreateDataSet(name, callback) {
-      //We have to hardcode the tables and it sucks since we can't add tables to an existing dataset
-      //Feature requests: 
-      //  https://ideas.powerbi.com/forums/268152-developer-apis/suggestions/7111791-alter-datasets-by-adding-removing-individual-table
-      //  https://ideas.powerbi.com/forums/268152-developer-apis/suggestions/10445529-add-rest-api-call-to-add-new-table-to-existing-dat 
-      
-      switch(name) 
-      {
-        case 'CIC':
-          $.getJSON('scripts/schemas/powerBiCicTableSchema.json', function(json) {
-            return PBIPost('https://api.powerbi.com/v1.0/myorg/datasets?defaultRetentionPolicy=basicFIFO', json, callback);
-          });
-          break;
-        case 'PureCloud':
-          $.getJSON('scripts/schemas/powerBiPureCloudTableSchema.json', function(json) {
-            return PBIPost('https://api.powerbi.com/v1.0/myorg/datasets?defaultRetentionPolicy=basicFIFO', json, callback);
-          });
-          break;
-        default:
-          console.error('Unknown dataset name:', name, '. Valid values: CIC or PureCloud');
-      }
-    }
-
-    // Add rows to a dataset table
-    function AddRows(dataSetId, tableName, data) {
-      return PBIPost('https://api.powerbi.com/v1.0/myorg/datasets/' + dataSetId + '/tables/' + tableName + '/rows', data);
-    }
-
-    // Delete rows to a dataset table
-    function DeleteRows(dataSetId, tableName) {
-      //console.log(dataSetId);
-      return PBIDelete('https://api.powerbi.com/v1.0/myorg/datasets/' + dataSetId + '/tables/' + tableName + '/rows');
-    }
 
     // PowerBI GET
     function PBIGet(url, callback) {
@@ -178,6 +65,45 @@ angular.module('powerbiService', ['chromeStorage'])
       request.send();
     }
 
+    //return an array of objects according to key, value, or key and value matching
+    function getObjects(obj, key, val) {
+      var objects = [];
+      for (var i in obj) {
+        if (!obj.hasOwnProperty(i)) {
+          continue;
+        }
+        if (typeof obj[i] === 'object') {
+          objects = objects.concat(getObjects(obj[i], key, val));    
+        } else 
+        //if key matches and value matches or if key matches and value is not passed (eliminating the case where key matches but passed value does not)
+        if (i === key && obj[i] === val || i === key && val === '') { //
+          objects.push(obj);
+        } else if (obj[i] === val && key === ''){
+          //only add if the object is not already in the array
+          if (objects.lastIndexOf(obj) === -1){
+              objects.push(obj);
+          }
+        }
+      }
+      return objects;
+    }
+
+    // Check if a PowerBI dataset exists
+    function DataSetExists(name, callback) {
+      PBIGet('https://api.powerbi.com/v1.0/myorg/datasets', function(data) {
+        var pureCloudDatasets = getObjects(data, 'name', name);
+        if (pureCloudDatasets.length > 0) {
+          if (callback) { 
+            callback(pureCloudDatasets[0].id); 
+          }
+        } else {
+          if (callback) {
+            callback(pureCloudDatasets);
+          }
+        }
+      });
+    }
+
     // PowerBI POST
     function PBIPost(url, data, callback) {
       // Create new HTTP POST request
@@ -206,6 +132,63 @@ angular.module('powerbiService', ['chromeStorage'])
       console.log('Sending data:', data);
       request.send(JSON.stringify(data));
     }
+
+    // Create a PowerBI dataset
+    function CreateDataSet(name, callback) {
+      //We have to hardcode the tables and it sucks since we can't add tables to an existing dataset
+      //Feature requests: 
+      //  https://ideas.powerbi.com/forums/268152-developer-apis/suggestions/7111791-alter-datasets-by-adding-removing-individual-table
+      //  https://ideas.powerbi.com/forums/268152-developer-apis/suggestions/10445529-add-rest-api-call-to-add-new-table-to-existing-dat 
+      
+      switch(name) 
+      {
+        case 'CIC':
+          $.getJSON('scripts/schemas/powerBiCicTableSchema.json', function(json) {
+            return PBIPost('https://api.powerbi.com/v1.0/myorg/datasets?defaultRetentionPolicy=basicFIFO', json, callback);
+          });
+          break;
+        case 'PureCloud':
+          $.getJSON('scripts/schemas/powerBiPureCloudTableSchema.json', function(json) {
+            return PBIPost('https://api.powerbi.com/v1.0/myorg/datasets?defaultRetentionPolicy=basicFIFO', json, callback);
+          });
+          break;
+        default:
+          console.error('Unknown dataset name:', name, '. Valid values: CIC or PureCloud');
+      }
+    }
+
+    // Add rows to a dataset table
+    function AddRows(dataSetId, tableName, data) {
+      return PBIPost('https://api.powerbi.com/v1.0/myorg/datasets/' + dataSetId + '/tables/' + tableName + '/rows', data);
+    }
+
+    this.SendToPowerBI = function(dataset, table, rows) {
+      if ($rootScope.isPowerBIConnected) {
+        // Creates the dataset it if it doesn't exist yet
+        DataSetExists(dataset, function (dataSetId) {
+          if (dataSetId.length > 0) {
+            AddRows(dataSetId, table, rows);
+          } else {
+            console.log(dataset, 'dataset NOT found!');
+            if (creatingDataset) {
+              return; // We could wait but then the data might be outdated?
+            }
+            creatingDataset = true;
+            CreateDataSet(dataset, function(responseText) {
+              var datasetId = responseText.id;
+              if (datasetId) {
+                console.log('New Dataset Id:', datasetId);
+                creatingDataset = false;
+              }
+              // Add rows
+              AddRows(datasetId, table, rows);
+            });
+          }
+        });
+      } else {
+        console.error('Please sign in to PowerBI first.');
+      }
+    };
 
     // PowerBI DELETE
     function PBIDelete(url, callback) {
@@ -240,58 +223,30 @@ angular.module('powerbiService', ['chromeStorage'])
       request.send();
     }
 
-    //return an array of objects according to key, value, or key and value matching
-    function getObjects(obj, key, val) {
-      var objects = [];
-      for (var i in obj) {
-        if (!obj.hasOwnProperty(i)) {
-          continue;
-        }
-        if (typeof obj[i] === 'object') {
-          objects = objects.concat(getObjects(obj[i], key, val));    
-        } else 
-        //if key matches and value matches or if key matches and value is not passed (eliminating the case where key matches but passed value does not)
-        if (i == key && obj[i] == val || i == key && val == '') { //
-          objects.push(obj);
-        } else if (obj[i] == val && key == ''){
-          //only add if the object is not already in the array
-          if (objects.lastIndexOf(obj) == -1){
-              objects.push(obj);
+    function DeleteDataset(dataset) {
+      if ($rootScope.isPowerBIConnected) {
+        DataSetExists(dataset, function (datasetId) {
+          if (datasetId.length > 0) {
+            // Delete it
+            console.log('DELETE', datasetId);
+            PBIDelete('https://api.powerbi.com/v1.0/myorg/datasets/' + datasetId, function(response) {
+              if (response) {
+                console.log('DELETE Response:', response);
+              }
+            });
           }
-        }
+        });
+      } else {
+        console.error('Please sign in to PowerBI first.');
       }
-      return objects;
     }
 
-    //return an array of values that match on a certain key
-    function getValues(obj, key) {
-      var objects = [];
-      for (var i in obj) {
-        if (!obj.hasOwnProperty(i)) {
-          continue;
-        }
-        if (typeof obj[i] === 'object') {
-            objects = objects.concat(getValues(obj[i], key));
-        } else if (i === key) {
-            objects.push(obj[i]);
-        }
+    this.DeleteDatasets = function() {
+      if ($rootScope.isPowerBIConnected) {
+        DeleteDataset('CIC');
+        DeleteDataset('PureCloud');
+      } else {
+        console.error('Please sign in to PowerBI first.');
       }
-      return objects;
-    }
-
-    //return an array of keys that match on a certain value
-    function getKeys(obj, val) {
-      var objects = [];
-      for (var i in obj) {
-        if (!obj.hasOwnProperty(i)) {
-          continue;
-        }
-        if (typeof obj[i] === 'object') {
-          objects = objects.concat(getKeys(obj[i], val));
-        } else if (obj[i] === val) {
-          objects.push(i);
-        }
-      }
-      return objects;
-    }
+    };
   });

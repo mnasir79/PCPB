@@ -8,7 +8,7 @@ function getController() {
 }
 
 //Adding handlers when messages are received from scripts
-chrome.extension.onMessage.addListener(function (response, sender) {
+chrome.extension.onMessage.addListener(function (response) {
   switch (response.target) {
     case 'PowerBI':
       chrome.storage.local.get('powerbi_access_token', function (result) {

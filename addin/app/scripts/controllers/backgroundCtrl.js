@@ -13,7 +13,6 @@ angular.module('app', ['cicService'])
 
         var CICTimer;
 
-
         $scope.getCICService = function () {
             return cicService;
         };
@@ -30,14 +29,12 @@ angular.module('app', ['cicService'])
         };
 
         $scope.ShowMessage = function (sMessage) {
-            var txt;
             var r = confirm(sMessage);
-            if (r == true) {
+            if (r === true) {
                 var x = screen.width/2 - 800/2;
                 var y = screen.height/2 - 400/2;
                 $window.open('options.html', '_Blank', 'toolbar=no, modal=yes, alwaysRaised=yes, width=800,height=400, top=' + y + ' left=' + x);
             }
-        }
-
+        };
 
     });
