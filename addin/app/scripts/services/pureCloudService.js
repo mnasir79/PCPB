@@ -258,6 +258,7 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 					for (var i = 0; i < Object.keys(_allQueue).length; i++) {
 						var queueId = _allQueue[i].id;
 						var queueName = _allQueue[i].name;
+						queueName = queueName.replace(/[\\$'"]/g, "\\$&");		//AMO: add escape in case of special character in queue name
 						_queueId.push(queueId);
 						_queueName.push(queueName);
 						// console.log("queueId: " + queueId);
