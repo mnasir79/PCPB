@@ -1,6 +1,4 @@
-var transform = (typeof exports === 'object')
-    ? require('../lib/jsonpath-object-transform')
-    : window.jsonpathObjectTransform;
+var transform = (typeof exports === 'object') ? require('../lib/jsonpath-object-transform') : window.jsonpathObjectTransform;
 
 var path = {
   foo: ['$.some.crazy', {

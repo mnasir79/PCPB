@@ -1,15 +1,11 @@
 'use strict';
 
-
 angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslator', 'chromeStorage'])
 	.service('pureCloudService', function ($http, $log, $httpParamSerializerJQLike, $q, base64, powerbiService, jsonTranslator, jsonPath, chromeStorage) {
 
-		var _sourcePureCloud = 'PURECLOUD';
-		var _accessToken;
 		var _environment;
 		var _host;
 		var _authUrl;
-		var _lsTokenKeyName = 'ININ.ECCEMEA.PureCloudToolbar.authtoken';
 		var _queueId = [];
 		var _queueName = [];
 		var _allQueue = [];
@@ -38,6 +34,12 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 
 		this.GetOptions = GetOptions;
 
+		function loadStartupData() {
+			return $q.all([
+				loadQueue()
+			]);
+		}
+
 		/*
 		 * Gets or Sets environment that this is run in.  If set should be mypurecloud.com, mypurecloud.ie, mypurecloud.com.au, etc.
 		 * @memberof pureCloudService#
@@ -51,15 +53,10 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 
 			this.GetOptions().then(function () {
 
-				//console.log("clientid: " + _clientId);
-
-				//_environment = environment.environment;
 				_host = 'api.' + _environment;
 				_authUrl = 'https://login.' + _environment;
 
-
 				var key = base64.encode(_clientId + ':' + _clientSecret);
-				//console.log(key);
 
 				var config = {
 					method: 'POST',
@@ -74,10 +71,8 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 
 				var requestName = "/oauth/token";
 
-				//console.log('Begin Request: ' + requestName);
 				$http(config)
 					.then(function success(response) {
-						//console.log('End Request: ' + requestName + ' (' + JSON.stringify(response.data) + ')');
 						_authorization = response.data;
 						loadStartupData().then(function success() {
 							deferred.resolve();
@@ -100,12 +95,6 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 			return deferred.promise;
 		}
 		this.setEnvironment = setEnvironment;
-
-		function loadStartupData() {
-			return $q.all([
-				loadQueue()
-			]);
-		}
 
 		function sendRestRequest(requestName, method, path, body) {
 			if (!_authorization) {
@@ -134,7 +123,7 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 			};
 
 			var request = $http(options);
-			request.then(function success(response) {
+			request.then(function success() {//response) {
 				//console.log('End Request: ' + requestName + ' (' + JSON.stringify(response.data) + ')');
 			}, function error(response) {
 				if (response.status === 400 && response.data) {
@@ -170,7 +159,7 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 				}
 
 				if (mm < 10) {
-					mm = '0' + mm
+					mm = '0' + mm;
 				}
 
 				dateRequest = mm + '/' + dd + '/' + yyyy;
@@ -193,18 +182,16 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 					"metrics": []
 				};
 
-				//console.log("sendData: " + i + "   " + _queueName[i] + "   " + _queueId[i]);
-
 				analyticsApi.postQueuesObservationsQuery(body)
 					.then(function success(response) {
-						var wgData = response.data;
 
 						// @Daniel Szlaski / Fix for formating
 						var wgData_parsed = { "results": [] };
 						var in_mediaType = '';
 
 						for (var x in response.data.results) {
-							if (response.data.results[x].group.mediaType != null) {
+							console.log('mediaType:', response.data.results[x].group.mediaType);
+							if (response.data.results[x].group.mediaType !== undefined) {
 								in_mediaType = response.data.results[x].group.mediaType;
 								for (var y in response.data.results[x].data) {
 									response.data.results[x].data[y].metric = in_mediaType + '_' + response.data.results[x].data[y].metric;
@@ -217,7 +204,6 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 
 						// END @Daniel Szlaski / Fix for formating
 
-
 						// add queue name
 						var queuePath = 'group'; //relative
 						var statRoot = wgData_parsed.results;
@@ -225,16 +211,14 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 						for (var i in statRoot) {
 							var queue = jsonPath(statRoot[i], queuePath)[0];
 							for (x in _queueName) {
-								if (queue['queueId'] == _queueId[x]) {
-									//console.log('Replace ' + queue['queueId'] + ' into ' + _queueName[x])
-									queue['queueName'] = _queueName[x];
+								if (queue.queueId == _queueId[x]) {
+									queue.queueName = _queueName[x];
 									continue;
 								}
 							}
 						}
 
 						// send data to powerbi
-
 						var outputStat = jsonTranslator.translatePcStatSet(wgData_parsed);
 						console.log(outputStat);
 						powerbiService.SendToPowerBI('PureCloud', 'Workgroup', outputStat);
@@ -243,7 +227,7 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 					},
 					deferred.reject());
 			}
-		};
+		}
 
 		/*
 		 * @summary Load the list of queue name and queueid in a table _queueName
@@ -274,32 +258,10 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 		}
 
 		function stopSendDataToPowerBi() {
-			clearTimeout(_sendDataToPowerBi)
+			clearTimeout(_sendDataToPowerBi);
 		}
 
 		this.stopSendDataToPowerBi = stopSendDataToPowerBi;
-
-		/*
-		 * @summary Get the name of a queue
-		 * @param queueId - id of the queue
-		 */
-		function getQueueName(queueId) {
-			var queueName;
-			var deferred = $q.defer();
-
-			if (!queueId) {
-				throw new Error('Missing required parameter: queueId');
-			}
-
-			routingApi.getQueueDetail(queueId)
-				.then(function success(response) {
-					queueName = response.data.name;
-					deferred.resolve();
-				},
-				deferred.reject());
-
-			return queueName;
-		}
 
 		var routingApi = {
 			/*
@@ -356,8 +318,6 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 				var apipath = '/api/v2/analytics/conversations/aggregates/query';
 				var requestBody;
 				var queryParameters = {};
-				var headers = {};
-				var form = {};
 
 				if (body) {
 					requestBody = body;
@@ -389,8 +349,6 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 				var apipath = '/api/v2/analytics/conversations/details/query';
 				var requestBody;
 				var queryParameters = {};
-				var headers = {};
-				var form = {};
 
 				if (body) {
 					requestBody = body;
@@ -408,8 +366,6 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 				var apipath = '/api/v2/analytics/conversations/{conversationId}/details';
 				var requestBody;
 				var queryParameters = {};
-				var headers = {};
-				var form = {};
 
 				if (!conversationId) {
 					throw new Error('Missing required  parameter: conversationId');
@@ -436,8 +392,6 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 				var apipath = '/api/v2/analytics/conversations/{conversationId}/details/properties';
 				var requestBody;
 				var queryParameters = {};
-				var headers = {};
-				var form = {};
 
 				if (!conversationId) {
 					throw new Error('Missing required  parameter: conversationId');
@@ -475,8 +429,6 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 				var apipath = '/api/v2/analytics/evaluations/aggregates/query';
 				var requestBody;
 				var queryParameters = {};
-				var headers = {};
-				var form = {};
 
 				if (body) {
 					requestBody = body;
@@ -505,15 +457,12 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 				var apipath = '/api/v2/analytics/queues/observations/query';
 				var requestBody;
 				var queryParameters = {};
-				var headers = {};
-				var form = {};
 				if (body) {
 					requestBody = body;
 				}
 
 				return sendRestRequest('analytics.postQueuesObservationsQuery', 'POST', apipath + '?' + $httpParamSerializerJQLike(queryParameters), requestBody);
-			}
-			,
+			},
 
 			/**
 			 * @summary Get list of reporting metadata.
@@ -526,8 +475,6 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 				var apipath = '/api/v2/analytics/reporting/metadata';
 				var requestBody;
 				var queryParameters = {};
-				var headers = {};
-				var form = {};
 
 				if (pageNumber) {
 					queryParameters.pageNumber = pageNumber;
@@ -553,8 +500,6 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 				var apipath = '/api/v2/analytics/reporting/reportformats';
 				var requestBody;
 				var queryParameters = {};
-				var headers = {};
-				var form = {};
 
 				return sendRestRequest('analytics.getReportingReportformats', 'GET', apipath + '?' + $httpParamSerializerJQLike(queryParameters), requestBody);
 			},
@@ -570,8 +515,6 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 				var apipath = '/api/v2/analytics/reporting/schedules';
 				var requestBody;
 				var queryParameters = {};
-				var headers = {};
-				var form = {};
 
 				if (pageNumber) {
 					queryParameters.pageNumber = pageNumber;
@@ -623,8 +566,6 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 				var apipath = '/api/v2/analytics/reporting/schedules';
 				var requestBody;
 				var queryParameters = {};
-				var headers = {};
-				var form = {};
 
 				if (body) {
 					requestBody = body;
@@ -642,8 +583,6 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 				var apipath = '/api/v2/analytics/reporting/schedules/{scheduleId}';
 				var requestBody;
 				var queryParameters = {};
-				var headers = {};
-				var form = {};
 
 				if (!scheduleId) {
 					throw new Error('Missing required  parameter: scheduleId');
@@ -693,8 +632,6 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 				var apipath = '/api/v2/analytics/reporting/schedules/{scheduleId}';
 				var requestBody;
 				var queryParameters = {};
-				var headers = {};
-				var form = {};
 
 				if (!scheduleId) {
 					throw new Error('Missing required  parameter: scheduleId');
@@ -717,8 +654,6 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 				var apipath = '/api/v2/analytics/reporting/schedules/{scheduleId}';
 				var requestBody;
 				var queryParameters = {};
-				var headers = {};
-				var form = {};
 
 				if (!scheduleId) {
 					throw new Error('Missing required  parameter: scheduleId');
@@ -739,8 +674,6 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 				var apipath = '/api/v2/analytics/reporting/schedules/{scheduleId}/history';
 				var requestBody;
 				var queryParameters = {};
-				var headers = {};
-				var form = {};
 
 				if (!scheduleId) {
 					throw new Error('Missing required  parameter: scheduleId');
@@ -767,8 +700,6 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 				var apipath = '/api/v2/analytics/reporting/schedules/{scheduleId}/history/latest';
 				var requestBody;
 				var queryParameters = {};
-				var headers = {};
-				var form = {};
 
 				if (!scheduleId) {
 					throw new Error('Missing required  parameter: scheduleId');
@@ -789,8 +720,6 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 				var apipath = '/api/v2/analytics/reporting/schedules/{scheduleId}/history/{runId}';
 				var requestBody;
 				var queryParameters = {};
-				var headers = {};
-				var form = {};
 
 				if (!runId) {
 					throw new Error('Missing required  parameter: runId');
@@ -814,8 +743,6 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 				var apipath = '/api/v2/analytics/reporting/schedules/{scheduleId}/runreport';
 				var requestBody;
 				var queryParameters = {};
-				var headers = {};
-				var form = {};
 
 				if (!scheduleId) {
 					throw new Error('Missing required  parameter: scheduleId');
@@ -833,8 +760,6 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 				var apipath = '/api/v2/analytics/reporting/timeperiods';
 				var requestBody;
 				var queryParameters = {};
-				var headers = {};
-				var form = {};
 
 				return sendRestRequest('analytics.getReportingTimeperiods', 'GET', apipath + '?' + $httpParamSerializerJQLike(queryParameters), requestBody);
 			},
@@ -849,8 +774,6 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 				var apipath = '/api/v2/analytics/reporting/{reportId}/metadata';
 				var requestBody;
 				var queryParameters = {};
-				var headers = {};
-				var form = {};
 
 				if (!reportId) {
 					throw new Error('Missing required  parameter: reportId');
@@ -887,8 +810,6 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 				var apipath = '/api/v2/analytics/users/aggregates/query';
 				var requestBody;
 				var queryParameters = {};
-				var headers = {};
-				var form = {};
 
 				if (body) {
 					requestBody = body;
@@ -916,8 +837,6 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 				var apipath = '/api/v2/analytics/users/observations/query';
 				var requestBody;
 				var queryParameters = {};
-				var headers = {};
-				var form = {};
 
 				if (body) {
 					requestBody = body;

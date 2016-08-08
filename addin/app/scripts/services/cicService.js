@@ -33,9 +33,9 @@ angular.module('cicService', ['chromeStorage', 'jsonTranslator', 'powerbiService
         _icLimitOutput = icOptions.icLimitOutput;
         if (_icTimer === null) {
           _icTimer = '5000';
-        };
+        }
       });
-    };
+    }
 
     this.GetTimer = function () {
       return _icTimer;
@@ -107,7 +107,7 @@ angular.module('cicService', ['chromeStorage', 'jsonTranslator', 'powerbiService
       var request = $http(config);
 
       request.then(function successCallback(response) {
-        //$log.debug('CIC End Request: [' + requestName + ']' + JSON.stringify(response));
+        $log.debug('CIC End Request: [' + requestName + ']' + JSON.stringify(response));
       }, function errorCallback(response) {
         $log.error('CIC Request: [' + requestName + ']: ' + JSON.stringify(response));
       });
@@ -241,7 +241,6 @@ angular.module('cicService', ['chromeStorage', 'jsonTranslator', 'powerbiService
           sNewValue = null;
         }
 
-
         for (var i = 0; i < _StatisticsJSON.length; i++) {
           if ((_StatisticsJSON[i].statisticKey.statisticIdentifier === sStatName) &&
             (_StatisticsJSON[i].statisticKey.parameterValueItems[0].value === sWorkgroupName)) {
@@ -249,24 +248,20 @@ angular.module('cicService', ['chromeStorage', 'jsonTranslator', 'powerbiService
             // If we've received NULL, update NULL in a Cache
             if (sNewValue == null) {
               _StatisticsJSON[i] = myObj;
-              //_StatisticsJSON[i].statisticValue = '{'__type':'urn:inin.com:statistics:statisticIntValue','value':0,'statisticValueType':0}';
-
               continue;
             }
 
             if (_StatisticsJSON[i].statisticValue != null && _StatisticsJSON[i].statisticValue.value != null) {
               _StatisticsJSON[i].statisticValue.value = myObj.statisticValue.value;
             } else {
-              //$log.debug('Field not defined / replace it !!');
               _StatisticsJSON[i] = myObj;
             }
           }
         }
       }
       var outputStat = jsonTranslator.translateCicStatSet(_StatisticsJSON);
-      //$log.debug(outputStat);
       powerbiService.SendToPowerBI('CIC', 'Workgroup', outputStat);
-    };
+    }
 
     this.GetMessage = function () {
 
@@ -274,18 +269,7 @@ angular.module('cicService', ['chromeStorage', 'jsonTranslator', 'powerbiService
       try {
 
         this.sendRestRequest('GetMessage', 'GET', '/messaging/messages').then(function success(response) {
-          //$log.debug(response);
           if ((response.data.length != 0) && (_StatisticsJSON.length == 0)) {
-            // for (var i = 0; i < response.data.length; i++) {
-            //   if (response.data[i].isDelta == false) {
-            //     $log.debug('JSON Created');
-            //     _StatisticsJSON = response.data[i].statisticValueChanges;
-            //   }
-            //   if ((_StatisticsJSON.length > 0) && (response.data[i].isDelta == true)) {
-            //     $log.debug('JSON replaced');
-            //     _StatisticsJSON = response.data[i].statisticValueChanges;
-            //   }
-            // }
             _StatisticsJSON = response.data[0].statisticValueChanges;
 
 
@@ -298,7 +282,6 @@ angular.module('cicService', ['chromeStorage', 'jsonTranslator', 'powerbiService
               if (!_icLimitOutput) {
                 $log.debug('Nothing new, repeat data to pBi');
                 var outputStat = jsonTranslator.translateCicStatSet(_StatisticsJSON);
-                //$log.debug(outputStat);
                 powerbiService.SendToPowerBI('CIC', 'Workgroup', outputStat);
               }
 
@@ -319,8 +302,7 @@ angular.module('cicService', ['chromeStorage', 'jsonTranslator', 'powerbiService
     this.Subscribe = function (jSON_Object) {
 
       // Example JSON:
-
-      var jSON_Object = {
+      jSON_Object = {
         'isDelta': false,
         'statisticKeys':
         [
@@ -393,9 +375,7 @@ angular.module('cicService', ['chromeStorage', 'jsonTranslator', 'powerbiService
                 'value': 'GroupA'
               }
             ]
-          }
-
-          ,
+          },
           {
             'statisticIdentifier': 'inin.workgroup:NotAvailable',
             'parameterValueItems':
@@ -572,8 +552,7 @@ angular.module('cicService', ['chromeStorage', 'jsonTranslator', 'powerbiService
 
       var deferred = $q.defer();
       try {
-        this.sendRestRequest('Subscribe', 'PUT', '/messaging/subscriptions/statistics/statistic-values', jSON_Object).then(function success(response) {
-          //$log.debug(response);
+        this.sendRestRequest('Subscribe', 'PUT', '/messaging/subscriptions/statistics/statistic-values', jSON_Object).then(function success() {
           deferred.resolve();
         }, function error(response) {
           $log.debug(response);

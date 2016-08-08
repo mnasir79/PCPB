@@ -36,8 +36,8 @@ angular.module('jsonTranslator', ['ngJSONPath'])
                 else {
                     // <creating a new workgroup>
 
-                    var newItem = new Object();
-                    newItem['name'] = workgroup;
+                    var newItem = {};
+                    newItem.name = workgroup;
                     newItem[statName] = adjustValueForCicOutput(value);
                     output.data.push(newItem);
                     // </creating a new workgroup>
@@ -45,13 +45,13 @@ angular.module('jsonTranslator', ['ngJSONPath'])
 
             }
             
-            for (var i = 0; i < output.data.length; i++) {
+            for (var l = 0; l < output.data.length; l++) {
                 // Add TimeStamp
-                output.data[i]["timeStamp"] = adjustValueForCicOutput(new Date());
+                output.data[l].timeStamp = adjustValueForCicOutput(new Date());
             }
 
             return output;
-        }
+        };
 
         this.translatePcStatSet = function (input) {
             // initializing json paths            
@@ -94,20 +94,20 @@ angular.module('jsonTranslator', ['ngJSONPath'])
                     }
                     else {
                         // <creating a new queue>
-                        var newItem = new Object();
-                        newItem['name'] = queue;
+                        var newItem = {};
+                        newItem.name = queue;
                         newItem[metric] = value;
                         output.data.push(newItem);
                         // </creating a new queue>
                     }
                 }
             }
-            for (var i = 0; i < output.data.length; i++) {
+            for (var l = 0; l < output.data.length; l++) {
                 // Add TimeStamp
-                output.data[i]["timeStamp"] = adjustValueForCicOutput(new Date());
+                output.data[l].timeStamp = adjustValueForCicOutput(new Date());
             }
             return output;
-        }
+        };
 
         function adjustValueForCicOutput(oldVal) {
             var newVal = oldVal;
@@ -117,7 +117,7 @@ angular.module('jsonTranslator', ['ngJSONPath'])
             if (rex.test(oldVal)) {
                 
                 // converting 20160622T102319Z to 2016-06-22T12:23:19+02:00  
-                //moment('01/01/2016 some text', 'MM/DD/YYYY', true).format()     
+                //moment('01/01/2016 some text', 'MM/DD/YYYY', true).format()
                 newVal = moment(oldVal, "YYYYMMDDThhmmssZ").format();
             }
             // </correct date format>

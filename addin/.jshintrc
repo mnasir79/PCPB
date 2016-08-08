@@ -2,18 +2,21 @@
   "bitwise": true,
   "browser": true,
   "curly": true,
-  "eqeqeq": true,
+  "eqeqeq": false,
   "esnext": true,
-  "latedef": true,
+  "latedef": false,
   "noarg": true,
   "node": true,
-  "strict": true,
+  "strict": false,
   "undef": true,
   "unused": true,
   "globals": {
+    "$": false,
     "angular": false,
     "store": false,
     "log4javascript": false,
-    "chrome": false
+    "chrome": false,
+    "moment": false,
+    "confirm": false
   }
 }
