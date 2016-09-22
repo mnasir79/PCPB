@@ -27,7 +27,11 @@ How to Install
         * An ICWS license is required (same as IceLib)
     * PureCloud (optional, only if you want to gather stats about PureCloud queues in PowerBI)
         * Get your own PureCloud org [here](http://mypurecloud.com/)
-        * Create a custom OAuth application in the PureCloud admin module and assign proper user rights to the user account which you are going to use with the Analytics Hub. [Learn more](https://developer.mypurecloud.com/api/rest/authorization/create-oauth-client-id.html). Make sure you add the "Developer" role to your user otherwise you will not see any OAuth option under Admin\Integrations.
+        * Create a custom OAuth application in the PureCloud admin module by going to Admin/Integrations and select the oAuth option. [Learn more](https://developer.mypurecloud.com/api/rest/authorization/create-oauth-client-id.html). Make sure you add the "Developer" role to your user otherwise you will not see any OAuth option under Admin\Integrations.
+        * Use the following settings:
+
+![oauth.jpg](https://bitbucket.org/repo/6pxRex/images/3582494050-oauth.jpg)
+        * Copy the Client Id and Client Secret. You will need them later on.
 
 * Now, you are ready to install the extension
     * Go to the app page: https://chrome.google.com/webstore/detail/inin-analytics-hub/ojgodpdmapceodglkfkbkmddkeibibmd
@@ -47,11 +51,11 @@ PureCloud
 ![Clipboard01.jpg](https://bitbucket.org/repo/6pxRex/images/448113993-Clipboard01.jpg)
 
 * Environment: either mypurecloud.com (US & Canada), mypurecloud.ie (EMEA), mypurecloud.jp (Japan), mypurecloud.com.au (Australia) or ininsca.com (development - internal to ININ only)
-* Client Id: Your oAuth client id from the oAuth page under Admin/Integrations in your PureCloud org
+* Client Id: Your oAuth client ID from the oAuth page under Admin/Integrations in your PureCloud org
 
 ![Clipboard04.jpg](https://bitbucket.org/repo/6pxRex/images/2283939741-Clipboard04.jpg)
 
-* Client Secret: Your oAuth client secret
+* Client Secret: Your oAuth Client Secret
 * Timer: used to indicate the duration between 2 polls. Depending on the number of groups you have in PureCloud, having a value of less than 5000 (5 seconds) can cause high-CPU usage. A value of 10000 (10 seconds) is recommended.
 
 CIC
