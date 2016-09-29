@@ -14,6 +14,7 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 		var _authorization;
 		var _sendDataToPowerBi;
 		var _timer;
+		var _isConnected = false;
 
 
 		function GetOptions() {
@@ -34,6 +35,10 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 
 		this.GetOptions = GetOptions;
 
+		this.getIsConnected = function () {
+      return _isConnected;
+    };
+
 		function loadStartupData() {
 			return $q.all([
 				loadQueue()
@@ -49,6 +54,7 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 		 * }  
 		 */
 		function setEnvironment() {
+			_isConnected = false;
 			var deferred = $q.defer();
 
 			this.GetOptions().then(function () {
@@ -75,6 +81,7 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 					.then(function success(response) {
 						_authorization = response.data;
 						loadStartupData().then(function success() {
+							_isConnected = true;
 							deferred.resolve();
 						}, function error() {
 							deferred.reject();
@@ -87,9 +94,11 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 							console.error('Request: ' + requestName + ': HTTP ' + response.status + ' (' + response.statusText + ')');
 						}
 						console.error('End Request: ' + requestName);
+						deferred.reject();
 					});
 			}, function error() {
 				console.error("error");
+				deferred.reject();
 			});
 
 			return deferred.promise;
@@ -252,12 +261,14 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 					sendData(); // Call it once (interval only starts when the timer expires)
 					_sendDataToPowerBi = setInterval(sendData, _timer);
 					deferred.resolve();
-				},
-				deferred.reject());
+				}, function error() {
+					deferred.reject();
+				});
 			return deferred.promise;
 		}
 
 		function stopSendDataToPowerBi() {
+			_isConnected = false;
 			clearTimeout(_sendDataToPowerBi);
 		}
 

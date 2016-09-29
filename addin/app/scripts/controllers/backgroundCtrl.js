@@ -8,14 +8,18 @@
  * Controller of the app
 **/
 
-angular.module('app', ['cicService'])
-    .controller('backgroundCtrl', function ($scope, $log, $interval, cicService,$window) {
+angular.module('app', ['cicService', 'pureCloudService'])
+    .controller('backgroundCtrl', function ($scope, $log, $interval, $window, cicService, pureCloudService) {
 
         var CICTimer;
 
         $scope.getCICService = function () {
             return cicService;
         };
+
+        $scope.getPureCloudService = function () {
+            return pureCloudService;
+        }
 
         $scope.StartTimer_CIC = function () {
             $interval.cancel(CICTimer);

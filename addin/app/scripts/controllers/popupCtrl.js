@@ -8,8 +8,8 @@
  * Controller of the app
 **/
 
-angular.module('app', ['powerbiService', 'chromeStorage', 'pureCloudService'])
-    .controller('popupCtrl', function ($scope, $log, $window, powerbiService, chromeStorage, pureCloudService) {
+angular.module('app', ['powerbiService', 'chromeStorage'])
+    .controller('popupCtrl', function ($scope, $log, $window, powerbiService, chromeStorage) {
 
         var _BgController;
 
@@ -40,6 +40,26 @@ angular.module('app', ['powerbiService', 'chromeStorage', 'pureCloudService'])
             }
         }
 
+        function loginPC() {
+            // Login
+            $scope.pcLoading = true;
+            try {
+                _BgController.getPureCloudService().setEnvironment().then(function success() {
+                    $scope.pcLoading = false;
+                    $scope.isPCConnected = true;
+                    $scope.$apply();
+                }, function error() {
+                    $scope.pcLoading = false;
+                    $scope.isPCConnected = false;
+                    $scope.$apply();
+                   _BgController.ShowMessage('Cannot login to PureCloud!\nGo to the Options page?');
+                });
+            } catch (Err) {
+                $log.error(Err);
+                $scope.pcLoading = false;
+            }
+        }
+
         function init() {
             var bgPage = chrome.extension.getBackgroundPage();
             //console.log(bgPage);
@@ -64,6 +84,8 @@ angular.module('app', ['powerbiService', 'chromeStorage', 'pureCloudService'])
                 // Display NotConnected State
                 $scope.isCICConnected = false;
             }
+
+            $scope.isPCConnected = _BgController.getPureCloudService().getIsConnected();
         }
 
         init();
@@ -72,13 +94,10 @@ angular.module('app', ['powerbiService', 'chromeStorage', 'pureCloudService'])
 
             if ($scope.isPCConnected) {
                 $scope.isPCConnected = false;
-                pureCloudService.stopSendDataToPowerBi();
+                _BgController.getPureCloudService().stopSendDataToPowerBi();
             }
             else {
-                $scope.isPCConnected = true;
-                //console.log("purecloud");
-                pureCloudService.setEnvironment();
-
+                loginPC();
             }
         };
 

@@ -25,6 +25,7 @@
         <button type="button" class="btn btn-default menuItem btn-xs" id="connectButton_PC" ng-click="togglePCConnectionIndicator()">
             <span class="label" ng-class="isPCConnected ? 'label-success' : 'label-danger'" id="connectionIndicator_PC">IN</span>
             PureCloud
+           <img class="loading" src="images/ajax-loader.gif" width="14" height="14" align="right" ng-show="pcLoading" />
         </button>
         <button type="button" class="btn btn-default menuItem btn-xs" id="connectButton_CIC" ng-click="toggleCICConnectionIndicator()">
             <span class="label" ng-class="isCICConnected ? 'label-success' : 'label-danger'" id="connectionIndicator_CIC">IN</span>
