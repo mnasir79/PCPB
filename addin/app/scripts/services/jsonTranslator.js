@@ -5,12 +5,6 @@ angular.module('jsonTranslator', ['ngJSONPath'])
     .service('jsonTranslator', function (jsonPath) {
 
         this.translateCicStatSet = function (input) {
-            // initializing json paths  
-
-            var statNamePath = 'statisticKey.statisticIdentifier'; //relative
-            var workgroupPath = 'statisticKey.parameterValueItems[0].value'; //relative           
-            var valuePath = 'statisticValue.value'; //relative
-
             // getting an array with statistics
             var statRoot = input;
 
@@ -19,10 +13,10 @@ angular.module('jsonTranslator', ['ngJSONPath'])
 
             // iterating all statistics in the array
             for (var i in statRoot) {
-                var workgroup = jsonPath(statRoot[i], workgroupPath)[0];
-                var statName = jsonPath(statRoot[i], statNamePath)[0].replace('inin.workgroup:', '');
-                var value = jsonPath(statRoot[i], valuePath)[0];
-                var item = jsonPath(output, "$.data.[?(@.name==='" + workgroup + "')]");
+                var workgroup = statRoot[i].statisticKey.parameterValueItems[0].value;
+                var statName = statRoot[i].statisticKey.statisticIdentifier.replace('inin.workgroup:', '');
+                var value = statRoot[i].statisticValue ? statRoot[i].statisticValue.value : undefined;
+                var item = output.data.find(function (item) { return item.name === workgroup; });
 
                 if (item) {
                     // <updating the existing workgroup>                    
@@ -38,47 +32,33 @@ angular.module('jsonTranslator', ['ngJSONPath'])
 
                     var newItem = {};
                     newItem.name = workgroup;
+                    newItem.timeStamp = adjustValueForCicOutput(new Date());
                     newItem[statName] = adjustValueForCicOutput(value);
                     output.data.push(newItem);
                     // </creating a new workgroup>
                 }
 
             }
-            
-            for (var l = 0; l < output.data.length; l++) {
-                // Add TimeStamp
-                output.data[l].timeStamp = adjustValueForCicOutput(new Date());
-            }
-
             return output;
         };
 
         this.translatePcStatSet = function (input) {
-            // initializing json paths            
-            var queuePath = 'group.queueName'; //relative
-            var mediaTypePath = 'group.mediaType'; //relative 
-            var queueStatRootPath = 'data'; //relative              
-            var metricPath = 'metric'; //relative         
-            var valuePath = 'stats.count'; //relative
-
             // getting an array with statistics
             
             var statRoot = input.results;
-            
-            
 
             // creating an output object
             var output = { "data": [] };
 
             // iterating all statistics in the array
             for (var i in statRoot) {
-                var queue = jsonPath(statRoot[i], queuePath)[0];
-                var mediaType = jsonPath(statRoot[i], mediaTypePath)[0];
-                var queueStatRoot = jsonPath(statRoot[i], queueStatRootPath)[0];
+                var queue = statRoot[i].group.queueName;
+                var mediaType = statRoot[i].group.mediaType;
+                var queueStatRoot = statRoot[i].data;
                 for (var j in queueStatRoot) {
-                    var metric = jsonPath(queueStatRoot[j], metricPath)[0];
-                    var value = jsonPath(queueStatRoot[j], valuePath)[0];
-                    var item = jsonPath(output, "$.data.[?(@.name==='" + queue + "')]");
+                    var metric = queueStatRoot[j].metric;
+                    var value = queueStatRoot[j].stats.count;
+                    var item = output.data.find(function (item) { return item.name === queue; });
                     // adding media type to metric name                   
                     if (mediaType) {
                         metric = mediaType + '-' + metric;
@@ -96,15 +76,12 @@ angular.module('jsonTranslator', ['ngJSONPath'])
                         // <creating a new queue>
                         var newItem = {};
                         newItem.name = queue;
+                        newItem.timeStamp = adjustValueForCicOutput(new Date());
                         newItem[metric] = value;
                         output.data.push(newItem);
                         // </creating a new queue>
                     }
                 }
-            }
-            for (var l = 0; l < output.data.length; l++) {
-                // Add TimeStamp
-                output.data[l].timeStamp = adjustValueForCicOutput(new Date());
             }
             return output;
         };

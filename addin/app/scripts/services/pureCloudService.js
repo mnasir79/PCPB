@@ -210,7 +210,8 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 								// add queue name
 								var queuePath = 'group'; //relative
 								var queue = jsonPath(item, queuePath)[0];
-								queue.queueName = _queueMap[queue.queueId].name;
+								var q = _queueMap[queue.queueId];
+								queue.queueName = q ? q.name : undefined;
 
 								wgData_parsed.results.push(item);
 							}
