@@ -8,6 +8,7 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 		var _authUrl;
 		var _queueMap = {};
 		var _allQueue = [];
+		var _allQueuesPredicate = [];
 		var _clientId;
 		var _clientSecret;
 		var _authorization;
@@ -151,83 +152,80 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 		 */
 		function sendData() {
 			var deferred = $q.defer();
-			for (var i = 0; i < Object.keys(_allQueue).length; i++) {
-				var dateRequest = new Date();
-				var dd = dateRequest.getDate();
-				var dd_from = dateRequest.getDate() - 1;
-				var mm = dateRequest.getMonth() + 1; //January is 0!
-				var yyyy = dateRequest.getFullYear();
 
-				if (dd < 10) {
-					dd = '0' + dd;
-				}
+			var dateRequest = new Date();
+			var dd = dateRequest.getDate();
+			var dd_from = dateRequest.getDate() - 1;
+			var mm = dateRequest.getMonth() + 1; //January is 0!
+			var yyyy = dateRequest.getFullYear();
 
-				if (dd_from < 10) {
-					dd_from = '0' + dd_from;
-				}
-
-				if (mm < 10) {
-					mm = '0' + mm;
-				}
-
-				dateRequest = mm + '/' + dd + '/' + yyyy;
-				dateRequest = yyyy + '-' + mm + '-' + dd_from + '/' + yyyy + '-' + mm + '-' + dd;
-				//console.log(dateRequest);
-
-				var body = {
-					"interval": dateRequest,
-					//"interval": "2016-06-15T00:00:00.000Z/2016-06-21T00:00:00.000Z",
-					"filter": {
-						"type": "or",
-						"predicates": [
-							{
-								"dimension": "queueId",
-								"value": _allQueue[i].id
-							}
-						]
-					},
-					"metrics": []
-				};
-
-				analyticsApi.postQueuesObservationsQuery(body)
-					.then(function success(response) {
-
-						// @Daniel Szlaski / Fix for formating
-						var wgData_parsed = { "results": [] };
-						var in_mediaType = '';
-
-						for (var x in response.data.results) {
-							console.log('mediaType:', response.data.results[x].group.mediaType);
-							if (response.data.results[x].group.mediaType !== undefined) {
-								in_mediaType = response.data.results[x].group.mediaType;
-								for (var y in response.data.results[x].data) {
-									response.data.results[x].data[y].metric = in_mediaType + '_' + response.data.results[x].data[y].metric;
-									wgData_parsed.results[0].data.push(response.data.results[x].data[y]);
-								}
-							} else {
-								var item = response.data.results[x];
-
-								// add queue name
-								var queuePath = 'group'; //relative
-								var queue = jsonPath(item, queuePath)[0];
-								var q = _queueMap[queue.queueId];
-								queue.queueName = q ? q.name : undefined;
-
-								wgData_parsed.results.push(item);
-							}
-						}
-
-						// END @Daniel Szlaski / Fix for formating
-
-						// send data to powerbi
-						var outputStat = jsonTranslator.translatePcStatSet(wgData_parsed);
-						console.log(outputStat);
-						powerbiService.SendToPowerBI('PureCloud', 'Workgroup', outputStat);
-
-						deferred.resolve();
-					},
-					deferred.reject());
+			if (dd < 10) {
+				dd = '0' + dd;
 			}
+
+			if (dd_from < 10) {
+				dd_from = '0' + dd_from;
+			}
+
+			if (mm < 10) {
+				mm = '0' + mm;
+			}
+
+			dateRequest = mm + '/' + dd + '/' + yyyy;
+			dateRequest = yyyy + '-' + mm + '-' + dd_from + '/' + yyyy + '-' + mm + '-' + dd;
+			//console.log(dateRequest);
+
+			var body = {
+				"interval": dateRequest,
+				//"interval": "2016-06-15T00:00:00.000Z/2016-06-21T00:00:00.000Z",
+				"filter": {
+					"type": "or",
+					"predicates": _allQueuesPredicate
+				},
+				"metrics": []
+			};
+
+			analyticsApi.postQueuesObservationsQuery(body)
+				.then(function success(response) {
+
+					// @Daniel Szlaski / Fix for formating
+					var wgDataMap = {};
+
+					for (var x in response.data.results) {
+						if (response.data.results[x].group.mediaType !== undefined) {
+							var in_mediaType = response.data.results[x].group.mediaType;
+							for (var y in response.data.results[x].data) {
+								response.data.results[x].data[y].metric = in_mediaType + '_' + response.data.results[x].data[y].metric;
+								wgDataMap[response.data.results[x].group.queueId].data.push(response.data.results[x].data[y]);
+							}
+						} else {
+							var item = response.data.results[x];
+
+							// add queue name
+							var queuePath = 'group'; //relative
+							var queue = jsonPath(item, queuePath)[0];
+							var q = _queueMap[queue.queueId];
+							queue.queueName = q ? q.name : undefined;
+
+							wgDataMap[item.group.queueId] = item;
+						}
+					}
+
+					// END @Daniel Szlaski / Fix for formating
+
+					// send data to powerbi
+					var wgData_parsed = { "results": [] };
+					wgData_parsed.results = Object.keys(wgDataMap).map(wg => { return wgDataMap[wg]; });
+					var outputStat = jsonTranslator.translatePcStatSet(wgData_parsed);
+					console.log(outputStat);
+					powerbiService.SendToPowerBI('PureCloud', 'Workgroup', outputStat);
+
+					deferred.resolve();
+				}, function error() {
+					deferred.reject();
+				});
+
+			return deferred.promise;
 		}
 
 		/*
@@ -241,6 +239,7 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 					_allQueue = response.data.entities;
 
 					_queueMap = createQueuesMap(_allQueue);
+					_allQueuesPredicate = _allQueue.map(q => { return { "dimension": "queueId", "value": q.id }; });
 
 					sendData(); // Call it once (interval only starts when the timer expires)
 					_sendDataToPowerBi = setInterval(sendData, _timer);
