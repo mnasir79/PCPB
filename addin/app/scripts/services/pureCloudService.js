@@ -6,8 +6,7 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 		var _environment;
 		var _host;
 		var _authUrl;
-		var _queueId = [];
-		var _queueName = [];
+		var _queueMap = {};
 		var _allQueue = [];
 		var _clientId;
 		var _clientSecret;
@@ -175,7 +174,6 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 				dateRequest = yyyy + '-' + mm + '-' + dd_from + '/' + yyyy + '-' + mm + '-' + dd;
 				//console.log(dateRequest);
 
-				// _queueName[i] and _queueName[i+1] contain the list of queues id, name
 				var body = {
 					"interval": dateRequest,
 					//"interval": "2016-06-15T00:00:00.000Z/2016-06-21T00:00:00.000Z",
@@ -184,7 +182,7 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 						"predicates": [
 							{
 								"dimension": "queueId",
-								"value": _queueId[i]
+								"value": _allQueue[i].id
 							}
 						]
 					},
@@ -207,25 +205,18 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 									wgData_parsed.results[0].data.push(response.data.results[x].data[y]);
 								}
 							} else {
-								wgData_parsed.results.push(response.data.results[x]);
+								var item = response.data.results[x];
+
+								// add queue name
+								var queuePath = 'group'; //relative
+								var queue = jsonPath(item, queuePath)[0];
+								queue.queueName = _queueMap[queue.queueId].name;
+
+								wgData_parsed.results.push(item);
 							}
 						}
 
 						// END @Daniel Szlaski / Fix for formating
-
-						// add queue name
-						var queuePath = 'group'; //relative
-						var statRoot = wgData_parsed.results;
-
-						for (var i in statRoot) {
-							var queue = jsonPath(statRoot[i], queuePath)[0];
-							for (x in _queueName) {
-								if (queue.queueId == _queueId[x]) {
-									queue.queueName = _queueName[x];
-									continue;
-								}
-							}
-						}
 
 						// send data to powerbi
 						var outputStat = jsonTranslator.translatePcStatSet(wgData_parsed);
@@ -239,7 +230,7 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 		}
 
 		/*
-		 * @summary Load the list of queue name and queueid in a table _queueName
+		 * @summary Load the list of queue name and queueid in a table _queueMap
 		 */
 		function loadQueue() {
 			var deferred = $q.defer();
@@ -248,15 +239,7 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 				.then(function success(response) {
 					_allQueue = response.data.entities;
 
-					for (var i = 0; i < Object.keys(_allQueue).length; i++) {
-						var queueId = _allQueue[i].id;
-						var queueName = _allQueue[i].name;
-						queueName = queueName.replace(/[\\$'"]/g, "\\$&");		//AMO: add escape in case of special character in queue name
-						_queueId.push(queueId);
-						_queueName.push(queueName);
-						// console.log("queueId: " + queueId);
-						// console.log("queueName: " + queueName);
-					}
+					_queueMap = createQueuesMap(_allQueue);
 
 					sendData(); // Call it once (interval only starts when the timer expires)
 					_sendDataToPowerBi = setInterval(sendData, _timer);
@@ -273,6 +256,17 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 		}
 
 		this.stopSendDataToPowerBi = stopSendDataToPowerBi;
+
+		function createQueuesMap(queues) {
+			var map = {};
+			var length = Object.keys(queues).length;
+			for (var i = 0; i < length; i++) {
+				var queue = queues[i];
+				queue.name = queue.name.replace(/[\\$'"]/g, "\\$&");		//AMO: add escape in case of special character in queue name
+				map[queue.id] = queue;
+			}
+			return map;
+		}
 
 		var routingApi = {
 			/*
