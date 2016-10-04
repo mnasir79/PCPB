@@ -107,7 +107,7 @@ angular.module('jsonTranslator', ['ngJSONPath'])
                     if (sessions.length > 0) {
                         newItem.mediaType = sessions[0].mediaType;
                         newItem.direction = sessions[0].direction;
-                        newItem.conversationEnd = sessions[sessions.length - 1].segmentEnd;
+                        newItem.conversationEnd = sessions[0].segments[sessions[0].segments.length - 1].segmentEnd;
                     }
                     else {
                         console.warn('Missing sessions for first participants: ' + JSON.stringify(statRoot[i]));
