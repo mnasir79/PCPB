@@ -255,21 +255,33 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 				"orderBy": "conversationStart",
 				"paging": {
 					"pageSize": maxPageSize,
-					"pageNumber": 1
+					"pageNumber": 0
 				}
 			};
 
+			var outputStat = [];
+			sendConversationDataInternal(deferred, body, outputStat);
+			return deferred.promise;
+		}
+
+		function sendConversationDataInternal(deferred, body, outputStat) {
+			body.paging.pageNumber++;
 			analyticsApi.postConversationsDetailsQuery(body)
 				.then(function success(response) {
-					var outputStat = jsonTranslator.translatePureCloudConversationDetailDataSet(response.data, _skillMap, _languageMap);
-					console.log(outputStat);
-					powerbiService.SendToPowerBI('PureCloud', 'Conversation', outputStat);
+					var outputStatTmp = jsonTranslator.translatePureCloudConversationDetailDataSet(response.data, _skillMap, _languageMap);
+					console.log('Received Conversation Detail Data page number: ' + body.paging.pageNumber);
+					//console.log(outputStatTmp);
+					outputStat = outputStat.concat(outputStatTmp);
 
-					deferred.resolve();
+					if (outputStatTmp.length === body.paging.pageSize) {
+						sendConversationDataInternal(deferred, body, outputStat);
+					} else {
+						powerbiService.SendToPowerBI('PureCloud', 'Conversation', outputStat);
+						deferred.resolve();
+					}
 				}, function error() {
 					deferred.reject();
 				});
-			return deferred.promise;
 		}
 
 		/*

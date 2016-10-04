@@ -92,7 +92,7 @@ angular.module('jsonTranslator', ['ngJSONPath'])
             var statRoot = input.conversations;
 
             // creating an output object
-            var output = { "data": [] };
+            var output = [];
 
             // iterating all statistics in the array
             for (var i in statRoot) {
@@ -136,7 +136,7 @@ angular.module('jsonTranslator', ['ngJSONPath'])
                     }
                 }
 
-                output.data.push(newItem);
+                output.push(newItem);
             }
             return output;
         };
