@@ -44,7 +44,7 @@ angular.module('jsonTranslator', ['ngJSONPath'])
 
         this.translatePcStatSet = function (input) {
             // getting an array with statistics
-            
+
             var statRoot = input.results;
 
             // creating an output object
@@ -86,13 +86,68 @@ angular.module('jsonTranslator', ['ngJSONPath'])
             return output;
         };
 
+        this.translatePureCloudConversationDetailDataSet = function (input, skillMap, languageMap) {
+            // getting an array with statistics
+
+            var statRoot = input.conversations;
+
+            // creating an output object
+            var output = { "data": [] };
+
+            // iterating all statistics in the array
+            for (var i in statRoot) {
+                var newItem = {};
+                newItem.timeStamp = adjustValueForCicOutput(new Date());
+                newItem.conversationId = statRoot[i].conversationId;
+                newItem.conversationStart = statRoot[i].conversationStart;
+
+                var participantsStatRoot = statRoot[i].participants;
+                if (participantsStatRoot.length > 0) {
+                    var sessions = participantsStatRoot[0].sessions;
+                    if (sessions.length > 0) {
+                        newItem.mediaType = sessions[0].mediaType;
+                        newItem.direction = sessions[0].direction;
+                        newItem.conversationEnd = sessions[sessions.length - 1].segmentEnd;
+                    }
+                    else {
+                        console.warn('Missing sessions for first participants: ' + JSON.stringify(statRoot[i]));
+                    }
+                }
+                else {
+                    console.warn('Missing participants: ' + JSON.stringify(statRoot[i]));
+                }
+
+                var acdParticipant = participantsStatRoot.find(function (item) { return item.purpose === 'acd'; });
+                if (acdParticipant) {
+                    newItem.queueName = acdParticipant.participantName;
+                    var sessions = acdParticipant.sessions;
+                    if (sessions.length > 0 && sessions[0].segments.length > 0) {
+                        var segment  = sessions[0].segments[0];
+                        if (segment.requestedRoutingSkillIds && segment.requestedRoutingSkillIds.length > 0) {
+                            newItem.skill = skillMap[segment.requestedRoutingSkillIds[0]].name;
+                        }
+
+                        if (segment.requestedLanguageId) {
+                            newItem.language = languageMap[segment.requestedLanguageId].name;
+                        }
+                    }
+                    else {
+                        console.warn('Missing sessions for acd participants: ' + JSON.stringify(statRoot[i]));
+                    }
+                }
+
+                output.data.push(newItem);
+            }
+            return output;
+        };
+
         function adjustValueForCicOutput(oldVal) {
             var newVal = oldVal;
             // <correct date format>
             //var rex = /(\d{8})T(\d{6})Z/; // expression for 20160622T102319Z
-            var rex = /(\d{8})T(\d{6})/;            
+            var rex = /(\d{8})T(\d{6})/;
             if (rex.test(oldVal)) {
-                
+
                 // converting 20160622T102319Z to 2016-06-22T12:23:19+02:00  
                 //moment('01/01/2016 some text', 'MM/DD/YYYY', true).format()
                 newVal = moment(oldVal, "YYYYMMDDThhmmssZ").format();

@@ -9,6 +9,8 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 		var _queueMap = {};
 		var _allQueue = [];
 		var _allQueuesPredicate = [];
+		var _languageMap = {};
+		var _skillMap = {};
 		var _clientId;
 		var _clientSecret;
 		var _authorization;
@@ -41,7 +43,9 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 
 		function loadStartupData() {
 			return $q.all([
-				loadQueue()
+				loadQueue(),
+				loadLanguages(),
+				loadSkills()
 			]);
 		}
 
@@ -82,6 +86,10 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 						_authorization = response.data;
 						loadStartupData().then(function success() {
 							_isConnected = true;
+
+							sendData(); // Call it once (interval only starts when the timer expires)
+							_sendDataToPowerBi = setInterval(sendData, _timer);
+
 							deferred.resolve();
 						}, function error() {
 							deferred.reject();
@@ -151,8 +159,6 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 		 * @summary send data to stat application
 		 */
 		function sendData() {
-			var deferred = $q.defer();
-
 			var dateRequest = new Date();
 			var dd = dateRequest.getDate();
 			var dd_from = dateRequest.getDate() - 1;
@@ -171,12 +177,22 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 				mm = '0' + mm;
 			}
 
-			dateRequest = mm + '/' + dd + '/' + yyyy;
-			dateRequest = yyyy + '-' + mm + '-' + dd_from + '/' + yyyy + '-' + mm + '-' + dd;
+			var time = 'T' + dateRequest.getHours() + ':' + dateRequest.getMinutes() + ':' + dateRequest.getSeconds();
+
+			dateRequest = yyyy + '-' + mm + '-' + dd_from + time + '/' + yyyy + '-' + mm + '-' + dd + time;
 			//console.log(dateRequest);
 
+			return $q.all([
+				sendQueueData(dateRequest),
+				sendConversationData(dateRequest)
+			]);
+		}
+
+		function sendQueueData(interval) {
+			var deferred = $q.defer();
+
 			var body = {
-				"interval": dateRequest,
+				"interval": interval,
 				//"interval": "2016-06-15T00:00:00.000Z/2016-06-21T00:00:00.000Z",
 				"filter": {
 					"type": "or",
@@ -228,6 +244,29 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 			return deferred.promise;
 		}
 
+		function sendConversationData(interval) {
+			var deferred = $q.defer();
+
+			var body = {
+				"interval": interval,
+				//"interval": "2016-06-15T00:00:00.000Z/2016-06-21T00:00:00.000Z",
+				"order": "asc",
+				"orderBy": "conversationStart"
+			};
+
+			analyticsApi.postConversationsDetailsQuery(body)
+				.then(function success(response) {
+					var outputStat = jsonTranslator.translatePureCloudConversationDetailDataSet(response.data, _skillMap, _languageMap);
+					console.log(outputStat);
+					powerbiService.SendToPowerBI('PureCloud', 'Conversation', outputStat);
+
+					deferred.resolve();
+				}, function error() {
+					deferred.reject();
+				});
+			return deferred.promise;
+		}
+
 		/*
 		 * @summary Load the list of queue name and queueid in a table _queueMap
 		 */
@@ -241,8 +280,34 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 					_queueMap = createQueuesMap(_allQueue);
 					_allQueuesPredicate = _allQueue.map(q => { return { "dimension": "queueId", "value": q.id }; });
 
-					sendData(); // Call it once (interval only starts when the timer expires)
-					_sendDataToPowerBi = setInterval(sendData, _timer);
+					deferred.resolve();
+				}, function error() {
+					deferred.reject();
+				});
+			return deferred.promise;
+		}
+
+		function loadLanguages() {
+			var deferred = $q.defer();
+
+			languageApi.getLanguages()
+				.then(function success(response) {
+					_languageMap = createLangaugeMap(response.data.entities);
+
+					deferred.resolve();
+				}, function error() {
+					deferred.reject();
+				});
+			return deferred.promise;
+		}
+
+		function loadSkills() {
+			var deferred = $q.defer();
+
+			routingApi.getSkills()
+				.then(function success(response) {
+					_skillMap = createSkillMap(response.data.entities);
+
 					deferred.resolve();
 				}, function error() {
 					deferred.reject();
@@ -264,6 +329,26 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 				var queue = queues[i];
 				queue.name = queue.name.replace(/[\\$'"]/g, "\\$&");		//AMO: add escape in case of special character in queue name
 				map[queue.id] = queue;
+			}
+			return map;
+		}
+
+		function createLangaugeMap(languages) {
+			var map = {};
+			var length = Object.keys(languages).length;
+			for (var i = 0; i < length; i++) {
+				var language = languages[i];
+				map[language.id] = language;
+			}
+			return map;
+		}
+
+		function createSkillMap(skills) {
+			var map = {};
+			var length = Object.keys(skills).length;
+			for (var i = 0; i < length; i++) {
+				var skill = skills[i];
+				map[skill.id] = skill;
 			}
 			return map;
 		}
@@ -294,6 +379,16 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 
 				apipath = apipath.replace('{queueId}', queueId);
 				return sendRestRequest('routing.getQueueDetail', 'GET', apipath, requestBody);
+			},
+
+			/*
+			* @summary Get the list of skills
+			* @memberOf routing#
+			*/
+			getSkills: function () {
+				var requestBody;
+				var apipath = '/api/v2/routing/skills';
+				return sendRestRequest('routing.getSkills', 'GET', apipath, requestBody);
 			}
 		};
 
@@ -852,4 +947,18 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 		};
 
 		this.analytics = analyticsApi;
+
+		var languageApi = {
+			/*
+			* @summary Get the list of languages
+			* @memberOf language#
+			*/
+			getLanguages: function () {
+				var requestBody;
+				var apipath = '/api/v2/languages';
+				return sendRestRequest('language.getLanguages', 'GET', apipath, requestBody);
+			},
+		};
+
+		this.language = languageApi;
 	});

@@ -61,6 +61,47 @@
           "dataType": "Int64"
         }
       ]
+    },
+    {
+      "name": "Conversation",
+      "columns": [
+        {
+          "name": "timeStamp",
+          "dataType": "Datetime"
+        },
+        {
+          "name": "conversationId",
+          "dataType": "String"
+        },
+        {
+          "name": "conversationStart",
+          "dataType": "Datetime"
+        },
+        {
+          "name": "conversationEnd",
+          "dataType": "Datetime"
+        },
+        {
+          "name": "mediaType",
+          "dataType": "String"
+        },
+        {
+          "name": "direction",
+          "dataType": "String"
+        },
+        {
+          "name": "queueName",
+          "dataType": "String"
+        },
+        {
+          "name": "skill",
+          "dataType": "String"
+        },
+        {
+          "name": "language",
+          "dataType": "String"
+        }
+      ]
     }
   ]
 }
