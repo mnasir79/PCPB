@@ -48,8 +48,8 @@ angular.module('jsonTranslator', ['ngJSONPath'])
             var statRoot = input.results;
 
             // creating an output object
-            var output = { "data": [] };
-
+            var output = []; // { "data": [] };
+            
             // iterating all statistics in the array
             for (var i in statRoot) {
                 var queue = statRoot[i].group.queueName;
@@ -58,16 +58,16 @@ angular.module('jsonTranslator', ['ngJSONPath'])
                 for (var j in queueStatRoot) {
                     var metric = queueStatRoot[j].metric;
                     var value = queueStatRoot[j].stats.count;
-                    var item = output.data.find(function (item) { return item.name === queue; });
+                    var item = output.find(function (item) { return item.name === queue; });
                     // adding media type to metric name                   
                     if (mediaType) {
                         metric = mediaType + '-' + metric;
                     }
                     if (item) {
                         // <updating the existing queue>                    
-                        for (var k in output.data) {
-                            if (output.data[k].name == queue) {
-                                output.data[k][metric] = value;
+                        for (var k in output) {
+                            if (output[k].name == queue) {
+                                output[k][metric] = value;
                             }
                         }
                         // </updating the existing queue>                 
@@ -78,7 +78,7 @@ angular.module('jsonTranslator', ['ngJSONPath'])
                         newItem.name = queue;
                         newItem.timeStamp = adjustValueForCicOutput(new Date());
                         newItem[metric] = value;
-                        output.data.push(newItem);
+                        output.push(newItem);
                         // </creating a new queue>
                     }
                 }
