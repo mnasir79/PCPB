@@ -103,7 +103,7 @@ angular.module('cicService', ['chromeStorage', 'jsonTranslator', 'powerbiService
         config.data = JSON.stringify(body);
       }
 
-      $log.debug('CIC Begin Request: [' + requestName + '] -> ' + tmp_url);
+      //$log.debug('CIC Begin Request: [' + requestName + '] -> ' + tmp_url);
       var request = $http(config);
 
       request.then(function successCallback(response) {
@@ -326,13 +326,13 @@ angular.module('cicService', ['chromeStorage', 'jsonTranslator', 'powerbiService
               }
             ]
           },
-          {
+           {
             'statisticIdentifier': 'inin.workgroup:TotalAgents',
             'parameterValueItems':
             [
               {
                 'parameterTypeId': 'ININ.People.WorkgroupStats:Workgroup',
-                'value': 'GroupA'
+                'value': 'Marketing'
               }
             ]
           },
@@ -363,16 +363,6 @@ angular.module('cicService', ['chromeStorage', 'jsonTranslator', 'powerbiService
               {
                 'parameterTypeId': 'ININ.People.WorkgroupStats:Workgroup',
                 'value': 'Marketing'
-              }
-            ]
-          },
-          {
-            'statisticIdentifier': 'inin.workgroup:InteractionsWaiting',
-            'parameterValueItems':
-            [
-              {
-                'parameterTypeId': 'ININ.People.WorkgroupStats:Workgroup',
-                'value': 'GroupA'
               }
             ]
           },

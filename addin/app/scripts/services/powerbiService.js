@@ -129,7 +129,8 @@ angular.module('powerbiService', ['chromeStorage'])
       request.setRequestHeader('Content-Type', 'application/json'); 
       request.setRequestHeader('Authorization', 'Bearer ' + accessToken);
       // Send the request
-      console.log('Sending data:', data);
+      console.log('Sending data');
+      console.log(JSON.stringify(data));
       request.send(JSON.stringify(data));
     }
 

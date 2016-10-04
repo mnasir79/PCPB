@@ -9,20 +9,20 @@ angular.module('jsonTranslator', ['ngJSONPath'])
             var statRoot = input;
 
             // creating an output object
-            var output = { "data": [] };
+            var output = []; //{ "data": [] };
 
             // iterating all statistics in the array
             for (var i in statRoot) {
                 var workgroup = statRoot[i].statisticKey.parameterValueItems[0].value;
                 var statName = statRoot[i].statisticKey.statisticIdentifier.replace('inin.workgroup:', '');
                 var value = statRoot[i].statisticValue ? statRoot[i].statisticValue.value : undefined;
-                var item = output.data.find(function (item) { return item.name === workgroup; });
+                var item = output.find(function (item) { return item.name === workgroup; });
 
                 if (item) {
                     // <updating the existing workgroup>                    
-                    for (var j in output.data) {
-                        if (output.data[j].name == workgroup) {
-                            output.data[j][statName] = adjustValueForCicOutput(value);
+                    for (var j in output) {
+                        if (output[j].name == workgroup) {
+                            output[j][statName] = adjustValueForCicOutput(value);
                         }
                     }
                     // </updating the existing workgroup>                 
@@ -34,7 +34,7 @@ angular.module('jsonTranslator', ['ngJSONPath'])
                     newItem.name = workgroup;
                     newItem.timeStamp = adjustValueForCicOutput(new Date());
                     newItem[statName] = adjustValueForCicOutput(value);
-                    output.data.push(newItem);
+                    output.push(newItem);
                     // </creating a new workgroup>
                 }
 
