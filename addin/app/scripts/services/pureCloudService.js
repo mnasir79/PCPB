@@ -246,12 +246,17 @@ angular.module('pureCloudService', ['ab-base64', 'powerbiService', 'jsonTranslat
 
 		function sendConversationData(interval) {
 			var deferred = $q.defer();
+			var maxPageSize = 100;
 
 			var body = {
 				"interval": interval,
 				//"interval": "2016-06-15T00:00:00.000Z/2016-06-21T00:00:00.000Z",
 				"order": "asc",
-				"orderBy": "conversationStart"
+				"orderBy": "conversationStart",
+				"paging": {
+					"pageSize": maxPageSize,
+					"pageNumber": 1
+				}
 			};
 
 			analyticsApi.postConversationsDetailsQuery(body)
