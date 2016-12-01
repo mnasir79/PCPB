@@ -1,109 +1,113 @@
 {
-  "name": "PureCloud",
-  "tables": [
-    {
-      "name": "Workgroup",
-      "columns": [
-        {
-          "name": "timeStamp",
-          "dataType": "Datetime"
+    "name": "PureCloud",
+    "tables": [{
+            "name": "Workgroup",
+            "columns": [{
+                    "name": "timeStamp",
+                    "dataType": "Datetime"
+                },
+                {
+                    "name": "callback_oInteracting",
+                    "dataType": "Int64"
+                },
+                {
+                    "name": "callback_oWaiting",
+                    "dataType": "Int64"
+                },
+                {
+                    "name": "chat_oInteracting",
+                    "dataType": "Int64"
+                },
+                {
+                    "name": "chat_oWaiting",
+                    "dataType": "Int64"
+                },
+                {
+                    "name": "email_oInteracting",
+                    "dataType": "Int64"
+                },
+                {
+                    "name": "email_oWaiting",
+                    "dataType": "Int64"
+                },
+                {
+                    "name": "cobrowse_oInteracting",
+                    "dataType": "Int64"
+                },
+                {
+                    "name": "cobrowse_oWaiting",
+                    "dataType": "Int64"
+                },
+                {
+                    "name": "name",
+                    "dataType": "String"
+                },
+                {
+                    "name": "oActiveUsers",
+                    "dataType": "Int64"
+                },
+                {
+                    "name": "oOnQueueUsers",
+                    "dataType": "Int64"
+                },
+                {
+                    "name": "oOffQueueUsers",
+                    "dataType": "Int64"
+                },
+                {
+                    "name": "oMemberUsers",
+                    "dataType": "Int64"
+                },
+                {
+                    "name": "voice_oInteracting",
+                    "dataType": "Int64"
+                },
+                {
+                    "name": "voice_oWaiting",
+                    "dataType": "Int64"
+                }
+            ]
         },
         {
-          "name": "callback_oInteracting",
-          "dataType": "Int64"
-        },
-        {
-          "name": "callback_oWaiting",
-          "dataType": "Int64"
-        },
-        {
-          "name": "chat_oInteracting",
-          "dataType": "Int64"
-        },
-        {
-          "name": "chat_oWaiting",
-          "dataType": "Int64"
-        },
-        {
-          "name": "email_oInteracting",
-          "dataType": "Int64"
-        },
-        {
-          "name": "email_oWaiting",
-          "dataType": "Int64"
-        },
-        {
-          "name": "name",
-          "dataType": "String"
-        },
-        {
-          "name": "oActiveUsers",
-          "dataType": "Int64"
-        },
-        {
-          "name": "oOnQueueUsers",
-          "dataType": "Int64"
-        },
-        {
-          "name": "oOffQueueUsers",
-          "dataType": "Int64"
-        },
-        {
-          "name": "oMemberUsers",
-          "dataType": "Int64"
-        },
-        {
-          "name": "voice_oInteracting",
-          "dataType": "Int64"
-        },
-        {
-          "name": "voice_oWaiting",
-          "dataType": "Int64"
+            "name": "Conversation",
+            "columns": [{
+                    "name": "timeStamp",
+                    "dataType": "Datetime"
+                },
+                {
+                    "name": "conversationId",
+                    "dataType": "String"
+                },
+                {
+                    "name": "conversationStart",
+                    "dataType": "Datetime"
+                },
+                {
+                    "name": "conversationEnd",
+                    "dataType": "Datetime"
+                },
+                {
+                    "name": "mediaType",
+                    "dataType": "String"
+                },
+                {
+                    "name": "direction",
+                    "dataType": "String"
+                },
+                {
+                    "name": "queueName",
+                    "dataType": "String"
+                },
+                {
+                    "name": "skill",
+                    "dataType": "String"
+                },
+                {
+                    "name": "language",
+                    "dataType": "String"
+                }
+            ]
         }
-      ]
-    },
-    {
-      "name": "Conversation",
-      "columns": [
-        {
-          "name": "timeStamp",
-          "dataType": "Datetime"
-        },
-        {
-          "name": "conversationId",
-          "dataType": "String"
-        },
-        {
-          "name": "conversationStart",
-          "dataType": "Datetime"
-        },
-        {
-          "name": "conversationEnd",
-          "dataType": "Datetime"
-        },
-        {
-          "name": "mediaType",
-          "dataType": "String"
-        },
-        {
-          "name": "direction",
-          "dataType": "String"
-        },
-        {
-          "name": "queueName",
-          "dataType": "String"
-        },
-        {
-          "name": "skill",
-          "dataType": "String"
-        },
-        {
-          "name": "language",
-          "dataType": "String"
-        }
-      ]
-    }
-  ],
-  "defaultMode" : "PushStreaming"
+    ],
+    "defaultMode": "PushStreaming"
 }
- 
