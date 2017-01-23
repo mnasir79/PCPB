@@ -39,6 +39,22 @@
                     "dataType": "Int64"
                 },
                 {
+                    "name": "video_oInteracting",
+                    "dataType": "Int64"
+                },
+                {
+                    "name": "video_oWaiting",
+                    "dataType": "Int64"
+                },
+                {
+                    "name": "screenshare_oInteracting",
+                    "dataType": "Int64"
+                },
+                {
+                    "name": "screenshare_oWaiting",
+                    "dataType": "Int64"
+                },
+                {
                     "name": "name",
                     "dataType": "String"
                 },
