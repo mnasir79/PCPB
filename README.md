@@ -9,11 +9,24 @@ An easy to deploy and configure hub between PureCloud, CIC and dashboard applica
 
 ![Clipboard01.jpg](https://bitbucket.org/repo/6pxRex/images/2536503936-Clipboard01.jpg)
 
-*Limitations: currently, the Analytics Hub extension can only push queue-related data to PowerBI*
-___
+* * *
+**To install the extension, please go [here](https://chrome.google.com/webstore/detail/inin-analytics-hub/ojgodpdmapceodglkfkbkmddkeibibmd)**
+* * *
 
-How to Install
---------------
+*Limitations: currently, the Analytics Hub extension can only push queue-related data to PowerBI*
+
+
+
+
+If you wish to create your own copy, please read the following:
+
+How to create your own copy:
+----------------------------
+
+**You do not need to follow this if you only want to install the extension**
+* * *
+**To install the extension, please go [here](https://chrome.google.com/webstore/detail/inin-analytics-hub/ojgodpdmapceodglkfkbkmddkeibibmd)**
+* * *
 
 * Requirements
     * PowerBI account: sign up [here](https://app.powerbi.com/signupredirect?pbi_source=web). Microsoft account required.
