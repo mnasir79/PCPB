@@ -84,6 +84,11 @@ CIC
 * Timer: Same as the PureCloud timer. Used to indicate the duration between 2 polls. Depending on the number of groups you have in PureCloud, having a value of less than 5000 (5 seconds) can cause high-CPU usage. A value of 10000 (10 seconds) is recommended.
 * Optimize Output: If checked, only changes are pushed to PowerBI instead of the whole dataset.
 
+* * *
+**Warning: Please remember, that this version reports only Marketing workgroup. This value is hardcoded**
+* * *
+
+
 ## How to use
 * Click on the Analytics Hub icon
 * Click on PureCloud or CIC (or both) to connect to your systems. When successful, the buttons will turn green.
