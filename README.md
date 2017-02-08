@@ -100,8 +100,7 @@ CIC
 ![Clipboard01.jpg](https://bitbucket.org/repo/6pxRex/images/3917787560-Clipboard01.jpg)
 
 * Open your PowerBI dashboard. You should see new Datasets (PureCloud and/or CIC)
-
-![Clipboard03.jpg](https://bitbucket.org/repo/6pxRex/images/2323723455-Clipboard03.jpg)
+![Zrzut ekranu 2017-02-08 o 10.01.47.png](https://bitbucket.org/repo/6pxRex/images/2782865555-Zrzut%20ekranu%202017-02-08%20o%2010.01.47.png)
 
 * Drag fields (on the right-side) and drop them onto your PowerBI dashboard
 
