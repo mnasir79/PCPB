@@ -115,3 +115,11 @@ CIC
 **Note that widgets will only refresh after you pin them to a dashboard**
 
 ![Clipboard06.jpg](https://bitbucket.org/repo/6pxRex/images/568244831-Clipboard06.jpg)
+
+___
+
+Possible errors
+=======
+
+If you'll see Request "throttled error" in background.html page - this is Chrome issue, that prevent for DDoS attacks from your browser. (http://dev.chromium.org/throttling)
+To disable the feature, which may be useful for some extension developers:  Pass the --disable-extensions-http-throttling command-line flag when starting Chrome.
