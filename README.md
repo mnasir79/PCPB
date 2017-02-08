@@ -121,5 +121,7 @@ ___
 Possible errors
 =======
 
+![Zrzut ekranu 2017-02-08 o 10.07.52.png](https://bitbucket.org/repo/6pxRex/images/3430026683-Zrzut%20ekranu%202017-02-08%20o%2010.07.52.png)
+
 If you'll see Request "throttled error" in background.html page - this is Chrome issue, that prevent for DDoS attacks from your browser. (http://dev.chromium.org/throttling)
 To disable the feature, which may be useful for some extension developers:  Pass the --disable-extensions-http-throttling command-line flag when starting Chrome.
