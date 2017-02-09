@@ -125,3 +125,15 @@ Possible errors
 
 If you'll see Request "throttled error" in background.html page - this is Chrome issue, that prevent for DDoS attacks from your browser. (http://dev.chromium.org/throttling)
 To disable the feature, which may be useful for some extension developers:  Pass the --disable-extensions-http-throttling command-line flag when starting Chrome.
+
+___
+
+Limitations
+=======
+
+Because this product is in Beta state, there are some limitations.
+First of all CIC reporting looks only for hardcoded "Marketing" workgroup. Only this one workgroup
+is pushed to the PowerBi service.
+For PureCloud statistics, first 25 workgroups are reported.
+
+Current version of PowerBi lacks of filtering multiple workgroup in Live Data. That means Live Data statistics works only when 1 workgroup is passed to the PowerBi (always for CIC and only for PureCloud environments where 1 workgroup is defined in Org)
