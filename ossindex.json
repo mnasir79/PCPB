@@ -1,0 +1,20 @@
+{
+    "author": "ECC",
+    "title": "Analytics Hub",
+    "categories": [
+        "Addin", "Chrome extension"
+    ],
+    "tags": [
+        "PowerBi",
+        "addin",
+        "chrome",
+        "extension",
+        "reports"
+    ],
+    "apis": [
+        "platform"
+    ],
+    "sdks": [
+        "javascript"
+    ]
+}
