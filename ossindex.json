@@ -1,6 +1,7 @@
 {
     "author": "ECC",
     "title": "Analytics Hub",
+    "logo_url": "https://raw.githubusercontent.com/MyPureCloud/platform-client-sdk-java/master/genesys_64.png",
     "categories": [
         "Addin", "Chrome extension"
     ],
