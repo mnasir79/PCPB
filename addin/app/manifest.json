@@ -1,7 +1,7 @@
 {
     "name": "Genesys Analytics Hub",
     "short_name": "Analytics Hub",
-    "version": "1.0.0",
+    "version": "1.0.2",
     "manifest_version": 2,
     "description": "__MSG_appDescription__",
     "icons": {
@@ -41,7 +41,7 @@
             "19": "images/icon-19.png",
             "38": "images/icon-38.png"
         },
-        "default_title": "inin-analytics-hub",
+        "default_title": "genesys-analytics-hub",
         "default_popup": "popup.html"
     },
     "web_accessible_resources": [
