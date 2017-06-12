@@ -41,6 +41,7 @@ How to create your own copy:
     * PureCloud (optional, only if you want to gather stats about PureCloud queues in PowerBI)
         * Get your own PureCloud org [here](http://mypurecloud.com/)
         * Create a custom OAuth application in the PureCloud admin module by going to Admin/Integrations and select the oAuth option. [Learn more](https://developer.mypurecloud.com/api/rest/authorization/create-oauth-client-id.html). Make sure you add the "Developer" role to your user otherwise you will not see any OAuth option under Admin\Integrations.
+Include Engage Supervisor permissions.
         * Use the following settings:
 
 ![oauth.jpg](https://bitbucket.org/repo/6pxRex/images/3582494050-oauth.jpg)
