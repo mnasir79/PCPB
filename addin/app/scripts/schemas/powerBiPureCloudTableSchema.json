@@ -75,6 +75,10 @@
           "dataType": "Int64"
         },
         {
+          "name": "oUserRoutingStatuses",
+          "dataType": "Int64"
+        },
+        {
           "name": "oMemberUsers",
           "dataType": "Int64"
         },
