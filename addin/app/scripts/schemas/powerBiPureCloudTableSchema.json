@@ -97,8 +97,7 @@
         {
           "name": "message_oWaiting",
           "dataType": "Int64"
-        }
-        
+        }        
       ]
     },
     {
