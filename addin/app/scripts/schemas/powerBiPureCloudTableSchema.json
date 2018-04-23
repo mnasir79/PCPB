@@ -89,6 +89,14 @@
         {
           "name": "voice_oWaiting",
           "dataType": "Int64"
+        },
+        {
+          "name": "message_oInteracting",
+          "dataType": "Int64"
+        },
+        {
+          "name": "message_oWaiting",
+          "dataType": "Int64"
         }
       ]
     },
